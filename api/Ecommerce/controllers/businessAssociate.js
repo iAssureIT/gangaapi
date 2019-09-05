@@ -37,7 +37,7 @@ exports.insert_ba = (req,res,next)=>{
 };
 
 exports.update_ba = (req,res,next)=>{
-    console.log(req.body)
+    console.log('data',req.body);
     BusinessAssociate.updateOne(
             { _id:req.body.baID},  
             {
@@ -312,40 +312,6 @@ exports.delete_contact = (req,res,next)=>{
             { _id:req.params.baID},  
             {
                 $pull: { 'contactDetails' : {_id:req.params.contactID}}
-            }
-        )
-        .exec()
-        .then(data=>{
-            if(data.nModified == 1){
-                res.status(200).json({
-                    "message": "Business Associate Updated Successfully."
-                });
-            }else{
-                res.status(401).json({
-                    "message": "Business Associate Not Found"
-                });
-            }
-        })
-        .catch(err =>{
-            console.log(err);
-            res.status(500).json({
-                error: err
-            });
-        });
-};
-
-
-exports.update_ba = (req,res,next)=>{
-    
-    BusinessAssociate.updateOne(
-            { _id:req.body.baID},  
-            {
-                $set:  {    "companyName"  : req.body.companyName,
-                            "pan"          : req.body.pan,
-                            "website"      : req.body.website,
-                            "gstno"        : req.body.gstno,
-                            "updatedBy"    : req.body.updatedBy
-                        }
             }
         )
         .exec()
