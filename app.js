@@ -38,6 +38,7 @@
 
 	// const notificationRoutes 		= require("./api/coreAdmin/routes/notification");
 	const companySettingRoutes		= require("./api/coreAdmin/routes/companysettings");
+	const notificationRoutes		= require("./api/coreAdmin/routes/masternotifications");
 
 	const productsRoutes			= require("./api/Ecommerce/routes/products"); 
 	const categoryRoutes			= require("./api/Ecommerce/routes/categories"); 
@@ -55,6 +56,7 @@
 	app.use("/api/projectSettings",projectSettingsurl);
 	// app.use("/api/notifications",notificationRoutes);
 	app.use("/api/companysettings",companySettingRoutes);
+	app.use("/api/masternotifications",notificationRoutes);
 
 	app.use("/api/products", productsRoutes);
 	app.use("/api/category", categoryRoutes);
