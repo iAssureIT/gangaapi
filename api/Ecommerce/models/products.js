@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const productsSchema = mongoose.Schema({
     _id			              : mongoose.Schema.Types.ObjectId,
-    webCategory               : String,
+    section                   : String,
     category                  : String,
     category_ID               : { type: mongoose.Schema.Types.ObjectId, ref: 'categories' },
     subCategory               : String,

@@ -7,9 +7,9 @@ router.post('/post', categoryController.insert_category);
 
 router.patch('/patch', categoryController.update_category);
 
-router.get('/get/list',categoryController.list_webCategory);
+router.get('/get/list',categoryController.list_section);
 
-router.get('/get/list/:webCategory',categoryController.list_category);
+router.get('/get/list/:section',categoryController.list_category);
 
 router.get('/get/count',categoryController.count_category);
 

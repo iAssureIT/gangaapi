@@ -10,7 +10,7 @@ exports.insert_product = (req,res,next)=>{
             console.log('data', data);
             const products = new Products({
                 _id                       : new mongoose.Types.ObjectId(),   
-                webCategory               : req.body.webCategory,                 
+                section                   : req.body.section,                 
                 category                  : req.body.category,
                 category_ID               : req.body.category_ID,
                 subCategory               : req.body.subCategory,
@@ -69,7 +69,7 @@ exports.bulkUploadProduct = (req,res,next)=>{
         var Count  = 0;
         for(k = 0 ; k < productData.length ; k++){
             if(productData[k].category!= undefined){
-                var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,productData[k].webCategory);
+                var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,productData[k].section);
                 
                 var insertProductObject = await insertProduct(categoryObject,productData[k]);
                 
@@ -88,7 +88,7 @@ exports.bulkUploadProduct = (req,res,next)=>{
 };
 
 
-function categoryInsert(catgName,subcatgName,webCategory) {
+function categoryInsert(catgName,subcatgName,section) {
     return new Promise(function(resolve,reject){    
         categoryDuplicateControl();
         async function categoryDuplicateControl(){
@@ -103,7 +103,7 @@ function categoryInsert(catgName,subcatgName,webCategory) {
                         categoryDescription       : '',
                         categoryImage             : '',
                         categoryIcon              : '',
-                        webCategory               : webCategory,
+                        section               : section,
                         createdAt                 : new Date()
                     });
 
@@ -183,7 +183,7 @@ var insertProduct = async (categoryObject, data) => {
             if (productPresent==0) {
                     const productObj = new Products({
                         _id                       : new mongoose.Types.ObjectId(),   
-                        webCategory               : data.webCategory,                 
+                        section                   : data.section,                 
                         category                  : data.category,
                         category_ID               : categoryObject.category_ID,
                         subCategory               : data.subCategory,
@@ -252,7 +252,7 @@ exports.update_product = (req,res,next)=>{
             { _id:req.body.product_ID},  
             {
                 $set:{
-                webCategory               : req.body.webCategory,
+                section                   : req.body.section,
                 category                  : req.body.category,
                 category_ID               : req.body.category_ID,
                 subCategory               : req.body.subCategory,
@@ -414,11 +414,11 @@ exports.wishlist_product = (req,res,next)=>{
 exports.list_productby_type = (req,res,next)=>{
     
     var productType = req.params.productType;
-    var webCategory = req.params.webCategory;
+    var section = req.params.section;
 
     selector={};
     if(productType == 'featured'){
-        selector={'featured':true, 'webCategory':webCategory, "status": "Publish"};
+        selector={'featured':true, 'section':section, "status": "Publish"};
         Products.find(selector)       
         .exec()
         .then(data=>{
@@ -432,7 +432,7 @@ exports.list_productby_type = (req,res,next)=>{
         });
     }
     else if(productType == 'exclusive'){
-        selector={'exclusive':true,  'webCategory':webCategory,"status": "Publish"};
+        selector={'exclusive':true,  'section':section,"status": "Publish"};
         Products.find(selector)       
         .exec()
         .then(data=>{
@@ -446,7 +446,7 @@ exports.list_productby_type = (req,res,next)=>{
         });
     }
     else if(productType == 'newProduct'){
-        selector={'newProduct':true,  'webCategory':webCategory,"status": "Publish"};
+        selector={'newProduct':true,  'section':section,"status": "Publish"};
         Products.find(selector)       
         .exec()
         .then(data=>{
@@ -460,7 +460,7 @@ exports.list_productby_type = (req,res,next)=>{
         });
     }
     else if(productType == 'bestSeller'){
-        selector={'bestSeller':true,  'webCategory':webCategory,"status": "Publish"};
+        selector={'bestSeller':true,  'section':section,"status": "Publish"};
         Products.find(selector)       
         .exec()
         .then(data=>{
@@ -718,7 +718,7 @@ exports.search_product = (req,res,next)=>{
 
 exports.list_brand = (req,res,next)=>{
     
-    Products.distinct("brand", {"webCategory":"Main-Site"})
+    Products.distinct("brand", {"section":"Main-Site"})
     .exec()
     .then(data=>{
 
@@ -734,7 +734,7 @@ exports.list_brand = (req,res,next)=>{
 
 exports.list_grocerybrand = (req,res,next)=>{
     
-    Products.distinct("brand", {"webCategory":"Grocery"})
+    Products.distinct("brand", {"section":"Grocery"})
     .exec()
     .then(data=>{
 

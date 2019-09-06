@@ -14,7 +14,7 @@ const categorySchema = mongoose.Schema({
     categoryDescription       : String,
     categoryImage             : String,
     categoryIcon              : String,
-    webCategory               : String,
+    section                   : String,
     createdBy                 : String,
     createdAt                 : Date
 });

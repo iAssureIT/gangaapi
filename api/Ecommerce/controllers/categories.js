@@ -14,7 +14,7 @@ exports.insert_category = (req,res,next)=>{
                 categoryDescription       : req.body.categoryDescription,
                 categoryImage             : req.body.categoryImage,
                 categoryIcon              : req.body.categoryIcon,
-                webCategory               : req.body.webCategory,
+                section                   : req.body.section,
                 createdAt                 : new Date()
             });
             category.save()
@@ -49,7 +49,7 @@ exports.update_category = (req,res,next)=>{
                 categoryDescription       : req.body.categoryDescription,
                 categoryImage             : req.body.categoryImage,
                 categoryIcon              : req.body.categoryIcon,
-                webCategory               : req.body.webCategory,
+                section                   : req.body.section,
                 createdAt                 : new Date()
                 }
             }
@@ -73,7 +73,7 @@ exports.update_category = (req,res,next)=>{
             });
         });
 };
-exports.list_webCategory = (req,res,next)=>{
+exports.list_section = (req,res,next)=>{
     Category.find()       
         .exec()
         .then(data=>{
@@ -87,7 +87,7 @@ exports.list_webCategory = (req,res,next)=>{
         });
 };
 exports.list_category = (req,res,next)=>{
-    Category.find({"webCategory":req.params.webCategory})
+    Category.find({"section":req.params.section})
         .exec()
         .then(data=>{
             res.status(200).json(data);
@@ -107,7 +107,7 @@ exports.list_category_with_limits = (req,res,next)=>{
         var allData = data.map((x, i)=>{
             return {
                 "_id"                   : x._id,
-                "webCategory"           : x.webCategory,
+                "section"               : x.section,
                 "category"              : x.category,
                 "subCategory"           : ((x.subCategory.map((a, i)=>{return '<p>'+a.subCategoryTitle+'</p>'})).toString()).replace(/,/g, " "),
                 "categoryDescription"   : x.categoryDescription,
