@@ -7,7 +7,8 @@ const BusinessAssociate = require('../models/businessAssociate');
 
 const plivo         = require('plivo');
 var request         = require('request-promise');  
-var localUrl = 'http://localhost:3060/';
+const gloabalVariable 	= require('./../../../nodemon'); 
+var localUrl =  "http://localhost:"+gloabalVariable.PORT;
 
 exports.insert_order = (req,res,next)=>{
     console.log('res', req);
