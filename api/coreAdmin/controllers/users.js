@@ -1,10 +1,10 @@
-const mongoose		= require("mongoose");
-const bcrypt		= require("bcrypt");
-const jwt			= require("jsonwebtoken");
-const plivo 		= require('plivo');
-const User 			= require('../models/users');
-var request 		= require('request-promise');
-
+const mongoose			= require("mongoose");
+const bcrypt			= require("bcrypt");
+const jwt				= require("jsonwebtoken");
+const plivo 			= require('plivo');
+const User 				= require('../models/users');
+var request 			= require('request-promise');
+const gloabalVariable 	= require('./../../../nodemon'); 
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -62,7 +62,7 @@ exports.user_signupadmin = (req,res,next)=>{
                                 request({
                                     
                                  "method"    : "POST",
-                                 "url"       : "http://localhost:3060/send-email",
+                                 "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                                  "body"      :   {
                                                      "email"     : newUser.profile.emailId,
                                                      "subject"   : 'Verify your Account',
@@ -387,7 +387,7 @@ exports.user_login = (req,res,next)=>{
                             const token = jwt.sign({
                                 email   : req.body.email,
                                 userId  : user._id ,
-                            },global.JWT_KEY,
+                            },gloabalVariable.JWT_KEY,
                             {
                                 expiresIn: "1h"
                             }
