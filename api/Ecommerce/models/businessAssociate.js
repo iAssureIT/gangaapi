@@ -34,7 +34,7 @@ const baSchema = mongoose.Schema({
     createdAt                 : Date,
     updatedBy                 : String,
     updatedAt                 : Date,
-    userID                    : String
+    userID                    : { type: mongoose.Schema.Types.ObjectId, ref: 'users' }
     
 });
 

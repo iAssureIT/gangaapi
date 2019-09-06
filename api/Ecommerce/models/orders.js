@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const orderSchema = mongoose.Schema({
 	_id			              : mongoose.Schema.Types.ObjectId,
     orderID                   : Number,
-    user_ID                   : String,
+    user_ID                   : { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     emailID                   : String,
-    BA_ID                     : String, 
+    BA_ID                     : { type: mongoose.Schema.Types.ObjectId, ref: 'businessAssociate' }, 
     userFullName              : String,
     userName                  : String,
     numericOrderID            : Number,

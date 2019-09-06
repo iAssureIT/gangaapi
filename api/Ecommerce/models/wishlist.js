@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 
 const wishlistSchema = mongoose.Schema({
 	_id			          : mongoose.Schema.Types.ObjectId,
-    user_ID               : String,
-    product_ID               : String,
-    wishlistItems             : Array,
-    wishlistTotal             : Number,
+    user_ID               : { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
+    product_ID            : { type: mongoose.Schema.Types.ObjectId, ref: 'products' },
+    wishlistItems         : Array,
+    wishlistTotal         : Number,
     deliveryAdd           : {
         name              : String,
         houseNo           : String,
