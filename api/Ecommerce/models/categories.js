@@ -8,7 +8,7 @@ const categorySchema = mongoose.Schema({
 	    {
 	    	index 			  : Number,
             subCategoryCode   : String,
-            subCategoryTitle  : String
+            subCategoryTitle  : String,
 	    }
     ],
     categoryDescription       : String,
