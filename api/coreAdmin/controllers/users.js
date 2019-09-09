@@ -18,6 +18,7 @@ exports.user_signupadmin = (req,res,next)=>{
                       .exec()
                       .then((maildata)=>{
                         console.log("maildata---->",maildata);
+                        console.log("maildata--In-->");
                         mailSubject = maildata.subject;
                         mailText = maildata.content
                       })
