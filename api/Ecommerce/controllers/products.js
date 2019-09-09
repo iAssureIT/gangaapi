@@ -692,7 +692,6 @@ exports.list_productby_subcategory = (req,res,next)=>{
 
 
 exports.search_product = (req,res,next)=>{
-    console.log('searchstr',req.params.searchstr);
     Products.find(
             { "$or": 
                     [
@@ -703,6 +702,33 @@ exports.search_product = (req,res,next)=>{
                     ] 
             }
         )
+    .exec()
+    .then(data=>{
+
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+
+exports.searchINCategory = (req,res,next)=>{
+
+
+    Products.find({
+        //"category_ID" : {$in : [ObjectId("5d75f228fc87471d3d023ae9")]},
+        "category" : {$in : req.body.catArray},
+        "$or": [ 
+                {"productName"    : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
+                {"brand"          : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
+                {"category"       : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
+                {"subCategory"    : {'$regex' : '^' + req.body.searchstr , $options: "i"} }
+            ]
+        })
     .exec()
     .then(data=>{
 

@@ -45,6 +45,8 @@ router.delete('/file/delete/:fileName',productController.delete_file);
 
 router.get('/get/search/:searchstr', productController.search_product);
 
+router.post('/post/searchINCategory', productController.searchINCategory);
+
 router.get('/get/listBrand', productController.list_brand);
 
 router.get('/get/listGroceryBrand', productController.list_grocerybrand);
