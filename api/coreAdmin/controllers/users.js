@@ -14,10 +14,10 @@ function getRandomInt(min, max) {
 
 exports.user_signupadmin = (req,res,next)=>{
     var mailSubject, mailText, smsText;
-    Masternotifications.findOne({"templateType":"Email","templateName":"Sign Up"})
+    Masternotifications.findOne({"templateType":"Email","templateName":"Order Placed Successfully"})
                       .exec()
                       .then((maildata)=>{
-                        console.log("maildata--->",maildata);
+                        console.log("maildata---->",maildata);
                         mailSubject = maildata.subject;
                         mailText = maildata.content
                       })
@@ -79,7 +79,7 @@ exports.user_signupadmin = (req,res,next)=>{
                                                      // "subject"   : 'Verify your Account',
                                                      // "text"      : "WOW Its done",
                                                      // "text"      : "WOW Its done",
-                                                     "mail"      : 'Hello '+newUser.profile.fullName+','+'\n'+mailText,
+                                                     "mail"      : 'Hello '+newUser.profile.fullName+','+'\n'+mailText+"\n <br><br>Your account verification code is "+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                                  },
                                  "json"      : true,
                                  "headers"   : {
