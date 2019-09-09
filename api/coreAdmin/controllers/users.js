@@ -13,6 +13,7 @@ function getRandomInt(min, max) {
 }
 
 exports.user_signupadmin = (req,res,next)=>{
+    console.log("in method......");
     var mailSubject, mailText, smsText;
     Masternotifications.findOne({"templateType":"Email","templateName":"Order Placed Successfully"})
                       .exec()
