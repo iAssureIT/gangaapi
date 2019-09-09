@@ -2,6 +2,7 @@ const mongoose  = require("mongoose");
 
 const Orders = require('../models/orders');
 const Carts = require('../models/cart');
+const Masternotifications =  require('../../coreAdmin/models/masternotifications');
 const User = require('../../coreAdmin/models/users');
 const BusinessAssociate = require('../models/businessAssociate');
 
@@ -11,8 +12,15 @@ const gloabalVariable 	= require('./../../../nodemon');
 var localUrl =  "http://localhost:"+gloabalVariable.PORT;
 
 exports.insert_order = (req,res,next)=>{
-    console.log('res', req);
-var i = 0;
+    var mailSubject, mailText, smsText;
+    Masternotifications.findOne({"templateType":"Email","templateName":"Order Placed Successfully"})
+                      .exec()
+                      .then((maildata)=>{
+                        mailSubject = maildata.subject;
+                        mailText = maildata.content
+                      })
+                      .catch()
+      var i = 0;
       if(req.body.qtys.length > 0){
         var user_ID = req.body.user_ID;
         Carts.findOne({"user_ID" : req.body.user_ID})
@@ -56,16 +64,19 @@ var i = 0;
                 User.findOne({"_id":req.body.user_ID})
                 .exec()
                 .then(data=>{
-                    console.log('data====', data);
+                    console.log('data===mailSubject=', mailSubject,mailText);
 
                     request({
                      "method"    : "POST",
                      "url"       : localUrl+"send-email",
                      "body"      :   {
                                          "email"     : data.profile.emailId,
-                                         "subject"   : 'Order Placed Successfully',
-                                         "text"      : "WOW Its done",
-                                         "mail"      : 'Hello '+data.profile.fullName+','+'\n'+"\n <br><br>Your Order has been placed successfully and will be dispached soon."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                         "subject"   : mailSubject,
+                                         // "subject"   : 'Order Placed Successfully',
+                                         // "text"      : "WOW Its done",
+                                         "text"      : mailText,
+                                         "mail"      : 'Hello '+data.profile.fullName+','+'\n'+mailText,
+                                         // "mail"      : 'Hello '+data.profile.fullName+','+'\n'+"\n <br><br>Your Order has been placed successfully and will be dispached soon."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                      },
                      "json"      : true,
                      "headers"   : {
