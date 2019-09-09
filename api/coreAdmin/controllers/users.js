@@ -5,6 +5,7 @@ const plivo 			= require('plivo');
 const User 				= require('../models/users');
 var request 			= require('request-promise');
 const gloabalVariable 	= require('./../../../nodemon'); 
+const Masternotifications =  require('../models/masternotifications');
 function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -12,6 +13,15 @@ function getRandomInt(min, max) {
 }
 
 exports.user_signupadmin = (req,res,next)=>{
+    var mailSubject, mailText, smsText;
+    Masternotifications.findOne({"templateType":"Email","templateName":"Sign Up"})
+                      .exec()
+                      .then((maildata)=>{
+                        console.log("maildata--->",maildata);
+                        mailSubject = maildata.subject;
+                        mailText = maildata.content
+                      })
+                      .catch()
 	User.find()
 		.exec()
 		.then(user =>{
@@ -65,9 +75,11 @@ exports.user_signupadmin = (req,res,next)=>{
                                  "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                                  "body"      :   {
                                                      "email"     : newUser.profile.emailId,
-                                                     "subject"   : 'Verify your Account',
-                                                     "text"      : "WOW Its done",
-                                                     "mail"      : 'Hello '+newUser.profile.fullName+','+'\n'+"\n <br><br>Your account verification code is "+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                     "subject"   : mailSubject,
+                                                     // "subject"   : 'Verify your Account',
+                                                     // "text"      : "WOW Its done",
+                                                     // "text"      : "WOW Its done",
+                                                     "mail"      : 'Hello '+newUser.profile.fullName+','+'\n'+mailText,
                                                  },
                                  "json"      : true,
                                  "headers"   : {
