@@ -81,7 +81,7 @@ exports.user_signupadmin = (req,res,next)=>{
                                                      // "subject"   : 'Verify your Account',
                                                      // "text"      : "WOW Its done",
                                                      // "text"      : "WOW Its done",
-                                                     "mail"      : 'Hello '+newUser.profile.fullName+','+'\n'+mailText+"\n <br><br>Your account verification code is "+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                     "mail"      : 'Hello USER'+newUser.profile.fullName+','+'\n'+mailText+"\n <br><br>Your account verification code is "+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                                  },
                                  "json"      : true,
                                  "headers"   : {
