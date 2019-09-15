@@ -190,8 +190,6 @@ exports.insert_order = (req,res,next)=>{
                       "productLength"     : productLength,
                       "totalQuantity"     : totalQuantity,
                       'deliveryAddress'   : {
-                                             
-
                                               "name"            : payModeObj.deliveryAdd.name,
                                               "email"           : payModeObj.deliveryAdd.email,
                                               "addressLine1"    : payModeObj.deliveryAdd.addressLine1,
@@ -201,7 +199,7 @@ exports.insert_order = (req,res,next)=>{
                                               "state"           : payModeObj.deliveryAdd.state,
                                               "mobileNumber"    : payModeObj.deliveryAdd.mobileNumber,
                                               "country"         : payModeObj.deliveryAdd.country,
-           
+                                              "addType"         : payModeObj.deliveryAdd.addType
                                             },
                       "deliveryStatus"   : [
                           {

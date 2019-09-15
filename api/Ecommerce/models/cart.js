@@ -21,11 +21,13 @@ const cartSchema = mongoose.Schema({
     cartTotal             : Number,
     deliveryAdd           : {
         name              : String,
+        email             : String,
         addressLine1      : String,
         addressLine2      : String,
         pincode           : String,
         city              : String,
         state             : String,
+        country           : String,
         mobileNumber      : String,
         addType           : String,
     },

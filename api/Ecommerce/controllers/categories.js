@@ -103,7 +103,7 @@ exports.list_category_with_limits = (req,res,next)=>{
     Category.find()
     .exec()
     .then(data=>{
-        console.log('data', data);
+        console.log('data', data); 45
         var allData = data.map((x, i)=>{
             return {
                 "_id"                   : x._id,
