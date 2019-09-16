@@ -542,6 +542,19 @@ exports.fetch_product = (req,res,next)=>{
         });
     });
 };
+exports.fetch_hot_product = (req,res,next)=>{
+    Products.find().limit(4)
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.fetch_file = (req,res,next)=>{
     Products.find()
     .exec()

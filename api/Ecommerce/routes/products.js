@@ -39,6 +39,8 @@ router.patch('/patch/gallery', productController.upload_photo);
 
 router.get('/get/one/:productID', productController.fetch_product);
 
+router.get('/get/hotproduct', productController.fetch_hot_product);
+
 router.delete('/delete/:productID',productController.delete_product);
 
 router.delete('/file/delete/:fileName',productController.delete_file);
