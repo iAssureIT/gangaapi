@@ -543,7 +543,9 @@ exports.fetch_product = (req,res,next)=>{
     });
 };
 exports.fetch_hot_product = (req,res,next)=>{
-    Products.find().limit(4)
+    Products.find({ "offered": true})
+    .sort({ "createdAt": 1 })
+    .limit(4)
     .exec()
     .then(data=>{
         res.status(200).json(data);
