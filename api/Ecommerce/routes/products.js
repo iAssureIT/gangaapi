@@ -49,6 +49,8 @@ router.post('/post/searchINCategory', productController.searchINCategory);
 
 router.get('/get/listBrand', productController.list_brand);
 
+router.get('/get/minmaxprice', productController.get_minmaxprice);
+
 router.get('/get/listGroceryBrand', productController.list_grocerybrand);
 
 router.post('/post/list/filterMainProducts', productController.filterMainProducts);

@@ -830,3 +830,31 @@ exports.filterMainProducts = (req,res,next)=>{
     });
 };
 
+
+exports.get_minmaxprice = (req,res,next)=>{
+    var priceArray = {}
+    Products.find({},{actualPrice:1}).sort({actualPrice:1}).limit(1)
+    .exec()
+    .then(data=>{
+        priceArray.min =  data[0].actualPrice ;
+        
+            Products.find({},{actualPrice:1}).sort({actualPrice:-1}).limit(1)
+            .exec()
+            .then(data1=>{
+                priceArray.max =  data1[0].actualPrice ;
+                res.status(200).json(priceArray);
+            })
+            .catch(err =>{
+                console.log(err);
+                res.status(500).json({
+                    error: err
+                });
+            });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
