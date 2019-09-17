@@ -478,6 +478,32 @@ exports.list_productby_type = (req,res,next)=>{
     }
     
 };
+exports.list_productby_type_category = (req,res,next)=>{
+    var productType = req.params.productType;
+    var categoryID = req.params.categoryID;
+
+    var selector={};
+    if(productType == 'featured'){
+        selector={'featured':true, 'category_ID':categoryID, "status": "Publish"};
+    } else if(productType == 'exclusive'){
+        selector={'exclusive':true,  'category_ID':categoryID,"status": "Publish"}; 
+    } else if(productType == 'newProduct'){
+        selector={'newProduct':true,  'category_ID':categoryID,"status": "Publish"};
+    } else if(productType == 'bestSeller'){
+        selector={'bestSeller':true,  'category_ID':categoryID,"status": "Publish"};
+    }
+    Products.find(selector)       
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.list_product_with_limits = (req,res,next)=>{
     console.log('req', req.body);
     Products.find()

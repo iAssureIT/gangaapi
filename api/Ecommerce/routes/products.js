@@ -17,6 +17,8 @@ router.get('/get/list',productController.list_product);
 
 router.get('/get/listbytype/:section/:productType',productController.list_productby_type);
 
+router.get('/get/listbytypeNcategory/:categoryID/:productType',productController.list_productby_type_category);
+
 router.get('/get/list/:categoryID',productController.list_productby_category);
 
 router.get('/get/list/:categoryID/:subcategoryID',productController.list_productby_subcategory);
