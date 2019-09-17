@@ -17,6 +17,8 @@ router.get('/get/list',productController.list_product);
 
 router.get('/get/listbytype/:section/:productType',productController.list_productby_type);
 
+router.get('/get/listbytypeNcategory/:categoryID/:productType',productController.list_productby_type_category);
+
 router.get('/get/list/:categoryID',productController.list_productby_category);
 
 router.get('/get/list/:categoryID/:subcategoryID',productController.list_productby_subcategory);
@@ -38,6 +40,8 @@ router.post('/get/list',productController.list_product_with_limits);
 router.patch('/patch/gallery', productController.upload_photo);
 
 router.get('/get/one/:productID', productController.fetch_product);
+
+router.get('/get/hotproduct', productController.fetch_hot_product);
 
 router.delete('/delete/:productID',productController.delete_product);
 

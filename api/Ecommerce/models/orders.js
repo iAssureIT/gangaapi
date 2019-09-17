@@ -42,6 +42,7 @@ const orderSchema = mongoose.Schema({
                                               "state"           : String,
                                               "mobileNumber"    : String,
                                               "country"         : String,
+                                              "addType"         : String,
                                 },
     deliveryStatus            : [{
                                     "status"          : String,

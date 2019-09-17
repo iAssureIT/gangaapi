@@ -477,6 +477,7 @@ exports.add_address_to_cart = (req, res, next)=>{
                     {
                         deliveryAdd : {
                             "name"            : req.body.name,
+                            "email"           : req.body.email,
                             "addressLine1"    : req.body.addressLine1,
                             "addressLine2"    : req.body.addressLine2,
                             "pincode"         : req.body.pincode,

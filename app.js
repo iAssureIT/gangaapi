@@ -8,7 +8,10 @@
 	// const dbname = "ecommerceapi";
 	// global.JWT_KEY = "secret";
 
+	
+// console.log("globalVariable.dbname",dbname);
 	mongoose.connect('mongodb://localhost/'+globalVariable.dbname,{
+	// mongoose.connect('mongodb://localhost/'+dbname,{
 		useNewUrlParser: true
 	})
 	mongoose.promise = global.Promise;

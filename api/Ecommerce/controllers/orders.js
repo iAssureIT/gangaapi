@@ -9,6 +9,7 @@ const BusinessAssociate = require('../models/businessAssociate');
 const plivo         = require('plivo');
 var request         = require('request-promise');  
 const gloabalVariable 	= require('./../../../nodemon'); 
+// var localUrl =  "http://localhost:3060";
 var localUrl =  "http://localhost:"+gloabalVariable.PORT;
 
 exports.insert_order = (req,res,next)=>{
@@ -20,13 +21,25 @@ exports.insert_order = (req,res,next)=>{
                         mailText = maildata.content
                       })
                       .catch()
+
+    Masternotifications.findOne({"templateType":"SMS","templateName":"Order Placed Successfully"})
+                      .exec()
+                      .then((smsdata)=>{  
+                          var textcontent = smsdata.content;                              
+                          var regex = new RegExp(/(<([^>]+)>)/ig);
+                          var textcontent = smsdata.content.replace(regex, '');
+                          textcontent   = textcontent.replace(/\&nbsp;/g, '')                     
+                          smsText = textcontent
+                      })
+                      .catch()
+
       var i = 0;
       if(req.body.qtys.length > 0){
         var user_ID = req.body.user_ID;
         Carts.findOne({"user_ID" : req.body.user_ID})
         .exec()
         .then(payModeObj=>{
-            console.log('payModeObj',payModeObj);
+            // console.log('payModeObj',payModeObj);
             if(payModeObj){
                 var now = new Date();
                 var day = now.getDay();
@@ -64,7 +77,7 @@ exports.insert_order = (req,res,next)=>{
                 User.findOne({"_id":req.body.user_ID})
                 .exec()
                 .then(data=>{
-                    console.log('data===mailSubject=', mailSubject,mailText);
+                    // console.log('data===mailSubject=', mailSubject,mailText);
 
                     request({
                      "method"    : "POST",
@@ -102,13 +115,13 @@ exports.insert_order = (req,res,next)=>{
                      dst= '+91'+data.profile.mobileNumber,
                      text=text
                     ).then((result)=> {
-                        console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                        // console.log("src = ",src," | DST = ", dst, " | result = ", result);
                         res.status(200).json({
                             message:"Order Placed Successfully"
                         });
                     })
                     .catch(otpError=>{
-                        console.log("otpError",otpError);
+                        // console.log("otpError",otpError);
                         return res.status(501).json({
                              message: "Some Issue Occured While Placing Your Order",
                              error: otpError
@@ -147,13 +160,13 @@ exports.insert_order = (req,res,next)=>{
                      dst= '+919049711725',
                      text=text2
                     ).then((result)=> {
-                        console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                        // console.log("src = ",src," | DST = ", dst, " | result = ", result);
                         res.status(200).json({
                             message:"Order Placed Successfully"
                         });
                     })
                     .catch(otpError=>{
-                        console.log("otpError",otpError);
+                        // console.log("otpError",otpError);
                         return res.status(501).json({
                              message: "Some Issue Occured While Placing Your Order",
                              error: otpError
@@ -177,8 +190,6 @@ exports.insert_order = (req,res,next)=>{
                       "productLength"     : productLength,
                       "totalQuantity"     : totalQuantity,
                       'deliveryAddress'   : {
-                                             
-
                                               "name"            : payModeObj.deliveryAdd.name,
                                               "email"           : payModeObj.deliveryAdd.email,
                                               "addressLine1"    : payModeObj.deliveryAdd.addressLine1,
@@ -188,7 +199,7 @@ exports.insert_order = (req,res,next)=>{
                                               "state"           : payModeObj.deliveryAdd.state,
                                               "mobileNumber"    : payModeObj.deliveryAdd.mobileNumber,
                                               "country"         : payModeObj.deliveryAdd.country,
-           
+                                              "addType"         : payModeObj.deliveryAdd.addType
                                             },
                       "deliveryStatus"   : [
                           {
@@ -200,7 +211,7 @@ exports.insert_order = (req,res,next)=>{
                     });
                     order.save()
                     .then(orderdata=>{
-                        console.log('Order data', orderdata);
+                        // console.log('Order data', orderdata);
                         Carts.findOne({"user_ID":req.body.user_ID})
                         .exec()
                         .then(userCart=>{
@@ -248,7 +259,7 @@ exports.insert_order = (req,res,next)=>{
                                
         })
         .catch(error=>{
-            console.log('error4', error);
+            // console.log('error4', error);
             res.status(500).json({
                
                 error4: error
@@ -396,9 +407,32 @@ exports.delete_order = (req,res,next)=>{
 };
 
 exports.updateDeliveryStatus = (req,res,next)=>{
+
+  var DeliveryMailSubject, DeliveryMailText, DeliverySmsText;
+    Masternotifications.findOne({"templateType":"Email","templateName":"Order Delivered"})
+                      .exec()
+                      .then((maildata)=>{
+                        DeliveryMailSubject = maildata.subject;
+                        DeliveryMailText = maildata.content
+                      })
+                      .catch()
+
+    Masternotifications.findOne({"templateType":"SMS","templateName":"Order Delivered"})
+                      .exec()
+                      .then((smsdata)=>{
+                          var textcontent = smsdata.content;                              
+                          var regex = new RegExp(/(<([^>]+)>)/ig);
+                          var textcontent = smsdata.content.replace(regex, '');
+                          textcontent   = textcontent.replace(/\&nbsp;/g, '');
+                          DeliverySmsText = textcontent;
+                      })
+                      .catch()
+
+
+
     
     var status = req.body.status == "Delivered & Paid" ? "Paid" : "UnPaid";
-    console.log(status);
+    // console.log(status);
     Orders.updateOne(
             { _id : req.body.orderID}, 
             {
@@ -415,7 +449,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
             )
             .exec()
                 .then(data=>{
-                    console.log(data);
+                    // console.log(data);
                     if(data.nModified == 1){
                       if(status == 'Paid'){
 
@@ -452,13 +486,13 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                              dst= '+919049711725',
                              text=text2
                             ).then((result)=> {
-                                console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                                // console.log("src = ",src," | DST = ", dst, " | result = ", result);
                                 res.status(200).json({
                                     message:"Order dilivered Successfully"
                                 });
                             })
                             .catch(otpError=>{
-                                console.log("otpError",otpError);
+                                // console.log("otpError",otpError);
                                 return res.status(501).json({
                                      message: "Some Issue Occured While Placing Your Order",
                                      error: otpError
@@ -506,7 +540,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                                        dst= '+91'+customerData.profile.mobileNumber,
                                        text=text4
                                       ).then((result)=> {
-                                          console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                                          // console.log("src = ",src," | DST = ", dst, " | result = ", result);
                                           res.status(200).json({
                                               message:"Order dilivered Successfully"
                                           });
@@ -545,7 +579,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                     }
                 })
                 .catch(err =>{
-                    console.log(err);
+                    // console.log(err);
                     res.status(500).json({
                         error: err
                     });
@@ -553,8 +587,27 @@ exports.updateDeliveryStatus = (req,res,next)=>{
 };
 
 exports.dispatchOrder = (req,res,next)=>{
+    var dispatchMailSubject, dispatchMailText, dispatchSmsText;
+    Masternotifications.findOne({"templateType":"Email","templateName":"Order Dispatched"})
+                      .exec()
+                      .then((maildata)=>{
+                        dispatchMailSubject = maildata.subject;
+                        dispatchMailText = maildata.content
+                      })
+                      .catch()
+
+    Masternotifications.findOne({"templateType":"SMS","templateName":"Order Dispatched"})
+                      .exec()
+                      .then((smsdata)=>{ 
+                          var textcontent = smsdata.content;                              
+                          var regex = new RegExp(/(<([^>]+)>)/ig);
+                          var textcontent = smsdata.content.replace(regex, '');
+                          textcontent   = textcontent.replace(/\&nbsp;/g, '');                                                
+                          dispatchSmsText = textcontent
+                      })
+                      .catch()
     // console.log(req.body.orderID);
-    console.log('businessAssociateId',req.body.businessAssociateId);
+    // console.log('businessAssociateId',req.body.businessAssociateId);
     Orders.updateOne(
             { _id : req.body.orderID}, 
             {
@@ -609,13 +662,13 @@ exports.dispatchOrder = (req,res,next)=>{
                              dst= '+91'+ba.mobileNo,
                              text=text3
                             ).then((result)=> {
-                                console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                                // console.log("src = ",src," | DST = ", dst, " | result = ", result);
                                 res.status(200).json({
                                     message:"Order dispached Successfully"
                                 });
                             })
                             .catch(otpError=>{
-                                console.log("otpError",otpError);
+                                // console.log("otpError",otpError);
                                 return res.status(501).json({
                                      message: "Some Issue Occured While Placing Your Order",
                                      error: otpError
@@ -674,7 +727,7 @@ exports.dispatchOrder = (req,res,next)=>{
                                dst= '+91'+customerData.profile.mobileNumber,
                                text=text4
                               ).then((result)=> {
-                                  console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                                  // console.log("src = ",src," | DST = ", dst, " | result = ", result);
                                   res.status(200).json({
                                       message:"Order dispached Successfully"
                                   });
@@ -713,7 +766,7 @@ exports.dispatchOrder = (req,res,next)=>{
 
                 })
                 .catch(err =>{
-                    console.log('err2');
+                    // console.log('err2');
                     res.status(500).json({
                         error: err
                     });
@@ -751,7 +804,7 @@ exports.cancelOrder = (req,res,next)=>{
             )
             .exec()
                 .then(data=>{
-                    console.log(data);
+                    // console.log(data);
                     if(data.nModified == 1){
                         res.status(200).json({
                             "message": "Order is cancelled Successfully."
@@ -786,7 +839,7 @@ exports.returnOrder = (req,res,next)=>{
             )
             .exec()
                 .then(data=>{
-                    console.log(data);
+                    // console.log(data);
                     if(data.nModified == 1){
                         res.status(200).json({
                             "message": "Order is returned Successfully."

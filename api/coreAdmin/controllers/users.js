@@ -13,16 +13,6 @@ function getRandomInt(min, max) {
 }
 
 exports.user_signupadmin = (req,res,next)=>{
-    var mailSubject, mailText, smsText;
-    Masternotifications.findOne({"templateType":"Email","templateName":"Order Placed Successfully"})
-                      .exec()
-                      .then((maildata)=>{
-                        console.log("maildata---->",maildata);
-                        console.log("maildata--In-->");
-                        mailSubject = maildata.subject;
-                        mailText = maildata.content
-                      })
-                      .catch()
 	User.find()
 		.exec()
 		.then(user =>{
@@ -67,20 +57,15 @@ exports.user_signupadmin = (req,res,next)=>{
                         .then(newUser =>{
                             if(newUser){
                                 
-                                console.log('New USER = ',newUser);
-                               
-                                
                                 request({
                                     
                                  "method"    : "POST",
                                  "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                                  "body"      :   {
-                                                     "email"     : newUser.profile.emailId,
-                                                     "subject"   : mailSubject,
-                                                     // "subject"   : 'Verify your Account',
-                                                     // "text"      : "WOW Its done",
-                                                     // "text"      : "WOW Its done",
-                                                     "mail"      : 'Hello '+newUser.profile.fullName+','+'\n'+mailText+"\n <br><br>Your account verification code is "+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                     "email"     : newUser.profile.emailId,                                                    
+                                                     "subject"   : 'Verify your Account',
+                                                     "text"      : "WOW Its done",                                                    
+                                                     "mail"      : 'Hello'+newUser.profile.fullName+','+'\n'+"\n <br><br>Your account verification code is "+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                                  },
                                  "json"      : true,
                                  "headers"   : {
@@ -89,20 +74,19 @@ exports.user_signupadmin = (req,res,next)=>{
                                 })
                             
                                 .then((sentemail)=>{
-                                 console.log("call to api");
+                                
                                 res.header("Access-Control-Allow-Origin","*");    
 
                                  res.status(200).json({message:"Mail Sent successfully"});
                                 })
                                 .catch((err) =>{
-                                 console.log("call to api",err);
                                  res.status(500).json({
                                      error: err
                                  });
                                 });
                                 
                                 
-                                console.log('Plivo Client = ');
+                               
                                 const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
                                 const sourceMobile = "+919923393733";
                                 var text = "Dear User, "+'\n'+"To verify your account on GangaExpress, Enter this verification code : \n"+OTP;
@@ -112,7 +96,7 @@ exports.user_signupadmin = (req,res,next)=>{
                                  dst= '+91'+req.body.mobileNumber,
                                  text=text
                                 ).then((result)=> {
-                                 console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                                
                                  // return res.status(200).json("OTP "+OTP+" Sent Successfully ");
                                  return res.status(200).json({
                                      "message" : 'NEW-USER-CREATED',
@@ -150,7 +134,7 @@ exports.user_signupadmin = (req,res,next)=>{
 
 exports.add_user_address = (req,res,next)=>{
 	// var roleData = req.body.role;
-	console.log("req.params.userID",req.params.userID, req.body);
+
 
     User.updateOne(
             { _id:req.params.userID},  
@@ -178,7 +162,7 @@ exports.add_user_address = (req,res,next)=>{
         )
         .exec()
         .then(data=>{
-            console.log('data ',data);
+           
             res.status(200).json("User Updated");
         })
         .catch(err =>{
@@ -236,7 +220,7 @@ exports.ba_signupadmin = (req,res,next)=>{
 									message: "BA added successfully",
 									user:newUser
 								});
-                                console.log('New USER = ',newUser);
+                                
                             }
                         }) 	
                         .catch(err =>{
@@ -250,16 +234,14 @@ exports.ba_signupadmin = (req,res,next)=>{
 			
 		})
 };
-exports.resendotp = (req,res,next)=>{
-	console.log('req.params.userID', req.params.userID);
+exports.resendotp = (req,res,next)=>{	
 	User.findOne({_id:req.params.userID})
 		.exec()
 		.then(user =>{
-			console.log('user',user);
 							const OTP = getRandomInt(1000,9999);
 							const MailOTP = getRandomInt(100000,999999);
                             if(user){
-                            	console.log('user.profile.mobileNumber', user.profile.mobileNumber);
+                            	
                                 request({
                                     
                                  "method"    : "POST",
@@ -277,7 +259,7 @@ exports.resendotp = (req,res,next)=>{
                                 })
                             
                                 .then((sentemail)=>{
-                                 console.log("call to api");
+                                 
                                 res.header("Access-Control-Allow-Origin","*");    
 
                                  res.status(200).json({message:"Mail Sent successfully"});
@@ -300,7 +282,7 @@ exports.resendotp = (req,res,next)=>{
                                  dst= '+91'+user.profile.mobileNumber,
                                  text=text
                                 ).then((result)=> {
-                                 console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                                
 	                                User.updateOne(
 								            { _id:req.params.userID},  
 								            {
@@ -327,7 +309,7 @@ exports.resendotp = (req,res,next)=>{
                                  // return res.status(200).json("OTP "+OTP+" Sent Successfully ");
                                 })
                                 .catch(otpError=>{
-                                	console.log("otpError",otpError);
+                                	
                                  return res.status(501).json({
                                      message: "Some Error Occurred in Resending OTP Send Function",
                                      error: otpError
@@ -381,16 +363,16 @@ exports.update_user_resetpassword = (req,res,next)=>{
 	});
 };
 exports.user_login = (req,res,next)=>{
-    console.log('login');
+   
     User.findOne({username:req.body.email})
         .exec()
         .then(user => {
             if(user){
                 var pwd = user.services.password.bcrypt;
                 if(pwd){
-					console.log('PWD');
+					
                     bcrypt.compare(req.body.password,pwd,(err,result)=>{
-                    	console.log(result);
+                    	
                         if(err){
                             res.status(401).json({
                                 message: 'Bcrypt Auth failed'
@@ -405,7 +387,7 @@ exports.user_login = (req,res,next)=>{
                                 expiresIn: "1h"
                             }
                             );
-                            console.log('login faild');
+                           
                             res.header("Access-Control-Allow-Origin","*");
                              res.status(200).json({
                                 message             : 'Auth successful',
@@ -415,7 +397,7 @@ exports.user_login = (req,res,next)=>{
 								roles 				: user.roles,
                             }); 
                         }
-                        console.log({message:"Neither err nor result"});
+                       
                         res.status(401).json({
                             message: 'Error and Result Auth failed'
                         });
@@ -438,8 +420,7 @@ exports.user_login = (req,res,next)=>{
 exports.users_list = (req,res,next)=>{
 	User.find({roles : {$ne : "admin"} })
 		.exec()
-		.then(users =>{
-			console.log('users ',users);
+		.then(users =>{			
 			res.status(200).json(users);
 		})
 		.catch(err =>{
@@ -478,7 +459,7 @@ exports.users_directlist = (req,res,next)=>{
 			   
 				});	
 		   })
-		   console.log('userdataarr ',userdataarrs.length);
+		 
 		   if(userdataarr.length == users.length){
 			res.status(200).json(userdataarr);
 		   }
@@ -498,7 +479,7 @@ exports.users_fetch = (req,res,next)=>{
 		.select("_id username createdAt profile roles officeLocation")
 		.exec()
 		.then(users =>{			
-			console.log("fetch users = ",users);
+			
 			var userdataarr = []
 			users.map((data, index)=>{
 				userdataarr.push({
@@ -515,7 +496,7 @@ exports.users_fetch = (req,res,next)=>{
 					officeLocation 	: data.officeLocation,
 				});	
 			})
-			console.log('userdataarr ',userdataarr);
+			
 			res.status(200).json(userdataarr.slice(req.body.startRange, req.body.limitRange));
 		})
 		.catch(err =>{
@@ -577,9 +558,7 @@ exports.deleteall_user = function (req, res,next) {
 
 
 exports.update_user = (req,res,next)=>{
-	// var roleData = req.body.role;
-	console.log("req.params.userID",req.params.userID);
-	console.log("req.BODY+++=======+>",req.body);
+	
 
     User.updateOne(
             { _id:req.params.userID},  
@@ -595,9 +574,9 @@ exports.update_user = (req,res,next)=>{
         )
         .exec()
         .then(data=>{
-            console.log('data ',data);
+           
             if(data.nModified == 1){
-				console.log('data =========>>>',data);
+				
                 res.status(200).json("User Updated");
             }else{
                 res.status(401).json("User Not Found");
@@ -630,7 +609,7 @@ exports.user_change_role = (req,res,next)=>{
 						res.status(200).json("Role Assigned");
 					})
 					.catch(err =>{
-						console.log('user error ',err);
+						
 						res.status(500).json({
 							error: err
 						});
@@ -649,19 +628,19 @@ exports.user_change_role = (req,res,next)=>{
 						res.status(200).json("Role Removed");
 					})
 					.catch(err =>{
-						console.log('user error ',err);
+						
 						res.status(500).json({
 							error: err
 						});
 					});
 				}
-				console.log('user ',user);
+				
 			}else{
 				res.status(404).json("User Not Found");
 			}
 		})
 		.catch(err=>{
-			console.log('update user error ',err);
+			
 			res.status(500).json({
 				error:err
 			});
@@ -806,7 +785,7 @@ exports.user_search = (req,res,next)=>{
 	)
 	.exec()
 	.then( data =>{
-		console.log('data ',data);
+		
 		if(data.length > 0){
 			return res.status(200).json({
 				"message" : 'Search-Successfull',
@@ -839,7 +818,7 @@ exports.search_user_office = (req,res,next)=>{
 	)
 	.exec()
 	.then( data =>{
-		console.log('data ',data);
+		
 		if(data.length > 0){
 			return res.status(200).json({
 				"message" : 'Search-Successfull',
@@ -900,14 +879,11 @@ exports.add_delivery_address = (req, res, next)=>{
 	})	
 };
 
-exports.confirm_otps = (req, res, next)=>{
-	console.log('req', req.body);
+exports.confirm_otps = (req, res, next)=>{	
 	User.findOne({"_id": req.body.user_ID})
 	.exec()
-	.then(data=>{
-		// console.log('data', data);
-		if(req.body.mobOTP === data.profile.sentMobOtp && req.body.emailOTP === data.profile.sentEmailOtp){
-			console.log('sucess');
+	.then(data=>{		
+		if(req.body.mobOTP === data.profile.sentMobOtp && req.body.emailOTP === data.profile.sentEmailOtp){			
 			User.updateOne(
 				{"_id": req.body.user_ID},
 				{
