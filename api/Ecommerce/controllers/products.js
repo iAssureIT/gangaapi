@@ -855,7 +855,7 @@ exports.filterMainProducts = (req,res,next)=>{
         var selector = {
             "productPrice"     : { $gt : minproductPrice, $lt : maxproductPrice }
         }
-    }
+    } 
     
     Products.find(selector)
     .exec()
