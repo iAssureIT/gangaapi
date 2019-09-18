@@ -13,6 +13,25 @@ function getRandomInt(min, max) {
 }
 
 exports.user_signupadmin = (req,res,next)=>{
+	var otpMailSubject, otpMailText, otpSmsText;
+	Masternotifications.findOne({"templateType":"Email","templateName":"Sign Up"})
+                      .exec()
+                      .then((maildata)=>{
+                        otpMailSubject = maildata.subject;
+                        otpMailText = maildata.content
+                      })
+                      .catch()
+
+    Masternotifications.findOne({"templateType":"SMS","templateName":"Sign Up"})
+                      .exec()
+                      .then((smsdata)=>{ 
+                          var textcontent = smsdata.content;                              
+                          var regex = new RegExp(/(<([^>]+)>)/ig);
+                          var textcontent = smsdata.content.replace(regex, '');
+                          textcontent   = textcontent.replace(/\&nbsp;/g, '');                                                
+                          otpSmsText = textcontent
+                      })
+                      .catch()
 	User.find()
 		.exec()
 		.then(user =>{
@@ -63,9 +82,9 @@ exports.user_signupadmin = (req,res,next)=>{
                                  "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                                  "body"      :   {
                                                      "email"     : newUser.profile.emailId,                                                    
-                                                     "subject"   : 'Verify your Account',
-                                                     "text"      : "WOW Its done",                                                    
-                                                     "mail"      : 'Hello'+newUser.profile.fullName+','+'\n'+"\n <br><br>Your account verification code is "+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                     "subject"   : otpMailSubject,
+                                                     "text"      : otpMailSubject,                                                    
+                                                     "mail"      : 'Hello'+newUser.profile.fullName+','+'\n'+"\n <br><br>"+otpMailText+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                                  },
                                  "json"      : true,
                                  "headers"   : {
@@ -89,7 +108,7 @@ exports.user_signupadmin = (req,res,next)=>{
                                
                                 const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
                                 const sourceMobile = "+919923393733";
-                                var text = "Dear User, "+'\n'+"To verify your account on GangaExpress, Enter this verification code : \n"+OTP;
+                                var text = "Dear User, "+'\n'+"" +otpSmsText+" : \n"+OTP;
                                 
                                 client.messages.create(
                                  src=sourceMobile,
@@ -235,6 +254,25 @@ exports.ba_signupadmin = (req,res,next)=>{
 		})
 };
 exports.resendotp = (req,res,next)=>{	
+	var otpMailSubject, otpMailText, otpSmsText;
+	Masternotifications.findOne({"templateType":"Email","templateName":"Sign Up"})
+                      .exec()
+                      .then((maildata)=>{
+                        otpMailSubject = maildata.subject;
+                        otpMailText = maildata.content
+                      })
+                      .catch()
+
+    Masternotifications.findOne({"templateType":"SMS","templateName":"Sign Up"})
+                      .exec()
+                      .then((smsdata)=>{ 
+                          var textcontent = smsdata.content;                              
+                          var regex = new RegExp(/(<([^>]+)>)/ig);
+                          var textcontent = smsdata.content.replace(regex, '');
+                          textcontent   = textcontent.replace(/\&nbsp;/g, '');                                                
+                          otpSmsText = textcontent
+                      })
+                      .catch()
 	User.findOne({_id:req.params.userID})
 		.exec()
 		.then(user =>{
@@ -248,9 +286,9 @@ exports.resendotp = (req,res,next)=>{
                                  "url"       : "http://localhost:3060/send-email",
                                  "body"      :   {
                                                      "email"     : user.profile.emailId,
-                                                     "subject"   : 'Verify your Account',
-                                                     "text"      : "WOW Its done",
-                                                     "mail"      : 'Hello '+user.profile.fullName+','+'\n'+"\n <br><br>Your account verification code is "+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                     "subject"   : otpMailSubject,
+                                                     "text"      : otpMailSubject,
+                                                     "mail"      : 'Hello '+user.profile.fullName+','+'\n'+"\n <br><br>"+otpMailText+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                                  },
                                  "json"      : true,
                                  "headers"   : {
@@ -275,7 +313,7 @@ exports.resendotp = (req,res,next)=>{
                                 // console.log('Plivo Client = ');
                                 const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
                                 const sourceMobile = "+919923393733";
-                                var text = "Dear User, "+'\n'+"To verify your account on GangaExpress, Enter this verification code : \n"+OTP;
+                                var text = "Dear User, "+'\n'+""+otpSmsText+": \n"+OTP;
                                 
                                 client.messages.create(
                                  src=sourceMobile,

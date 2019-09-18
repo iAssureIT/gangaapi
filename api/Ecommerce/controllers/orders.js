@@ -12,7 +12,7 @@ const gloabalVariable 	= require('./../../../nodemon');
 // var localUrl =  "http://localhost:3060";
 var localUrl =  "http://localhost:"+gloabalVariable.PORT;
 
-exports.insert_order = (req,res,next)=>{
+exports.insert_order = (req,res,next)=>{ 
     var mailSubject, mailText, smsText;
     Masternotifications.findOne({"templateType":"Email","templateName":"Order Placed Successfully"})
                       .exec()
@@ -78,7 +78,7 @@ exports.insert_order = (req,res,next)=>{
                 .exec()
                 .then(data=>{
                     // console.log('data===mailSubject=', mailSubject,mailText);
-
+                    console.log('data====', data);
                     request({
                      "method"    : "POST",
                      "url"       : localUrl+"send-email",
@@ -101,6 +101,7 @@ exports.insert_order = (req,res,next)=>{
                         res.status(200).json({message:"Mail Sent successfully"});
                     })
                     .catch((err) =>{
+
                         res.status(500).json({
                             error: err
                         });
@@ -108,8 +109,10 @@ exports.insert_order = (req,res,next)=>{
                    
                     const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
                     const sourceMobile = "+919923393733";
-                    var text = "Dear User, "+'\n'+"Your Order has been placed successfully and will be dispached soon.\n";
-                   
+                    //var text = "Dear User, "+'\n'+"Your Order has been placed successfully and will be dispached soon.\n";
+                    
+
+                    var text = smsText;
                     client.messages.create(
                      src=sourceMobile,
                      dst= '+91'+data.profile.mobileNumber,
@@ -512,9 +515,9 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                                        "url"       : localUrl+"send-email",
                                        "body"      :   {
                                                            "email"     : customerData.profile.emailId,
-                                                           "subject"   : 'Order dilivered Successfully',
-                                                           "text"      : "WOW Its done",
-                                                           "mail"      : 'Hello '+customerData.profile.fullName+','+'\n'+"\n <br><br>You have a order to be deliverd."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                           "subject"   : DeliveryMailSubject,
+                                                           "text"      : DeliveryMailSubject,
+                                                           "mail"      : 'Hello '+customerData.profile.fullName+','+'\n'+"\n <br><br>"+DeliveryMailText+"<b></b>"+'\n'+'\n'+'<br><br>\nRegards,<br>Team GangaExpress',
                                                        },
                                        "json"      : true,
                                        "headers"   : {
@@ -533,7 +536,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                                      
                                       const client4 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
                                       const sourceMobile4 = "+919923393733";
-                                      var text4 = "Dear customer, "+'\n'+"Your order delivered successfully.\n";
+                                      var text4 = DeliverySmsText;
                                      
                                       client4.messages.create(
                                        src=sourceMobile4,
@@ -634,9 +637,9 @@ exports.dispatchOrder = (req,res,next)=>{
                              "url"       : localUrl+"send-email",
                              "body"      :   {
                                                  "email"     : ba.emailID,
-                                                 "subject"   : 'Order dispached Successfully',
-                                                 "text"      : "WOW Its done",
-                                                 "mail"      : 'Hello '+ba.companyName+','+'\n'+"\n <br><br>You have a order to be deliverd."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                 "subject"   : dispatchMailSubject,
+                                                 "text"      : dispatchMailSubject,
+                                                 "mail"      : 'Hello '+ba.companyName+','+'\n'+"\n <br><br>"+dispatchMailText+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                              },
                              "json"      : true,
                              "headers"   : {
@@ -699,9 +702,9 @@ exports.dispatchOrder = (req,res,next)=>{
                                "url"       : localUrl+"send-email",
                                "body"      :   {
                                                    "email"     : customerData.profile.emailId,
-                                                   "subject"   : 'Order dispached Successfully',
-                                                   "text"      : "WOW Its done",
-                                                   "mail"      : 'Hello '+customerData.profile.fullName+','+'\n'+"\n <br><br>You have a order to be deliverd."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                   "subject"   : dispatchMailSubject,
+                                                   "text"      : dispatchMailSubject,
+                                                   "mail"      : 'Hello '+customerData.profile.fullName+','+'\n'+"\n <br><br>"+dispatchMailText+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                                },
                                "json"      : true,
                                "headers"   : {
@@ -720,8 +723,7 @@ exports.dispatchOrder = (req,res,next)=>{
                              
                               const client4 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
                               const sourceMobile4 = "+919923393733";
-                              var text4 = "Dear customer, "+'\n'+"You have a order to be delivered.\n";
-                             
+                              var text4 = dispatchSmsText;
                               client4.messages.create(
                                src=sourceMobile4,
                                dst= '+91'+customerData.profile.mobileNumber,
