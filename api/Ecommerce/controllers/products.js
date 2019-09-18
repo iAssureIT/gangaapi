@@ -745,7 +745,6 @@ exports.search_product = (req,res,next)=>{
         )
     .exec()
     .then(data=>{
-
         res.status(200).json(data);
     })
     .catch(err =>{
@@ -788,7 +787,6 @@ exports.list_brand = (req,res,next)=>{
     Products.distinct("brand", {"section":"Main-Site"})
     .exec()
     .then(data=>{
-
         res.status(200).json(data);
     })
     .catch(err =>{
@@ -871,6 +869,39 @@ exports.filterMainProducts = (req,res,next)=>{
     });
 };
 
+exports.get_menu_list = (req,res,next)=>{
+   
+    Category.aggregate([
+    { $lookup:
+       {
+         from: 'products',
+         localField: '_id',
+         foreignField: 'category_ID',
+         as: 'orderdetails'
+       }
+     },
+     {
+        $match: {
+          "orderdetails.featured": true
+        }
+     },
+     {
+        $sort: {
+          "orderdetails.createdAt": -1
+        }
+     },
+      { $limit : 1 }
+    ])
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 
 exports.get_minmaxprice = (req,res,next)=>{
     var priceArray = {}
@@ -899,3 +930,6 @@ exports.get_minmaxprice = (req,res,next)=>{
         });
     });
 };
+
+
+

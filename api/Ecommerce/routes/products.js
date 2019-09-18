@@ -57,6 +57,9 @@ router.get('/get/minmaxprice', productController.get_minmaxprice);
 
 router.get('/get/listGroceryBrand', productController.list_grocerybrand);
 
+router.get('/get/getmegamenulist', productController.get_menu_list);
+
 router.post('/post/list/filterMainProducts', productController.filterMainProducts);
+
 
 module.exports = router;
