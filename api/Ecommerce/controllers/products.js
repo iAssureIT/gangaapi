@@ -889,8 +889,7 @@ exports.get_menu_list = (req,res,next)=>{
         $sort: {
           "orderdetails.createdAt": -1
         }
-     },
-      { $limit : 1 }
+     }
     ])
     .exec()
     .then(data=>{
