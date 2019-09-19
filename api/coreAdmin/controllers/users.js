@@ -84,7 +84,7 @@ exports.user_signupadmin = (req,res,next)=>{
                                                      "email"     : newUser.profile.emailId,                                                    
                                                      "subject"   : otpMailSubject,
                                                      "text"      : otpMailSubject,                                                    
-                                                     "mail"      : 'Hello'+newUser.profile.fullName+','+'\n'+"\n <br><br>"+otpMailText+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                     "mail"      : 'Hello '+newUser.profile.fullName+','+'\n'+"\n <br><br>"+otpMailText+"<b>"+MailOTP+"</b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                                  },
                                  "json"      : true,
                                  "headers"   : {
@@ -108,7 +108,7 @@ exports.user_signupadmin = (req,res,next)=>{
                                
                                 const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
                                 const sourceMobile = "+919923393733";
-                                var text = "Dear User, "+'\n'+"" +otpSmsText+" : \n"+OTP;
+                                var text = "Dear User, "+'\n'+"" +otpSmsText+" : "+OTP;
                                 
                                 client.messages.create(
                                  src=sourceMobile,
@@ -313,7 +313,7 @@ exports.resendotp = (req,res,next)=>{
                                 // console.log('Plivo Client = ');
                                 const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
                                 const sourceMobile = "+919923393733";
-                                var text = "Dear User, "+'\n'+""+otpSmsText+": \n"+OTP;
+                                var text = "Dear User, "+'\n'+""+otpSmsText+": "+OTP;
                                 
                                 client.messages.create(
                                  src=sourceMobile,

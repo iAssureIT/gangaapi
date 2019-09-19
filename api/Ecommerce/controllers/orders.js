@@ -8,8 +8,8 @@ const BusinessAssociate = require('../models/businessAssociate');
 
 const plivo         = require('plivo');
 var request         = require('request-promise');  
-const gloabalVariable 	= require('./../../../nodemon'); 
-// var localUrl =  "http://localhost:3060";
+const gloabalVariable 	= require('./../../../nodemon');
+
 var localUrl =  "http://localhost:"+gloabalVariable.PORT;
 
 exports.insert_order = (req,res,next)=>{ 
@@ -81,13 +81,13 @@ exports.insert_order = (req,res,next)=>{
                     console.log('data====', data);
                     request({
                      "method"    : "POST",
-                     "url"       : localUrl+"send-email",
+                     "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                      "body"      :   {
                                          "email"     : data.profile.emailId,
                                          "subject"   : mailSubject,
                                          // "subject"   : 'Order Placed Successfully',
                                          // "text"      : "WOW Its done",
-                                         "text"      : mailText,
+                                         "text"      : mailSubject,
                                          "mail"      : 'Hello '+data.profile.fullName+','+'\n'+mailText,
                                          // "mail"      : 'Hello '+data.profile.fullName+','+'\n'+"\n <br><br>Your Order has been placed successfully and will be dispached soon."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                      },
@@ -132,7 +132,7 @@ exports.insert_order = (req,res,next)=>{
                     }); 
                    request({
                      "method"    : "POST",
-                     "url"       : localUrl+"send-email",
+                     "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                      "body"      :  {
                                          "email"     : "amitrshinde156@gmail.com",
                                          "subject"   : 'Order Placed Successfully',
@@ -458,7 +458,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
 
                             request({
                              "method"    : "POST",
-                             "url"       : localUrl+"send-email",
+                             "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                              "body"      :  {
                                                  "email"     : "amitrshinde156@gmail.com",
                                                  "subject"   : 'Order delivered Successfully',
@@ -512,7 +512,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                                       if(customerData){   
                                        request({
                                        "method"    : "POST",
-                                       "url"       : localUrl+"send-email",
+                                       "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                                        "body"      :   {
                                                            "email"     : customerData.profile.emailId,
                                                            "subject"   : DeliveryMailSubject,
@@ -634,7 +634,7 @@ exports.dispatchOrder = (req,res,next)=>{
                             if(ba){   
                              request({
                              "method"    : "POST",
-                             "url"       : localUrl+"send-email",
+                             "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                              "body"      :   {
                                                  "email"     : ba.emailID,
                                                  "subject"   : dispatchMailSubject,
@@ -699,7 +699,7 @@ exports.dispatchOrder = (req,res,next)=>{
                               if(customerData){   
                                request({
                                "method"    : "POST",
-                               "url"       : localUrl+"send-email",
+                               "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                                "body"      :   {
                                                    "email"     : customerData.profile.emailId,
                                                    "subject"   : dispatchMailSubject,
