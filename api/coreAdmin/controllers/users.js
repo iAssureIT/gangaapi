@@ -658,9 +658,9 @@ exports.update_user_details = (req,res,next)=>{
 											.exec()
 											.then(data=>{
 												if(data.nModified == 1){
-													res.status(200).json("User details updated successfully.");
+													res.status(200).json({message:"User details updated successfully."});
 												}else{
-													res.status(401).json("User Not Found");
+													res.status(401).json({message:"User Not Found"});
 												}
 											})
 											.catch(err =>{
@@ -673,7 +673,7 @@ exports.update_user_details = (req,res,next)=>{
 									})
 								}else{
 									res.status(401).json({
-										message: 'Bcrypt Auth failed'
+										message: 'Bcrypt Auth failed 1'
 									});  
 								}
 								
@@ -706,9 +706,9 @@ exports.update_user_details = (req,res,next)=>{
 											.exec()
 											.then(data=>{
 												if(data.nModified == 1){
-													res.status(200).json("User Email Updated");
+													res.status(200).json({message:"User Email Updated"});
 												}else{
-													res.status(401).json("User Not Found");
+													res.status(401).json({message:"User Not Found"});
 												}
 											})
 											.catch(err =>{
@@ -758,9 +758,9 @@ exports.update_user_details = (req,res,next)=>{
 											.exec()
 											.then(data=>{
 												if(data.nModified == 1){
-													res.status(200).json("User Password Updated");
+													res.status(200).json({message:"User Password Updated"});
 												}else{
-													res.status(401).json("User Not Found");
+													res.status(401).json({message:"User Not Found"});
 												}
 											})
 											.catch(err =>{
@@ -796,9 +796,9 @@ exports.update_user_details = (req,res,next)=>{
 						.exec()
 						.then(data=>{
 							if(data.nModified == 1){
-								res.status(200).json("User Name Updated");
+								res.status(200).json({message:"User Name Updated"});
 							}else{
-								res.status(401).json("User Not Found");
+								res.status(401).json({message:"User Not Found"});
 							}
 						})
 						.catch(err =>{
@@ -837,7 +837,7 @@ exports.user_change_role = (req,res,next)=>{
 					)
 					.exec()
 					.then(data=>{
-						res.status(200).json("Role Assigned");
+						res.status(200).json({message:"Role Assigned"});
 					})
 					.catch(err =>{
 						
@@ -856,7 +856,7 @@ exports.user_change_role = (req,res,next)=>{
 					)
 					.exec()
 					.then(data=>{
-						res.status(200).json("Role Removed");
+						res.status(200).json({message:"Role Removed"});
 					})
 					.catch(err =>{
 						
@@ -867,7 +867,7 @@ exports.user_change_role = (req,res,next)=>{
 				}
 				
 			}else{
-				res.status(404).json("User Not Found");
+				res.status(404).json({message:"User Not Found"});
 			}
 		})
 		.catch(err=>{
