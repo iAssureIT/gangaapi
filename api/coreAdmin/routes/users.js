@@ -22,6 +22,7 @@ router.patch('/useraddress/:userID',UserController.add_user_address);
 
 router.patch('/:userID',UserController.update_user); 
 
+router.patch('/userdetails/:userID',UserController.update_user_details); 
 
 router.patch('/patch/address',UserController.add_delivery_address);  
 

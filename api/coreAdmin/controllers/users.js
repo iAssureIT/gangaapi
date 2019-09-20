@@ -191,8 +191,6 @@ exports.add_user_address = (req,res,next)=>{
             });
         });
 };
-
-
 exports.ba_signupadmin = (req,res,next)=>{
 	User.find()
 		.exec()
@@ -401,14 +399,12 @@ exports.update_user_resetpassword = (req,res,next)=>{
 	});
 };
 exports.user_login = (req,res,next)=>{
-   
     User.findOne({username:req.body.email})
         .exec()
         .then(user => {
             if(user){
                 var pwd = user.services.password.bcrypt;
                 if(pwd){
-					
                     bcrypt.compare(req.body.password,pwd,(err,result)=>{
                     	
                         if(err){
@@ -427,7 +423,7 @@ exports.user_login = (req,res,next)=>{
                             );
                            
                             res.header("Access-Control-Allow-Origin","*");
-                             res.status(200).json({
+                            res.status(200).json({
                                 message             : 'Auth successful',
                                 token               : token,
                                 user_ID             : user._id,
@@ -596,38 +592,235 @@ exports.deleteall_user = function (req, res,next) {
 
 
 exports.update_user = (req,res,next)=>{
-	
-
     User.updateOne(
-            { _id:req.params.userID},  
-            {
-                $set:{
-					"profile.firstName"     : req.body.firstName,
-					"profile.lastName"      : req.body.lastName,
-					"profile.fullName"      : req.body.firstName+' '+req.body.lastName,
-					"profile.emailId"       : req.body.emailId,
-					"profile.mobileNumber"  : req.body.mobileNumber,
-                }
-            }
-        )
-        .exec()
-        .then(data=>{
-           
-            if(data.nModified == 1){
-				
-                res.status(200).json("User Updated");
-            }else{
-                res.status(401).json("User Not Found");
-            }
-        })
-        .catch(err =>{
-            console.log(err);
-            res.status(500).json({
-                error: err
-            });
-        });
+		{ _id:req.params.userID},  
+		{
+			$set:{
+				"profile.firstName"     : req.body.firstName,
+				"profile.lastName"      : req.body.lastName,
+				"profile.fullName"      : req.body.firstName+' '+req.body.lastName,
+				"profile.emailId"       : req.body.emailId,
+				"profile.mobileNumber"  : req.body.mobileNumber,
+			}
+		}
+	)
+	.exec()
+	.then(data=>{
+		
+		if(data.nModified == 1){
+			
+			res.status(200).json("User Updated");
+		}else{
+			res.status(401).json("User Not Found");
+		}
+	})
+	.catch(err =>{
+		console.log(err);
+		res.status(500).json({
+			error: err
+		});
+	});
 };
-
+exports.update_user_details = (req,res,next)=>{
+	var field = req.body.field;
+	User.findOne({ _id:req.params.userID})
+	.exec()
+	.then(user => {
+		if(user){
+			var pwd = user.services.password.bcrypt;
+			switch(field){
+				case 'all':
+						if(pwd){
+							bcrypt.compare(req.body.oldPassword,pwd,(err,result)=>{
+								if(result){
+									bcrypt.hash(req.body.newPassword,10,(err,hash)=>{
+										if(err){
+											return res.status(500).json({
+												error:err
+											});
+										}else{
+											User.updateOne(
+												{ _id:req.params.userID},  
+												{
+													$set:{
+														"services"		: {
+															"password"	: {
+																"bcrypt":hash
+															},
+														},
+														"profile.firstName"     : req.body.firstName,
+														"profile.lastName"      : req.body.lastName,
+														"profile.fullName"      : req.body.firstName+' '+req.body.lastName,
+														"profile.emailId"       : req.body.emailId,
+													}
+												}
+											)
+											.exec()
+											.then(data=>{
+												if(data.nModified == 1){
+													res.status(200).json("User details updated successfully.");
+												}else{
+													res.status(401).json("User Not Found");
+												}
+											})
+											.catch(err =>{
+												console.log(err);
+												res.status(500).json({
+													error: err
+												});
+											});
+										}
+									})
+								}else{
+									res.status(401).json({
+										message: 'Bcrypt Auth failed'
+									});  
+								}
+								
+							})
+						}else{
+							res.status(401).json({message:"Password not found"}); 
+						}
+						break;       
+				case 'email':
+						if(pwd){
+							bcrypt.compare(req.body.oldPassword,pwd,(err,result)=>{
+								if(result){
+									bcrypt.hash(req.body.newPassword,10,(err,hash)=>{
+										if(err){
+											return res.status(500).json({
+												error:err
+											});
+										}else{
+											User.updateOne(
+												{ _id:req.params.userID},  
+												{
+													$set:{
+														"profile.firstName"     : req.body.firstName,
+														"profile.lastName"      : req.body.lastName,
+														"profile.fullName"      : req.body.firstName+' '+req.body.lastName,
+														"profile.emailId"       : req.body.emailId,
+													}
+												}
+											)
+											.exec()
+											.then(data=>{
+												if(data.nModified == 1){
+													res.status(200).json("User Email Updated");
+												}else{
+													res.status(401).json("User Not Found");
+												}
+											})
+											.catch(err =>{
+												console.log(err);
+												res.status(500).json({
+													error: err
+												});
+											});
+										}
+									})
+								}else{
+									res.status(401).json({
+										message: 'Bcrypt Auth failed'
+									});  
+								}
+								
+							})
+						}else{
+							res.status(401).json({message:"Password not found"}); 
+						}
+						break;       
+				case 'password':
+						if(pwd){
+							bcrypt.compare(req.body.oldPassword,pwd,(err,result)=>{
+								if(result){
+									bcrypt.hash(req.body.newPassword,10,(err,hash)=>{
+										if(err){
+											return res.status(500).json({
+												error:err
+											});
+										}else{
+											User.updateOne(
+												{ _id:req.params.userID},  
+												{
+													$set:{
+														"services"		: {
+															"password"	: {
+																"bcrypt":hash
+															},
+														},
+														"profile.firstName"     : req.body.firstName,
+														"profile.lastName"      : req.body.lastName,
+														"profile.fullName"      : req.body.firstName+' '+req.body.lastName,
+													}
+												}
+											)
+											.exec()
+											.then(data=>{
+												if(data.nModified == 1){
+													res.status(200).json("User Password Updated");
+												}else{
+													res.status(401).json("User Not Found");
+												}
+											})
+											.catch(err =>{
+												console.log(err);
+												res.status(500).json({
+													error: err
+												});
+											});
+										}
+									})
+								}else{
+									res.status(401).json({
+										message: 'Bcrypt Auth failed'
+									});  
+								}
+								
+							})
+						}else{
+							res.status(401).json({message:"Password not found"}); 
+						}
+						break;       
+				case 'name':
+						User.updateOne(
+							{ _id:req.params.userID},  
+							{
+								$set:{
+									"profile.firstName"     : req.body.firstName,
+									"profile.lastName"      : req.body.lastName,
+									"profile.fullName"      : req.body.firstName+' '+req.body.lastName,
+								}
+							}
+						)
+						.exec()
+						.then(data=>{
+							if(data.nModified == 1){
+								res.status(200).json("User Name Updated");
+							}else{
+								res.status(401).json("User Not Found");
+							}
+						})
+						.catch(err =>{
+							console.log(err);
+							res.status(500).json({
+								error: err
+							});
+						});
+						break;       
+			}
+			
+		}else{
+			res.status(401).json({message:"User Not found"});
+		}
+	})
+	.catch(err =>{
+		console.log(err);
+		res.status(500).json({
+			error: err
+		});
+	});
+};
 exports.user_change_role = (req,res,next)=>{
 	User.findOne({_id:req.params.userID})
 		.exec()
@@ -684,10 +877,6 @@ exports.user_change_role = (req,res,next)=>{
 			});
 		});
 };
-
-//=============================
-
-
 
 
 exports.account_status= (req,res,next)=>{
