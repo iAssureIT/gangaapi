@@ -784,7 +784,7 @@ exports.searchINCategory = (req,res,next)=>{
 
 exports.list_brand = (req,res,next)=>{
     
-    Products.distinct("brand", {"section":"Main-Site"})
+    Products.distinct("brand", {"section":"Main-Site", "category_ID": req.params.categoryID})
     .exec()
     .then(data=>{
         res.status(200).json(data);

@@ -51,7 +51,7 @@ router.get('/get/search/:searchstr', productController.search_product);
 
 router.post('/post/searchINCategory', productController.searchINCategory);
 
-router.get('/get/listBrand', productController.list_brand);
+router.get('/get/listBrand/:categoryID', productController.list_brand);
 
 router.get('/get/minmaxprice', productController.get_minmaxprice);
 
