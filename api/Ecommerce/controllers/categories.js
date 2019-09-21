@@ -102,7 +102,7 @@ exports.list_category = (req,res,next)=>{
 exports.list_category_with_limits = (req,res,next)=>{
     Category.find()
     .skip(parseInt(req.body.startLimit))
-    .limit(parseInt(req.body.endLimit))
+    .limit(parseInt(req.body.limitRange))
     .exec()
     .then(data=>{
         console.log('data', data); 45
