@@ -101,6 +101,8 @@ exports.list_category = (req,res,next)=>{
 };
 exports.list_category_with_limits = (req,res,next)=>{
     Category.find()
+    .skip(parseInt(req.body.startLimit))
+    .limit(parseInt(req.body.endLimit))
     .exec()
     .then(data=>{
         console.log('data', data); 45
@@ -115,7 +117,7 @@ exports.list_category_with_limits = (req,res,next)=>{
                 "categoryIcon"          : x.categoryIcon,
             }
         })
-        res.status(200).json(allData.slice(req.body.startRange, req.body.limitRange));
+        res.status(200).json(allData);
     })
     .catch(err =>{
         console.log(err);

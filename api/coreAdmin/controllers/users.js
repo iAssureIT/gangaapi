@@ -706,7 +706,7 @@ exports.update_user_details = (req,res,next)=>{
 											.exec()
 											.then(data=>{
 												if(data.nModified == 1){
-													res.status(200).json({message:"User Email Updated"});
+													res.status(200).json({message:"User details updated successfully."});
 												}else{
 													res.status(401).json({message:"User Not Found"});
 												}
@@ -758,7 +758,7 @@ exports.update_user_details = (req,res,next)=>{
 											.exec()
 											.then(data=>{
 												if(data.nModified == 1){
-													res.status(200).json({message:"User Password Updated"});
+													res.status(200).json({message:"User details updated successfully."});
 												}else{
 													res.status(401).json({message:"User Not Found"});
 												}
@@ -796,7 +796,7 @@ exports.update_user_details = (req,res,next)=>{
 						.exec()
 						.then(data=>{
 							if(data.nModified == 1){
-								res.status(200).json({message:"User Name Updated"});
+								res.status(200).json({message:"User details updated successfully."});
 							}else{
 								res.status(401).json({message:"User Not Found"});
 							}
