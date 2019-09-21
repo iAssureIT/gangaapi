@@ -100,12 +100,13 @@ exports.list_category = (req,res,next)=>{
         });
 };
 exports.list_category_with_limits = (req,res,next)=>{
+    // console.log(req.body.startRange, req.body.limitRange);
     Category.find()
-    .skip(parseInt(req.body.startLimit))
+    .skip(parseInt(req.body.startRange))
     .limit(parseInt(req.body.limitRange))
     .exec()
     .then(data=>{
-        console.log('data', data); 45
+        console.log('data', data);
         var allData = data.map((x, i)=>{
             return {
                 "_id"                   : x._id,
