@@ -160,7 +160,7 @@ exports.add_user_address = (req,res,next)=>{
             {
                 $set:{
 					"deliveryAddress.$.name"            : req.body.name,
-					"deliveryAddress.$.email"           : req.body.emailId,
+					"deliveryAddress.$.email"           : req.body.email,
 					"deliveryAddress.$.addressLine1"    : req.body.addressLine1,
 					"deliveryAddress.$.addressLine2"    : req.body.addressLine2,  
 					"deliveryAddress.$.pincode"         : req.body.pincode,
