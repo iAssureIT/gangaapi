@@ -475,7 +475,7 @@ exports.add_address_to_cart = (req, res, next)=>{
                 Carts.updateOne({ "_id" : cartData._id },
                 { $set : 
                     {
-                        deliveryAdd : {
+                        deliveryAddress : {
                             "name"            : req.body.name,
                             "email"           : req.body.email,
                             "addressLine1"    : req.body.addressLine1,

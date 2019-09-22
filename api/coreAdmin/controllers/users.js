@@ -165,17 +165,17 @@ exports.add_user_address = (req,res,next)=>{
 					"profile.emailId"       				: req.body.emailId,
 					"profile.mobileNumber"  				: req.body.mobileNumber,
 					"profile.profileImage"  				: req.body.profileImage,
-					"profile.deliveryAdd.0.name"            : req.body.firstName+' '+req.body.lastName,
-					"profile.deliveryAdd.0.email"           : req.body.emailId,
-					"profile.deliveryAdd.0.addressLine1"    : req.body.addressLine1,
-					"profile.deliveryAdd.0.addressLine2"    : req.body.addressLine2,  
-					"profile.deliveryAdd.0.pincode"         : req.body.pincode,
-					"profile.deliveryAdd.0.block"           : req.body.block,
-					"profile.deliveryAdd.0.country"         : req.body.country,
-					"profile.deliveryAdd.0.city"            : req.body.city,
-					"profile.deliveryAdd.0.state"           : req.body.state,
-					"profile.deliveryAdd.0.mobileNumber"    : req.body.mobileNumber,
-					"profile.deliveryAdd.0.addType"         : req.body.addType, 
+					"deliveryAddress.0.name"            : req.body.firstName+' '+req.body.lastName,
+					"deliveryAddress.0.email"           : req.body.emailId,
+					"deliveryAddress.0.addressLine1"    : req.body.addressLine1,
+					"deliveryAddress.0.addressLine2"    : req.body.addressLine2,  
+					"deliveryAddress.0.pincode"         : req.body.pincode,
+					"deliveryAddress.0.block"           : req.body.block,
+					"deliveryAddress.0.country"         : req.body.country,
+					"deliveryAddress.0.city"            : req.body.city,
+					"deliveryAddress.0.state"           : req.body.state,
+					"deliveryAddress.0.mobileNumber"    : req.body.mobileNumber,
+					"deliveryAddress.0.addType"         : req.body.addType, 
 				}
             }
         )
@@ -1071,7 +1071,7 @@ exports.add_delivery_address = (req, res, next)=>{
 		{'_id': req.body.user_ID},
 		{
 		  $push: {
-				"profile.deliveryAdd" : {
+				"deliveryAddress" : {
 					"name"            : req.body.name,
 					"email"           : req.body.email,
 					"addressLine1"    : req.body.addressLine1,

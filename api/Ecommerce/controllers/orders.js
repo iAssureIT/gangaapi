@@ -193,16 +193,16 @@ exports.insert_order = (req,res,next)=>{
                       "productLength"     : productLength,
                       "totalQuantity"     : totalQuantity,
                       'deliveryAddress'   : {
-                                              "name"            : payModeObj.deliveryAdd.name,
-                                              "email"           : payModeObj.deliveryAdd.email,
-                                              "addressLine1"    : payModeObj.deliveryAdd.addressLine1,
-                                              "addressLine2"    : payModeObj.deliveryAdd.addressLine2,
-                                              "pincode"         : payModeObj.deliveryAdd.pincode,
-                                              "city"            : payModeObj.deliveryAdd.city,
-                                              "state"           : payModeObj.deliveryAdd.state,
-                                              "mobileNumber"    : payModeObj.deliveryAdd.mobileNumber,
-                                              "country"         : payModeObj.deliveryAdd.country,
-                                              "addType"         : payModeObj.deliveryAdd.addType
+                                              "name"            : payModeObj.deliveryAddress.name,
+                                              "email"           : payModeObj.deliveryAddress.email,
+                                              "addressLine1"    : payModeObj.deliveryAddress.addressLine1,
+                                              "addressLine2"    : payModeObj.deliveryAddress.addressLine2,
+                                              "pincode"         : payModeObj.deliveryAddress.pincode,
+                                              "city"            : payModeObj.deliveryAddress.city,
+                                              "state"           : payModeObj.deliveryAddress.state,
+                                              "mobileNumber"    : payModeObj.deliveryAddress.mobileNumber,
+                                              "country"         : payModeObj.deliveryAddress.country,
+                                              "addType"         : payModeObj.deliveryAddress.addType
                                             },
                       "deliveryStatus"   : [
                           {
