@@ -18,7 +18,7 @@ router.post('/userslist',UserController.users_fetch);
 
 router.get('/list', UserController.users_list); 
 
-router.patch('/useraddress/:userID',UserController.add_user_address); 
+router.patch('/useraddress',UserController.add_user_address); 
 
 router.patch('/:userID',UserController.update_user); 
 

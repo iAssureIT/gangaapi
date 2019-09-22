@@ -156,26 +156,20 @@ exports.add_user_address = (req,res,next)=>{
 
 
     User.updateOne(
-            { _id:req.params.userID},  
+            { "_id":req.body.userID, "deliveryAddress._id":req.body.deliveryAddressID},  
             {
                 $set:{
-					"profile.firstName"     				: req.body.firstName,
-					"profile.lastName"      				: req.body.lastName,
-					"profile.fullName"      				: req.body.firstName+' '+req.body.lastName,
-					"profile.emailId"       				: req.body.emailId,
-					"profile.mobileNumber"  				: req.body.mobileNumber,
-					"profile.profileImage"  				: req.body.profileImage,
-					"deliveryAddress.0.name"            : req.body.firstName+' '+req.body.lastName,
-					"deliveryAddress.0.email"           : req.body.emailId,
-					"deliveryAddress.0.addressLine1"    : req.body.addressLine1,
-					"deliveryAddress.0.addressLine2"    : req.body.addressLine2,  
-					"deliveryAddress.0.pincode"         : req.body.pincode,
-					"deliveryAddress.0.block"           : req.body.block,
-					"deliveryAddress.0.country"         : req.body.country,
-					"deliveryAddress.0.city"            : req.body.city,
-					"deliveryAddress.0.state"           : req.body.state,
-					"deliveryAddress.0.mobileNumber"    : req.body.mobileNumber,
-					"deliveryAddress.0.addType"         : req.body.addType, 
+					"deliveryAddress.$.name"            : req.body.name,
+					"deliveryAddress.$.email"           : req.body.emailId,
+					"deliveryAddress.$.addressLine1"    : req.body.addressLine1,
+					"deliveryAddress.$.addressLine2"    : req.body.addressLine2,  
+					"deliveryAddress.$.pincode"         : req.body.pincode,
+					"deliveryAddress.$.block"           : req.body.block,
+					"deliveryAddress.$.country"         : req.body.country,
+					"deliveryAddress.$.city"            : req.body.city,
+					"deliveryAddress.$.state"           : req.body.state,
+					"deliveryAddress.$.mobileNumber"    : req.body.mobileNumber,
+					"deliveryAddress.$.addType"         : req.body.addType, 
 				}
             }
         )
