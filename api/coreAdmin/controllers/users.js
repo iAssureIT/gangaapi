@@ -1099,6 +1099,32 @@ exports.add_delivery_address = (req, res, next)=>{
 		});
 	})	
 };
+exports.delete_delivery_address = (req, res, next)=>{
+	User.updateOne(
+		{'_id': req.body.user_ID},
+		{ 
+            $pull: { "deliveryAddress": { "_id": req.body.deliveryAddressID } } 
+		}
+	)
+	.exec()
+	.then(data=>{
+		if(data.nModified == 1){
+			res.status(200).json({
+				"message": "Address deleted successfully."
+			});
+		}else{
+			res.status(401).json({
+				"message": "User Not Found"
+			});
+		}
+	})
+	.catch(error=>{
+		console.log(error);
+		res.status(500).json({
+			error: error
+		});
+	})	
+};
 
 exports.confirm_otps = (req, res, next)=>{	
 	User.findOne({"_id": req.body.user_ID})

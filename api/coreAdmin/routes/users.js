@@ -26,6 +26,8 @@ router.patch('/userdetails/:userID',UserController.update_user_details);
 
 router.patch('/patch/address',UserController.add_delivery_address);  
 
+router.patch('/delete/address',UserController.delete_delivery_address);  
+
 router.get('/userslist', UserController.users_directlist); 
 
 router.get('/get/count', UserController.users_count); 
