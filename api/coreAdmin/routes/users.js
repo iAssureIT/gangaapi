@@ -54,7 +54,9 @@ router.put('/otpverification', UserController.confirm_otps);
 
 router.get('/resendotp/:userID', UserController.resendotp);
 
-router.patch('/:rolestatus',UserController.user_change_role);  
+router.patch('/:rolestatus',UserController.user_change_role); 
+
+router.post('/sendlink',UserController.send_link);  
 
 
 
