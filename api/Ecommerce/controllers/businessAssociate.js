@@ -38,7 +38,7 @@ exports.insert_ba = (req,res,next)=>{
 };
 
 exports.update_ba = (req,res,next)=>{
-    console.log('data',req.body);
+
     BusinessAssociate.updateOne(
             { _id:req.body.baID},  
             {
@@ -49,7 +49,8 @@ exports.update_ba = (req,res,next)=>{
                             'pan'                      : req.body.pan,
                             'website'                  : req.body.website,
                             'gstno'                    : req.body.gstno,
-                            'logo'                     : req.body.logo
+                            'logo'                     : req.body.logo,
+                            'documents'                : req.body.documents
                         }
             }
         )
