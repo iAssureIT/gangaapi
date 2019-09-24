@@ -1171,7 +1171,7 @@ exports.confirm_otps = (req, res, next) => {
 };
 
 exports.send_link = (req, res, next) => {
-	User.find({ "username": req.body.username})
+	User.findOne({ "username": req.body.username})
 		.exec()
 		.then(user => {
 			request({
