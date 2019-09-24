@@ -356,40 +356,33 @@ exports.resendotp = (req, res, next) => {
 		});
 };
 exports.update_user_resetpassword = (req, res, next) => {
-	// var roleData = req.body.role;
 	bcrypt.hash(req.body.pwd, 10, (err, hash) => {
 		User.updateOne(
 			{ _id: req.params.userID },
 			{
 				$set: {
-
 					services: {
 						password: {
 							bcrypt: hash
 						},
 					},
-
-
 				}
-
 			}
 		)
-			.exec()
-			.then(data => {
-				// console.log('data ',data);
-				if (data.nModified == 1) {
-					// console.log('data =========>>>',data);
-					res.status(200).json("Password  Updated");
-				} else {
-					res.status(401).json("Password  Not Found");
-				}
-			})
-			.catch(err => {
-				console.log(err);
-				res.status(500).json({
-					error: err
-				});
+		.exec()
+		.then(data => {
+			if (data.nModified == 1) {
+				res.status(200).json({message : "Password  Updated"});
+			} else {
+				res.status(401).json({message : "Password  Not Found"});
+			}
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({
+				error: err
 			});
+		});
 	});
 };
 exports.user_login = (req, res, next) => {
@@ -1171,9 +1164,11 @@ exports.confirm_otps = (req, res, next) => {
 };
 
 exports.send_link = (req, res, next) => {
-	User.findOne({ "username": req.body.username})
-		.exec()
-		.then(user => {
+	User.findOne({"username": req.body.username})
+	.exec()
+	.then(user => {
+		console.log('user', user);
+		if(user){
 			request({
 				"method": "POST",
 				"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
@@ -1181,7 +1176,7 @@ exports.send_link = (req, res, next) => {
 					"email": req.body.username,
 					"subject": "Reset Password Link",
 					"text": "Reset Password Link text",
-					"mail": 'Hello ' + user.profile.fullName + ',' + '\n' + "\n <br><br> ganga.iassureit.com/resetpassword/" + user.profile._id + "<b> </b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
+					"mail": 'Hello ' + user.profile.fullName + ',' + '\n' + "\n <br><br> ganga.iassureit.com/resetpassword/" + user._id + "<b> </b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
 				},
 				"json": true,
 				"headers": {
@@ -1197,13 +1192,14 @@ exports.send_link = (req, res, next) => {
 					error: err
 				});
 			});
-
-		})
-		.catch(err => {
-			console.log(err);
-			res.status(500).json({
-				error: err
-			});
+		}else{
+			res.status(200).json({ message: "User Not Found" });
+		}
+	})
+	.catch(err => {
+		console.log(err);
+		res.status(500).json({
+			error: err
 		});
-
+	});
 };
