@@ -1,0 +1,31 @@
+const mongoose	= require("mongoose");
+var request         = require('request-promise');  
+const gloabalVariable 	= require('./../../../nodemon');
+
+exports.query_mail = (req,res,next)=>{
+	console.log(req.body);
+	request({
+	     "method"    : "POST",
+	     "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
+	     "body"      :  {
+	                         "email"     : "amit.shinde@iassureit.com",
+	                         "subject"   : "Customer Query",
+	                         "text"      : "Customer Query",
+	                         "mail"      : 'Hello admin, query details are given below: ' +'\n'+ 'Customer Name: '+req.body.customerName +'\n'+ 'Customer MobileNo: '+req.body.customerMobile +'\n'+'Query: '+ req.body.query ,
+	                    },
+	     "json"      : true,
+	     "headers"   : {
+	                     "User-Agent": "Test App"
+	                 }
+	    })
+	    .then((sentemail)=>{
+	        res.header("Access-Control-Allow-Origin","*");
+	        res.status(200).json({message:"Your Query Sent successfully"});
+	    })
+	    .catch((err) =>{
+
+	        res.status(500).json({
+	            error: err
+	        });
+	    });
+};

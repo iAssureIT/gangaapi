@@ -53,6 +53,7 @@
 	const wishlistRoutes			= require("./api/Ecommerce/routes/wishlist"); 
 	const projectSettingsurl 		= require("./api/coreAdmin/routes/projectSettings");
 	const BARoutes					= require("./api/Ecommerce/routes/businessAssociate"); 
+	const customerQueryRoutes		= require("./api/Ecommerce/routes/customerQuery"); 
 
 	app.use("/api/users",usersRoutes);
 	app.use("/api/roles",rolesRoutes);
@@ -70,7 +71,7 @@
 	app.use("/api/vendorLocationType", vendorLocationTypeRoutes);
 	app.use("/api/carts", cartsRoutes);
 	app.use("/api/businessassociates", BARoutes);
-
+	app.use("/api/customerQuery", customerQueryRoutes);
 
 
 
