@@ -9,6 +9,7 @@ const baSchema = mongoose.Schema({
     website                   : String,
     gstno                     : String,
     logo                      : String,
+    documents                 : Array,  
     locationDetails           : [
                                 {
                                     addressLine1        : String,

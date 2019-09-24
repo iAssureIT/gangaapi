@@ -15,9 +15,10 @@ exports.insert_ba = (req,res,next)=>{
         website                   : req.body.website,
         gstno                     : req.body.gstno,
         logo                      : req.body.logo,
+        documents                 : req.body.documents,  
         locationDetails           : [],
         contactDetails            : [], 
-        createdAt                 : new Date(),
+        createdAt                 : new Date(), 
         createdBy                 : req.body.createdBy,
         userID                    : req.body.userID
     });
