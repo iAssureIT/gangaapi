@@ -416,6 +416,7 @@ exports.user_login = (req, res, next) => {
 								user_ID: user._id,
 								userFirstName: user.profile.firstname,
 								roles: user.roles,
+								status:user.profile.status
 							});
 						}
 
