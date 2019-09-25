@@ -29,6 +29,8 @@ exports.insert_product = (req,res,next)=>{
                 status                    : req.body.status,
                 offered                   : req.body.offered,
                 unit                      : req.body.unit,
+                size                      : req.body.size,
+                color                     : req.body.color,
                 type                      : req.body.type,
                 fileName                  : req.body.fileName,
                 createdAt                 : new Date()
@@ -202,6 +204,8 @@ var insertProduct = async (categoryObject, data) => {
                         status                    : data.status,
                         offered                   : data.offered,
                         unit                      : data.unit,
+                        size                      : req.body.size,
+                        color                     : req.body.color,
                         exclusive                 : data.exclusive,
                         featured                  : data.featured,
                         newProduct                : data.newProduct,
@@ -270,6 +274,8 @@ exports.update_product = (req,res,next)=>{
                 actualPrice               : req.body.actualPrice,
                 offered                   : req.body.offered,
                 unit                      : req.body.unit,
+                size                      : req.body.size,
+                color                     : req.body.color,
                 createdAt                 : new Date()
                 }
             }

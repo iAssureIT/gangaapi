@@ -20,6 +20,8 @@ const productsSchema = mongoose.Schema({
         }
     ],
     currency                  : String,
+    size                      : String,
+    color                     : String,
     actualPrice               : Number,
     offeredPrice              : Number,
     availableQuantity         : Number,
