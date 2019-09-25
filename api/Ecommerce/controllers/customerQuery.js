@@ -16,9 +16,8 @@ exports.query_mail = (req,res,next)=>{
 							 "mail"          : 'Dear Admin, query details are given below: <br/><br/>'+
 							                          "<b>Customer Name: </b>" + req.body.customerName + '<br/>'+
 							                          "<b>Customer MobileNo: </b>"  + req.body.customerMobile + '<br/><br/>'+
-							                          "<pre> " + req.body.customerQuery + "</pre>" +
-							                          " <br/> <br/> =============================== " +
-							                          "<br/><br/> Thank You, <br/> Support Team, <br/> www.GangaExpress.com " ,	                 
+							                          "<pre><b>Customer Query: </b>" + req.body.query + "</pre>" +
+							                          "<br/><br/> Support Team, <br/> www.GangaExpress.com " ,	                 
 					   },
 	     "json"      : true,
 	     "headers"   : {
