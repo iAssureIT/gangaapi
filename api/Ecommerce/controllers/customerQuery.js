@@ -11,8 +11,15 @@ exports.query_mail = (req,res,next)=>{
 	                         "email"     : "amit.shinde@iassureit.com",
 	                         "subject"   : "Customer Query",
 	                         "text"      : "Customer Query",
-	                         "mail"      : 'Hello admin, query details are given below: ' +'\n'+ 'Customer Name: '+req.body.customerName +'\n'+ 'Customer MobileNo: '+req.body.customerMobile +'\n'+'Query: '+ req.body.query ,
-	                    },
+	                         // "mail"      : 'Hello admin, query details are given below: ' +'\n'+ '\n Customer Name: '+req.body.customerName +'\n'+ '\n Customer MobileNo: '+req.body.customerMobile +'\n'+'\n Query: '+ req.body.customerQuery ,
+                          	 // "mail"      : 'Hello admin, query details are given below: '+'\n'+"\n <br><br>Customer Name: "+req.body.customerName+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+							 "mail"          : 'Dear Admin, query details are given below: <br/><br/>'+
+							                          "<b>Customer Name: </b>" + req.body.customerName + '<br/>'+
+							                          "<b>Customer MobileNo: </b>"  + req.body.customerMobile + '<br/><br/>'+
+							                          "<pre> " + req.body.customerQuery + "</pre>" +
+							                          " <br/> <br/> =============================== " +
+							                          "<br/><br/> Thank You, <br/> Support Team, <br/> www.GangaExpress.com " ,	                 
+					   },
 	     "json"      : true,
 	     "headers"   : {
 	                     "User-Agent": "Test App"
