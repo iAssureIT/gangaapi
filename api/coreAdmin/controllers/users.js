@@ -1132,8 +1132,9 @@ exports.confirm_otps = (req, res, next) => {
 					{ "_id": req.body.user_ID },
 					{
 						$set: {
-							'profile.receiveMobOtp': req.body.mobOTP,
-							'profile.receiveEmailOtp': req.body.emailOTP
+							'profile.receiveMobOtp'  : req.body.mobOTP,
+							'profile.receiveEmailOtp': req.body.emailOTP,
+							'profile.status'		 : req.body.status,
 						}
 					}
 				)
