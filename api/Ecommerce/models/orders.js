@@ -17,13 +17,13 @@ const orderSchema = mongoose.Schema({
     createdAt                 : Date,
     products                  : [
         {
-            "productId"         : String,
+            "product_ID"        : String,
             "productName"       : String,
-            "price"             : Number,
+            "offeredPrice"      : Number,
+            "actualPrice"       : Number,
             "currency"          : String,
             "quantity"          : Number,
             "total"             : Number,
-            "indexInProducts"   : Number,
             "productImage"      : Array,
             "category"          : String,
             "subCategory"       : String,

@@ -65,7 +65,6 @@ exports.insert_order = (req,res,next)=>{
                       "currency"          : payModeObj.cartItems[k].currency,
                       "quantity"          : payModeObj.cartItems[k].quantity,
                       "total"             : payModeObj.cartItems[k].totalForQantity,
-                      "indexInProducts"   : payModeObj.cartItems[k].cartIndex,
                       "productImage"      : payModeObj.cartItems[k].productImage,
                       "category"          : payModeObj.cartItems[k].category,
                       "subCategory"       : payModeObj.cartItems[k].subCategory,
