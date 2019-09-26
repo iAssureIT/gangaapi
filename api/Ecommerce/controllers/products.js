@@ -802,7 +802,34 @@ exports.list_brand = (req,res,next)=>{
         });
     });
 };
-
+exports.list_size = (req,res,next)=>{
+    
+    Products.distinct("size", {"section":"Main-Site", "category_ID": req.params.categoryID})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+exports.list_color = (req,res,next)=>{
+    
+    Products.distinct("color", {"section":"Main-Site", "category_ID": req.params.categoryID})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.list_grocerybrand = (req,res,next)=>{
     
     Products.distinct("brand", {"section":"Grocery"})

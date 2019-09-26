@@ -53,6 +53,10 @@ router.post('/post/searchINCategory', productController.searchINCategory);
 
 router.get('/get/listBrand/:categoryID', productController.list_brand);
 
+router.get('/get/listSize/:categoryID', productController.list_size);
+
+router.get('/get/listColor/:categoryID', productController.list_color);
+
 router.get('/get/minmaxprice', productController.get_minmaxprice);
 
 router.get('/get/listGroceryBrand', productController.list_grocerybrand);
