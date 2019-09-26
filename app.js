@@ -54,6 +54,7 @@
 	const projectSettingsurl 		= require("./api/coreAdmin/routes/projectSettings");
 	const BARoutes					= require("./api/Ecommerce/routes/businessAssociate"); 
 	const customerQueryRoutes		= require("./api/Ecommerce/routes/customerQuery"); 
+	const customerReviewRoutes		= require("./api/Ecommerce/routes/customerReview"); 
 
 	app.use("/api/users",usersRoutes);
 	app.use("/api/roles",rolesRoutes);
@@ -72,7 +73,7 @@
 	app.use("/api/carts", cartsRoutes);
 	app.use("/api/businessassociates", BARoutes);
 	app.use("/api/customerQuery", customerQueryRoutes);
-
+	app.use("/api/customerReview", customerReviewRoutes);
 
 
 	app.post('/send-email', (req, res)=> {
