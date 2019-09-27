@@ -205,7 +205,7 @@ var insertProduct = async (categoryObject, data) => {
                         originalPrice             : data.originalPrice,
                         discountedPrice           : data.discountedPrice,
                         offeredPrice              : data.offeredPrice,
-                        actualPrice               : data.actualPrice
+                        actualPrice               : data.actualPrice,
                         availableQuantity         : data.availableQuantity,
                         status                    : data.status,
                         offered                   : data.offered,
