@@ -7,6 +7,10 @@ router.post('/post', sectionsController.insert_section);
 
 router.get('/get/list',sectionsController.get_sections);
 
+router.get('/get/list-with-limits/:startRange/:limitRange',sectionsController.get_sections_with_limits);
+
+router.get('/get/count',sectionsController.count_section);
+
 router.get('/get/one/:sectionID',sectionsController.get_single_section);
 
 router.patch('/patch', sectionsController.update_section);

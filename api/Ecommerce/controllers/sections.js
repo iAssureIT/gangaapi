@@ -3,9 +3,10 @@ const Sections = require('../models/sections');
 
 exports.insert_section = (req,res,next)=>{
 	var sectionUrl = req.body.section.replace(/\s+/g, '-').toLowerCase();
-    Sections.find()
+    Sections.find({"section"    : {'$regex' : '^' + req.body.section, $options: "i"} },)
         .exec()
         .then(data =>{
+            if (data.length == 0) {
         	const SectionObj = new Sections({
                         _id                       : new mongoose.Types.ObjectId(),                    
                         section                   : req.body.section,
@@ -26,6 +27,11 @@ exports.insert_section = (req,res,next)=>{
 		                    error: err
 		                });
                     });
+            }else{
+                res.status(200).json({
+                            "message": "Section already exists."
+                        });
+            }
         })
 };        
 
@@ -100,4 +106,32 @@ exports.delete_section = (req,res,next)=>{
             error: err
         });
     });
+};
+exports.count_section = (req,res,next)=>{
+    Sections.find({})
+    .exec()
+    .then(data=>{
+        res.status(200).json({"dataCount":data.length});
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+exports.get_sections_with_limits = (req,res,next)=>{
+    Sections.find()  
+        .skip(parseInt(req.params.startRange))
+        .limit(parseInt(req.params.limitRange))     
+        .exec()
+        .then(data=>{
+            res.status(200).json(data);
+        })
+        .catch(err =>{
+            res.status(500).json({
+                error: err
+            });
+        });
 };
