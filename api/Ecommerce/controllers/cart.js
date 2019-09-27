@@ -151,8 +151,10 @@ exports.insert_cart = (req,res,next)=>{
                                     "subCategory"       : formValues.subCategory,
                                     "productImage"      : formValues.productImage,
                                     "quantity"          : formValues.quantity,
-                                    "discountedPrice"      : formValues.discountedPrice,
-                                    "originalPrice"       : formValues.originalPrice,
+                                    "discountedPrice"   : formValues.discountedPrice,
+                                    "originalPrice"     : formValues.originalPrice,
+                                    "actualPrice"       : formValues.actualPrice,
+                                    "offeredPrice"      : formValues.offeredPrice,
                                     "totalForQantity"   : formValues.totalForQantity,
                                 });
                                 // console.log('cartTotal1',cartTotal);
@@ -202,8 +204,10 @@ exports.insert_cart = (req,res,next)=>{
                         "subCategory"       : formValues.subCategory,
                         "productImage"      : formValues.productImage,
                         "quantity"          : formValues.quantity,
-                        "discountedPrice"      : formValues.discountedPrice,
-                        "originalPrice"       : formValues.originalPrice,
+                        "discountedPrice"   : formValues.discountedPrice,
+                        "originalPrice"     : formValues.originalPrice,
+                        "actualPrice"       : formValues.actualPrice,
+                        "offeredPrice"      : formValues.offeredPrice,
                         "totalForQantity"   : formValues.totalForQantity,
                     }];
                     //console.log('cartItems',cartItems);
@@ -250,8 +254,10 @@ exports.insert_cart = (req,res,next)=>{
                     "subCategory"       : formValues.subCategory,
                     "productImage"      : formValues.productImage,
                     "quantity"          : formValues.quantity,
-                    "discountedPrice"      : formValues.discountedPrice,
-                    "originalPrice"       : formValues.originalPrice,
+                    "discountedPrice"   : formValues.discountedPrice,
+                    "originalPrice"     : formValues.originalPrice,
+                    "actualPrice"       : formValues.actualPrice,
+                    "offeredPrice"      : formValues.offeredPrice,
                     "totalForQantity"   : formValues.totalForQantity,
                 }];
                 
@@ -359,8 +365,10 @@ exports.remove_cart_item = (req, res, next)=>{
                                 "productName"       : cartData.cartItems[i].productName,
                                 "productImage"      : cartData.cartItems[i].productImage,
                                 "quantity"          : cartData.cartItems[i].quantity,
-                                "discountedPrice"      : cartData.cartItems[i].discountedPrice,
-                                "originalPrice"       : cartData.cartItems[i].originalPrice,
+                                "discountedPrice"   : cartData.cartItems[i].discountedPrice,
+                                "originalPrice"     : cartData.cartItems[i].originalPrice,
+                                "actualPrice"       : cartData.cartItems[i].actualPrice,
+                                "offeredPrice"      : cartData.cartItems[i].offeredPrice,
                                 "totalForQantity"   : cartData.cartItems[i].totalForQantity,
                                 "createdAt"         : cartData.cartItems[i].createdAt,
                                 "cartIndex"         : cartLengthRef,

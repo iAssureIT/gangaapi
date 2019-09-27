@@ -60,8 +60,10 @@ exports.insert_order = (req,res,next)=>{
                     cartArray.push({
                       "product_ID"        : payModeObj.cartItems[k].product_ID,
                       "productName"       : payModeObj.cartItems[k].productName,
-                      "discountedPrice"      : payModeObj.cartItems[k].discountedPrice,
-                      "originalPrice"       : payModeObj.cartItems[k].originalPrice,
+                      "discountedPrice"   : payModeObj.cartItems[k].discountedPrice,
+                      "originalPrice"     : payModeObj.cartItems[k].originalPrice,
+                      "actualPrice"       : payModeObj.cartItems[k].actualPrice,
+                      "offeredPrice"      : payModeObj.cartItems[k].offeredPrice,
                       "currency"          : payModeObj.cartItems[k].currency,
                       "quantity"          : payModeObj.cartItems[k].quantity,
                       "total"             : payModeObj.cartItems[k].totalForQantity,

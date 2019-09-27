@@ -24,10 +24,13 @@ exports.insert_product = (req,res,next)=>{
                 featureList               : req.body.featureList,
                 currency                  : req.body.currency,
                 discountPercent           : req.body.discountPercent,
+                actualPrice               : req.body.actualPrice,
+                offeredPrice              : req.body.offeredPrice,
                 originalPrice             : req.body.originalPrice,
                 discountedPrice           : req.body.discountedPrice,
                 availableQuantity         : req.body.availableQuantity,
                 status                    : req.body.status,
+                tags                      : req.body.tags,
                 offered                   : req.body.offered,
                 unit                      : req.body.unit,
                 size                      : req.body.size,
@@ -201,6 +204,8 @@ var insertProduct = async (categoryObject, data) => {
                         currency                  : data.currency,
                         originalPrice             : data.originalPrice,
                         discountedPrice           : data.discountedPrice,
+                        offeredPrice              : data.offeredPrice,
+                        actualPrice               : data.actualPrice
                         availableQuantity         : data.availableQuantity,
                         status                    : data.status,
                         offered                   : data.offered,
@@ -274,6 +279,10 @@ exports.update_product = (req,res,next)=>{
                 discountPercent           : req.body.discountPercent,
                 discountedPrice           : req.body.discountedPrice,
                 originalPrice             : req.body.originalPrice,
+                offeredPrice              : req.body.offeredPrice,
+                actualPrice               : req.body.actualPrice,
+                status                    : req.body.status,
+                tags                      : req.body.tags,
                 offered                   : req.body.offered,
                 unit                      : req.body.unit,
                 size                      : req.body.size,
@@ -939,15 +948,15 @@ exports.get_menu_list = (req,res,next)=>{
 
 exports.get_minmaxprice = (req,res,next)=>{
     var priceArray = {}
-    Products.find({},{originalPrice:1}).sort({originalPrice:1}).limit(1)
+    Products.find({},{actualPrice:1}).sort({actualPrice:1}).limit(1)
     .exec()
     .then(data=>{
-        priceArray.min =  data[0].originalPrice ;
+        priceArray.min =  data[0].actualPrice ;
         
-            Products.find({},{originalPrice:1}).sort({originalPrice:-1}).limit(1)
+            Products.find({},{actualPrice:1}).sort({actualPrice:-1}).limit(1)
             .exec()
             .then(data1=>{
-                priceArray.max =  data1[0].originalPrice ;
+                priceArray.max =  data1[0].actualPrice ;
                 res.status(200).json(priceArray);
             })
             .catch(err =>{
