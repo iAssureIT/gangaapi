@@ -7,6 +7,7 @@ exports.insertCustomerReview = (req,res,next)=>{
 			const customerReview = new CustomerReview({
                 _id                       : new mongoose.Types.ObjectId(),                    
                 customerID                : req.body.customerID,
+                customerName              : req.body.customerName,
 			    orderID                   : req.body.orderID,
 			    productID                 : req.body.productID,
 			    rating                    : req.body.rating,
