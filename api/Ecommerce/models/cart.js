@@ -13,8 +13,8 @@ const cartSchema = mongoose.Schema({
             subCategory         : String,
             productImage        : Array,
             quantity            : Number,
-            offeredPrice        : Number,
-            actualPrice         : Number,
+            discountedPrice        : Number,
+            originalPrice         : Number,
             totalForQantity     : Number
         }
     ],

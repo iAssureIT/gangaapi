@@ -32,7 +32,7 @@ exports.insert_cart = (req,res,next)=>{
                                 // Increase existing quantity if product is availbale
                                 
                                 var newQuantity = parseInt(formValues.quantity) + parseInt(cartData.cartItems[j].quantity);
-                                var newTotal = newQuantity * parseInt(formValues.offeredPrice);
+                                var newTotal = newQuantity * parseInt(formValues.discountedPrice);
                                 var newFinalCartVal = 0;
                                 
                                 // console.log('newQuantity',newQuantity, 'newTotal',newTotal);
@@ -87,7 +87,7 @@ exports.insert_cart = (req,res,next)=>{
                             if(cartData.cartItems[j].product_ID == formValues.product_ID){
                                 // Increase existing quantity if product is availbale
                                 var newQuantity = parseInt(formValues.quantity) + parseInt(cartData.cartItems[j].quantity);
-                                var newTotal = newQuantity * parseInt(formValues.offeredPrice);
+                                var newTotal = newQuantity * parseInt(formValues.discountedPrice);
                                 var newFinalCartVal = 0;
     
                                 // To calculate final Price
@@ -151,8 +151,8 @@ exports.insert_cart = (req,res,next)=>{
                                     "subCategory"       : formValues.subCategory,
                                     "productImage"      : formValues.productImage,
                                     "quantity"          : formValues.quantity,
-                                    "offeredPrice"      : formValues.offeredPrice,
-                                    "actualPrice"       : formValues.actualPrice,
+                                    "discountedPrice"      : formValues.discountedPrice,
+                                    "originalPrice"       : formValues.originalPrice,
                                     "totalForQantity"   : formValues.totalForQantity,
                                 });
                                 // console.log('cartTotal1',cartTotal);
@@ -202,8 +202,8 @@ exports.insert_cart = (req,res,next)=>{
                         "subCategory"       : formValues.subCategory,
                         "productImage"      : formValues.productImage,
                         "quantity"          : formValues.quantity,
-                        "offeredPrice"      : formValues.offeredPrice,
-                        "actualPrice"       : formValues.actualPrice,
+                        "discountedPrice"      : formValues.discountedPrice,
+                        "originalPrice"       : formValues.originalPrice,
                         "totalForQantity"   : formValues.totalForQantity,
                     }];
                     //console.log('cartItems',cartItems);
@@ -250,8 +250,8 @@ exports.insert_cart = (req,res,next)=>{
                     "subCategory"       : formValues.subCategory,
                     "productImage"      : formValues.productImage,
                     "quantity"          : formValues.quantity,
-                    "offeredPrice"      : formValues.offeredPrice,
-                    "actualPrice"       : formValues.actualPrice,
+                    "discountedPrice"      : formValues.discountedPrice,
+                    "originalPrice"       : formValues.originalPrice,
                     "totalForQantity"   : formValues.totalForQantity,
                 }];
                 
@@ -359,8 +359,8 @@ exports.remove_cart_item = (req, res, next)=>{
                                 "productName"       : cartData.cartItems[i].productName,
                                 "productImage"      : cartData.cartItems[i].productImage,
                                 "quantity"          : cartData.cartItems[i].quantity,
-                                "offeredPrice"      : cartData.cartItems[i].offeredPrice,
-                                "actualPrice"       : cartData.cartItems[i].actualPrice,
+                                "discountedPrice"      : cartData.cartItems[i].discountedPrice,
+                                "originalPrice"       : cartData.cartItems[i].originalPrice,
                                 "totalForQantity"   : cartData.cartItems[i].totalForQantity,
                                 "createdAt"         : cartData.cartItems[i].createdAt,
                                 "cartIndex"         : cartLengthRef,

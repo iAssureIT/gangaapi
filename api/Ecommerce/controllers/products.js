@@ -23,8 +23,9 @@ exports.insert_product = (req,res,next)=>{
                 shortDescription          : req.body.shortDescription,
                 featureList               : req.body.featureList,
                 currency                  : req.body.currency,
-                actualPrice               : req.body.actualPrice,
-                offeredPrice              : req.body.offeredPrice,
+                discountPercent           : req.body.discountPercent,
+                originalPrice             : req.body.originalPrice,
+                discountedPrice           : req.body.discountedPrice,
                 availableQuantity         : req.body.availableQuantity,
                 status                    : req.body.status,
                 offered                   : req.body.offered,
@@ -198,8 +199,8 @@ var insertProduct = async (categoryObject, data) => {
                         shortDescription          : data.shortDescription,
                         featureList               : data.featureList,
                         currency                  : data.currency,
-                        actualPrice               : data.actualPrice,
-                        offeredPrice              : data.offeredPrice,
+                        originalPrice             : data.originalPrice,
+                        discountedPrice           : data.discountedPrice,
                         availableQuantity         : data.availableQuantity,
                         status                    : data.status,
                         offered                   : data.offered,
@@ -270,8 +271,9 @@ exports.update_product = (req,res,next)=>{
                 featureList               : req.body.featureList,
                 currency                  : req.body.currency,
                 availableQuantity         : req.body.availableQuantity,
-                offeredPrice              : req.body.offeredPrice,
-                actualPrice               : req.body.actualPrice,
+                discountPercent           : req.body.discountPercent,
+                discountedPrice           : req.body.discountedPrice,
+                originalPrice             : req.body.originalPrice,
                 offered                   : req.body.offered,
                 unit                      : req.body.unit,
                 size                      : req.body.size,
@@ -857,13 +859,13 @@ exports.filterMainProducts = (req,res,next)=>{
         var selector = {
                     "subCategory_ID"   : subCategory_ID ,
                     "brand"            : { $in: brand } ,
-                    "offeredPrice"     : { $gt : minproductPrice, $lt : maxproductPrice }
+                    "discountedPrice"     : { $gt : minproductPrice, $lt : maxproductPrice }
                     }
     }
     else if (subCategory_ID == null && brand != null && minproductPrice != null && maxproductPrice != null) {
         var selector = {
                     "brand"            : { $in: brand } ,
-                    "offeredPrice"     : { $gt : minproductPrice, $lt : maxproductPrice }
+                    "discountedPrice"     : { $gt : minproductPrice, $lt : maxproductPrice }
                     }
     }
     else if(subCategory_ID != null){
@@ -937,15 +939,15 @@ exports.get_menu_list = (req,res,next)=>{
 
 exports.get_minmaxprice = (req,res,next)=>{
     var priceArray = {}
-    Products.find({},{actualPrice:1}).sort({actualPrice:1}).limit(1)
+    Products.find({},{originalPrice:1}).sort({originalPrice:1}).limit(1)
     .exec()
     .then(data=>{
-        priceArray.min =  data[0].actualPrice ;
+        priceArray.min =  data[0].originalPrice ;
         
-            Products.find({},{actualPrice:1}).sort({actualPrice:-1}).limit(1)
+            Products.find({},{originalPrice:1}).sort({originalPrice:-1}).limit(1)
             .exec()
             .then(data1=>{
-                priceArray.max =  data1[0].actualPrice ;
+                priceArray.max =  data1[0].originalPrice ;
                 res.status(200).json(priceArray);
             })
             .catch(err =>{

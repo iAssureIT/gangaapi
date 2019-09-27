@@ -19,8 +19,8 @@ const orderSchema = mongoose.Schema({
         {
             "product_ID"        : String,
             "productName"       : String,
-            "offeredPrice"      : Number,
-            "actualPrice"       : Number,
+            "discountedPrice"      : Number,
+            "originalPrice"       : Number,
             "currency"          : String,
             "quantity"          : Number,
             "total"             : Number,
