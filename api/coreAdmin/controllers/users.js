@@ -399,7 +399,7 @@ exports.user_login = (req, res, next) => {
 								message: 'Bcrypt Auth failed'
 							});
 						}
-						if (result) {
+						if(result) {
 							const token = jwt.sign({
 								email: req.body.email,
 								userId: user._id,
@@ -419,7 +419,6 @@ exports.user_login = (req, res, next) => {
 								status:user.profile.status
 							});
 						}
-
 						res.status(401).json({
 							message: 'Error and Result Auth failed'
 						});

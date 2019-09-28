@@ -524,6 +524,7 @@ exports.list_productby_type_category = (req,res,next)=>{
 exports.list_product_with_limits = (req,res,next)=>{
     console.log('req', req.body);
     Products.find()
+    sort({ "createdAt": 1 })
     .exec()
     .then(data=>{
         var allData = data.map((x, i)=>{
