@@ -10,7 +10,8 @@ exports.insert_product = (req,res,next)=>{
             console.log('data', data);
             const products = new Products({
                 _id                       : new mongoose.Types.ObjectId(),   
-                section                   : req.body.section,                 
+                section                   : req.body.section, 
+                section_ID                : req.body.section_ID,                
                 category                  : req.body.category,
                 category_ID               : req.body.category_ID,
                 subCategory               : req.body.subCategory,
@@ -263,6 +264,7 @@ exports.update_product = (req,res,next)=>{
             {
                 $set:{
                 section                   : req.body.section,
+                section_ID                : req.body.section_ID,          
                 category                  : req.body.category,
                 category_ID               : req.body.category_ID,
                 subCategory               : req.body.subCategory,
