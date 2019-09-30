@@ -15,6 +15,7 @@ const categorySchema = mongoose.Schema({
     categoryImage             : String,
     categoryIcon              : String,
     section                   : String,
+    section_ID                : { type: mongoose.Schema.Types.ObjectId, ref: 'sections' },
     createdBy                 : String,
     createdAt                 : Date
 });
