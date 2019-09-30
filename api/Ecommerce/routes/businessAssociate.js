@@ -21,6 +21,8 @@ router.patch('/patch/updateOneBaContact', baController.update_ba_contact_one);
 
 router.get('/get/list',baController.list_ba);
 
+router.get('/get/checkBAExists/:emailID', baController.check_ba_exists);
+
 router.get('/get/one/:baID', baController.single_ba);
 
 router.delete('/delete/:baID',baController.delete_ba);

@@ -265,6 +265,21 @@ exports.single_ba = (req,res,next)=>{
         });
     });
 };
+
+exports.check_ba_exists = (req,res,next)=>{
+    BusinessAssociate.find({emailID : req.params.emailID})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
 exports.delete_ba = (req,res,next)=>{
     BusinessAssociate.deleteOne({_id:req.params.baID})
     .exec()
