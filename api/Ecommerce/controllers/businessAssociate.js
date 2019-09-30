@@ -156,7 +156,6 @@ exports.update_ba_loc_one = (req,res,next)=>{
         )
         .exec()
         .then(data=>{
-            console.log(data);
             if(data.nModified == 1){
                 res.status(200).json({
                     "message": "Business Associate Updated Successfully."
@@ -177,7 +176,7 @@ exports.update_ba_loc_one = (req,res,next)=>{
 
 exports.update_ba_contact_one = (req,res,next)=>{
     var contactDetails = req.body.contactDetails;
-
+    
     BusinessAssociate.updateOne(
             { "_id":req.body.baID, "contactDetails._id": req.body.contactID},  
             {
@@ -202,7 +201,7 @@ exports.update_ba_contact_one = (req,res,next)=>{
             }
         })
         .catch(err =>{
-            console.log(err);
+            //console.log(err);
             res.status(500).json({
                 error: err
             });
