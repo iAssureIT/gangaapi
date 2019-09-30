@@ -17,4 +17,4 @@ router.patch('/patch', sectionsController.update_section);
 
 router.delete('/delete/:sectionID',sectionsController.delete_section);
 
-module.exports = router;
+module.exports = router; 
