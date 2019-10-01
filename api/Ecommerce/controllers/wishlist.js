@@ -34,7 +34,7 @@ exports.insert_wishlist = (req,res,next)=>{
                     Wishlists.find({user_ID:req.body.user_ID}).countDocuments()
                     .exec()
                     .then(wishlist=>{
-                        res.status(201).json({
+                        res.status(200).json({
                             "message": "Product Added in Wishlist Successfully.",
                             "wishlistCount": wishlist
                         });
