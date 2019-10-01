@@ -3,34 +3,39 @@ const mongoose	= require("mongoose");
 const Category = require('../models/categories');
 
 exports.insert_category = (req,res,next)=>{
-	Category.find()
+	Category.find({"category":req.body.category, "section":req.body.section})
 		.exec()
 		.then(data =>{
-			const category = new Category({
-                _id                       : new mongoose.Types.ObjectId(),                    
-                category                  : req.body.category,
-                categoryUrl               : req.body.categoryUrl,
-                subCategory               : req.body.subCategory,
-                categoryDescription       : req.body.categoryDescription,
-                categoryImage             : req.body.categoryImage,
-                categoryIcon              : req.body.categoryIcon,
-                section                   : req.body.section,
-                section_ID                : req.body.section_ID,
-                createdAt                 : new Date()
-            });
-            category.save()
-            .then(data=>{
+            if(data && data.length > 0){
                 res.status(200).json({
-                    "message": "Category Submitted Successfully."
+                    "message": "Category already exists."
                 });
-            })
-            .catch(err =>{
-                console.log(err);
-                res.status(500).json({
-                    error: err
+            }else{
+                const category = new Category({
+                    _id                       : new mongoose.Types.ObjectId(),                    
+                    category                  : req.body.category,
+                    categoryUrl               : req.body.categoryUrl,
+                    subCategory               : req.body.subCategory,
+                    categoryDescription       : req.body.categoryDescription,
+                    categoryImage             : req.body.categoryImage,
+                    categoryIcon              : req.body.categoryIcon,
+                    section                   : req.body.section,
+                    section_ID                : req.body.section_ID,
+                    createdAt                 : new Date()
                 });
-            });
-		
+                category.save()
+                .then(data=>{
+                    res.status(200).json({
+                        "message": "Category Submitted Successfully."
+                    });
+                })
+                .catch(err =>{
+                    console.log(err);
+                    res.status(500).json({
+                        error: err
+                    });
+                });
+            }
 	})
 	.catch(err =>{
 		console.log(err);

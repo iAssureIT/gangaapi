@@ -4,10 +4,14 @@ const Products = require('../models/products');
 const Category = require('../models/categories');
 
 exports.insert_product = (req,res,next)=>{
-    Products.find()
+    Products.find({"itemCode" : req.body.itemCode})
         .exec()
         .then(data =>{
-            console.log('data', data);
+        if(data && data.length > 0){
+            res.status(200).json({
+                "message": "Item code already exists.",
+            });
+        }else{
             const products = new Products({
                 _id                       : new mongoose.Types.ObjectId(),   
                 section                   : req.body.section, 
@@ -54,7 +58,7 @@ exports.insert_product = (req,res,next)=>{
                     error: err
                 });
             });
-        
+        }
     })
     .catch(err =>{
         console.log("err1",err);
