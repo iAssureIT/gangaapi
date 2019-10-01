@@ -12,7 +12,7 @@ exports.insert_wishlist = (req,res,next)=>{
                 .exec()
                 .then(wishlist=>{
                     res.status(201).json({
-                        "message": "Product Already Added in Wishlist!!!",
+                        "messageinfo": "Product Already Added in Wishlist!!!",
                         "wishlistCount": wishlist
                     });
                 })
