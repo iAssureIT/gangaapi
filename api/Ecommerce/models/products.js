@@ -10,6 +10,7 @@ const productsSchema = mongoose.Schema({
     subCategory_ID            : { type: mongoose.Schema.Types.ObjectId, ref: 'categories' },
     brand                     : String,
     productCode               : String,
+    itemCode                  : String,
     productName               : String,
     productUrl                : String,
     productDetails            : String,
