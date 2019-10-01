@@ -1,5 +1,6 @@
 const mongoose  = require("mongoose");
 const Sections = require('../models/sections');
+const Category = require('../models/categories');
 
 exports.insert_section = (req,res,next)=>{
 	var sectionUrl = req.body.section.replace(/\s+/g, '-').toLowerCase();
@@ -134,4 +135,32 @@ exports.get_sections_with_limits = (req,res,next)=>{
                 error: err
             });
         });
+};
+
+exports.get_megamenu_list = (req,res,next)=>{
+   
+    Sections.aggregate([
+    { $lookup:
+        {
+         from: 'categories',
+         localField: '_id',
+         foreignField: 'section_ID',
+         as: 'categorylist'
+        }
+    },
+    {
+        $sort: {
+          "categorylist.createdAt": -1
+        }
+    }
+    ])
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        res.status(500).json({
+            error: err
+        });
+    });
 };

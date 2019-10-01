@@ -13,6 +13,8 @@ router.get('/get/count',sectionsController.count_section);
 
 router.get('/get/one/:sectionID',sectionsController.get_single_section);
 
+router.get('/get/get_megamenu_list',sectionsController.get_megamenu_list);
+
 router.patch('/patch', sectionsController.update_section);
 
 router.delete('/delete/:sectionID',sectionsController.delete_section);
