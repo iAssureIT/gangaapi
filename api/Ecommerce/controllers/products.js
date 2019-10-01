@@ -726,8 +726,8 @@ exports.upload_photo = (req,res,next)=>{
 
 };
 
-exports.list_productby_category = (req,res,next)=>{
-    Products.find({category_ID : req.params.categoryID, "status": "Publish"})
+exports.list_productby_section = (req,res,next)=>{
+    Products.find({section_ID : req.params.sectionID, "status": "Publish"})
     .exec()
     .then(data=>{
         res.status(200).json(data);
@@ -809,7 +809,7 @@ exports.searchINCategory = (req,res,next)=>{
 
 exports.list_brand = (req,res,next)=>{
     
-    Products.distinct("brand", {"section":"Main-Site", "category_ID": req.params.categoryID})
+    Products.distinct("brand", {"section_ID": req.params.sectionID})
     .exec()
     .then(data=>{
         res.status(200).json(data);
@@ -823,7 +823,7 @@ exports.list_brand = (req,res,next)=>{
 };
 exports.list_size = (req,res,next)=>{
     
-    Products.distinct("size", {"section":"Main-Site", "category_ID": req.params.categoryID})
+    Products.distinct("size", {"section_ID": req.params.sectionID})
     .exec()
     .then(data=>{
         res.status(200).json(data);
@@ -837,7 +837,7 @@ exports.list_size = (req,res,next)=>{
 };
 exports.list_color = (req,res,next)=>{
     
-    Products.distinct("color", {"section":"Main-Site", "category_ID": req.params.categoryID})
+    Products.distinct("color", {"section_ID": req.params.sectionID})
     .exec()
     .then(data=>{
         res.status(200).json(data);
@@ -865,52 +865,89 @@ exports.list_grocerybrand = (req,res,next)=>{
     });
 };
 
-exports.filterMainProducts = (req,res,next)=>{
+exports.filter_products = (req,res,next)=>{
     
-    var subCategory_ID      = req.body.subCategory_ID;
-    var brand               = req.body.brand;
-    var minproductPrice     = req.body.minproductPrice;
-    var maxproductPrice     = req.body.maxproductPrice;
-    console.log(brand);
-    if (subCategory_ID != null && brand != null && minproductPrice != null && maxproductPrice != null) {
-        var selector = {
-                    "subCategory_ID"   : subCategory_ID ,
-                    "brand"            : { $in: brand } ,
-                    "discountedPrice"     : { $gt : minproductPrice, $lt : maxproductPrice }
-                    }
-    }
-    else if (subCategory_ID == null && brand != null && minproductPrice != null && maxproductPrice != null) {
-        var selector = {
-                    "brand"            : { $in: brand } ,
-                    "discountedPrice"     : { $gt : minproductPrice, $lt : maxproductPrice }
-                    }
-    }
-    else if(subCategory_ID != null){
-        var selector = {
-            "subCategory_ID"   : subCategory_ID
+    console.log(req.body);
+    var selector = {};
+    for (var key in req.body) {
+        
+        console.log('key',key);
+
+        if (key == 'price') {
+            console.log('value',req.body[key]);
+            selector.discountedPrice  = { $gt : req.body.price.min, $lt : req.body.price.max }
+        }
+        if (key == 'brands') {
+            console.log('value',req.body[key]);
+            selector.brand = { $in: req.body.brands } 
+        }
+        if (key != 'price' && key != 'brands') {
+            console.log('value',req.body[key]);
+            selector[key] = req.body[key];
         }
     }
-    else if(subCategory_ID != null && brand != null){
-        var selector = {
-            "subCategory_ID"   : subCategory_ID ,
-            "brand"           :  brand
-        }
-    }
-    else if(subCategory_ID == null && brand != null){
-        var selector = {
-            "brand"           :  brand
-        }
-    }
-    else if((subCategory_ID == null || brand == null) && minproductPrice != null && maxproductPrice != null){
-        var selector = {
-            "productPrice"     : { $gt : minproductPrice, $lt : maxproductPrice }
-        }
-    } 
+    console.log('selector',selector)
     
+
+    /*if (req.body.categoryID == '' ) {
+       var selector={
+        "section_ID" : req.body.sectionID,
+        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max }
+       };
+    }
+    
+    if(req.body.categoryID != '' ){
+        var selector={
+        "section_ID" : req.body.sectionID,
+        "category_ID" : req.body.categoryID,
+        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max }
+       };
+    }
+    if(req.body.subcategoryID != ''){
+        var selector={
+        "section_ID" : req.body.sectionID,
+        "subCategory_ID" : req.body.subcategoryID,
+        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max }
+       };
+    }
+    if (req.body.brands.length > 0) {
+        var selector={
+        "section_ID" : req.body.sectionID,
+        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max },
+        "brand"            : { $in: req.body.brands } 
+       };
+    }
+    if (req.body.brands.length > 0 && req.body.subcategoryID != '') {
+       var selector={
+
+        "section_ID" : req.body.sectionID,
+        "category_ID" : req.body.categoryID,
+        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max },
+        "subCategory_ID" : req.body.subcategoryID,
+        "brand"            : { $in: req.body.brands } 
+       };
+    }
+    if (req.body.size != '') {
+       var selector={
+        "section_ID" : req.body.sectionID,
+        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max },
+        "size" : req.body.size 
+       };
+    }
+    if (req.body.color != '') {
+       var selector={
+            '$and':[
+            { "section_ID" :req.body.sectionID },
+            { "category_ID" : req.body.categoryID  },
+            { "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max } },
+            { "color" : req.body.color }
+            ]
+        };
+    }*/
     Products.find(selector)
     .exec()
     .then(data=>{
-
+        //console.log(data);
         res.status(200).json(data);
     })
     .catch(err =>{

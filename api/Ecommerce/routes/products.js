@@ -19,7 +19,7 @@ router.get('/get/listbytype/:section/:productType',productController.list_produc
 
 router.get('/get/listbytypeNcategory/:categoryID/:productType',productController.list_productby_type_category);
 
-router.get('/get/list/:categoryID',productController.list_productby_category);
+router.get('/get/list/:sectionID',productController.list_productby_section);
 
 router.get('/get/list/:categoryID/:subcategoryID',productController.list_productby_subcategory);
 
@@ -51,11 +51,11 @@ router.get('/get/search/:searchstr', productController.search_product);
 
 router.post('/post/searchINCategory', productController.searchINCategory);
 
-router.get('/get/listBrand/:categoryID', productController.list_brand);
+router.get('/get/listBrand/:sectionID', productController.list_brand);
 
-router.get('/get/listSize/:categoryID', productController.list_size);
+router.get('/get/listSize/:sectionID', productController.list_size);
 
-router.get('/get/listColor/:categoryID', productController.list_color);
+router.get('/get/listColor/:sectionID', productController.list_color);
 
 router.get('/get/minmaxprice', productController.get_minmaxprice);
 
@@ -63,7 +63,7 @@ router.get('/get/listGroceryBrand', productController.list_grocerybrand);
 
 router.get('/get/getmegamenulist', productController.get_menu_list);
 
-router.post('/post/list/filterMainProducts', productController.filterMainProducts);
+router.post('/post/list/filterProducts', productController.filter_products);
 
 
 module.exports = router;

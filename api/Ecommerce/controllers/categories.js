@@ -155,6 +155,20 @@ exports.fetch_category = (req,res,next)=>{
         });
     });
 };
+
+exports.fetch_categories_by_section = (req,res,next)=>{
+    Category.find({ section_ID: req.params.sectionID})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.delete_category = (req,res,next)=>{
     Category.deleteOne({_id:req.params.categoryID})
     .exec()
