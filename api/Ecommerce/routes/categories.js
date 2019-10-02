@@ -15,9 +15,11 @@ router.get('/get/count',categoryController.count_category);
 
 router.post('/get/list',categoryController.list_category_with_limits);
 
+router.get('/get/one/:categoryID', categoryController.fetch_category);
+
 router.get('/get/:sectionID', categoryController.fetch_categories_by_section);
 
-router.get('/get/one/:sectionID/:categoryID', categoryController.fetch_category);
+//router.get('/get/one/:sectionID/:categoryID', categoryController.fetch_category);
 
 router.delete('/delete/:categoryID',categoryController.delete_category);
 
