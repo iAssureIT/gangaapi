@@ -17,19 +17,24 @@ exports.insert_order = (req,res,next)=>{
     Masternotifications.findOne({"templateType":"Email","templateName":"Order Placed Successfully"})
                       .exec()
                       .then((maildata)=>{
-                        mailSubject = maildata.subject;
-                        mailText = maildata.content
+                        if (maildata) {
+                          mailSubject = maildata.subject;
+                          mailText = maildata.content
+                        }
                       })
                       .catch()
 
     Masternotifications.findOne({"templateType":"SMS","templateName":"Order Placed Successfully"})
                       .exec()
                       .then((smsdata)=>{  
-                          var textcontent = smsdata.content;                              
-                          var regex = new RegExp(/(<([^>]+)>)/ig);
-                          var textcontent = smsdata.content.replace(regex, '');
-                          textcontent   = textcontent.replace(/\&nbsp;/g, '')                     
-                          smsText = textcontent
+                          if (smsdata) {
+                            var textcontent = smsdata.content;                              
+                            var regex = new RegExp(/(<([^>]+)>)/ig);
+                            var textcontent = smsdata.content.replace(regex, '');
+                            textcontent   = textcontent.replace(/\&nbsp;/g, '')                     
+                            smsText = textcontent
+                          }
+                          
                       })
                       .catch()
 
@@ -317,6 +322,19 @@ exports.update_order = (req,res,next)=>{
 };
 exports.list_order = (req,res,next)=>{
     Orders.find({}).sort({createdAt:-1})      
+        .exec()
+        .then(data=>{
+            res.status(200).json(data);
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+exports.list_orderby_status = (req,res,next)=>{
+    Orders.find({"deliveryStatus.status":req.params.status}).sort({createdAt:-1})      
         .exec()
         .then(data=>{
             res.status(200).json(data);
