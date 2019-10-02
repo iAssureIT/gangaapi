@@ -870,84 +870,20 @@ exports.list_grocerybrand = (req,res,next)=>{
 };
 
 exports.filter_products = (req,res,next)=>{
-    
-    console.log(req.body);
     var selector = {};
     for (var key in req.body) {
-        
-        console.log('key',key);
-
         if (key == 'price') {
-            console.log('value',req.body[key]);
             selector.discountedPrice  = { $gt : req.body.price.min, $lt : req.body.price.max }
         }
         if (key == 'brands') {
-            console.log('value',req.body[key]);
-            selector.brand = { $in: req.body.brands } 
+            if (req.body.brands.length>0) {
+                selector.brand = { $in: req.body.brands } 
+            }
         }
         if (key != 'price' && key != 'brands') {
-            console.log('value',req.body[key]);
             selector[key] = req.body[key];
         }
     }
-    console.log('selector',selector)
-    
-
-    /*if (req.body.categoryID == '' ) {
-       var selector={
-        "section_ID" : req.body.sectionID,
-        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max }
-       };
-    }
-    
-    if(req.body.categoryID != '' ){
-        var selector={
-        "section_ID" : req.body.sectionID,
-        "category_ID" : req.body.categoryID,
-        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max }
-       };
-    }
-    if(req.body.subcategoryID != ''){
-        var selector={
-        "section_ID" : req.body.sectionID,
-        "subCategory_ID" : req.body.subcategoryID,
-        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max }
-       };
-    }
-    if (req.body.brands.length > 0) {
-        var selector={
-        "section_ID" : req.body.sectionID,
-        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max },
-        "brand"            : { $in: req.body.brands } 
-       };
-    }
-    if (req.body.brands.length > 0 && req.body.subcategoryID != '') {
-       var selector={
-
-        "section_ID" : req.body.sectionID,
-        "category_ID" : req.body.categoryID,
-        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max },
-        "subCategory_ID" : req.body.subcategoryID,
-        "brand"            : { $in: req.body.brands } 
-       };
-    }
-    if (req.body.size != '') {
-       var selector={
-        "section_ID" : req.body.sectionID,
-        "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max },
-        "size" : req.body.size 
-       };
-    }
-    if (req.body.color != '') {
-       var selector={
-            '$and':[
-            { "section_ID" :req.body.sectionID },
-            { "category_ID" : req.body.categoryID  },
-            { "discountedPrice"     : { $gt : req.body.price.min, $lt : req.body.price.max } },
-            { "color" : req.body.color }
-            ]
-        };
-    }*/
     Products.find(selector)
     .exec()
     .then(data=>{
