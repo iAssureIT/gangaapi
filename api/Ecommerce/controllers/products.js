@@ -500,11 +500,10 @@ exports.wishlist_product = (req,res,next)=>{
 exports.list_productby_type = (req,res,next)=>{
     
     var productType = req.params.productType;
-    var section = req.params.section;
 
     selector={};
     if(productType == 'featured'){
-        selector={'featured':true, 'section':section, "status": "Publish"};
+        selector={'featured':true,  "status": "Publish"};
         Products.find(selector)       
         .exec()
         .then(data=>{
@@ -518,7 +517,7 @@ exports.list_productby_type = (req,res,next)=>{
         });
     }
     else if(productType == 'exclusive'){
-        selector={'exclusive':true,  'section':section,"status": "Publish"};
+        selector={'exclusive':true,  "status": "Publish"};
         Products.find(selector)       
         .exec()
         .then(data=>{
@@ -532,7 +531,7 @@ exports.list_productby_type = (req,res,next)=>{
         });
     }
     else if(productType == 'newProduct'){
-        selector={'newProduct':true,  'section':section,"status": "Publish"};
+        selector={'newProduct':true,  "status": "Publish"};
         Products.find(selector)       
         .exec()
         .then(data=>{
@@ -546,7 +545,7 @@ exports.list_productby_type = (req,res,next)=>{
         });
     }
     else if(productType == 'bestSeller'){
-        selector={'bestSeller':true,  'section':section,"status": "Publish"};
+        selector={'bestSeller':true,  "status": "Publish"};
         Products.find(selector)       
         .exec()
         .then(data=>{
