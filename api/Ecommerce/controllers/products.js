@@ -803,7 +803,19 @@ exports.list_productby_section = (req,res,next)=>{
         });
     });
 };
-
+exports.list_productby_category = (req,res,next)=>{
+    Products.find({category_ID : req.params.categoryID, "status": "Publish"})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.list_productby_subcategory = (req,res,next)=>{
     console.log(req.params.categoryID);
     console.log(req.params.subcategoryID);

@@ -21,6 +21,8 @@ router.get('/get/listbytypeNcategory/:categoryID/:productType',productController
 
 router.get('/get/list/:sectionID',productController.list_productby_section);
 
+router.get('/get/listbycategory/:categoryID',productController.list_productby_category);
+
 router.get('/get/list/:categoryID/:subcategoryID',productController.list_productby_subcategory);
 
 router.put('/attribute', productController.update_product_attribute);
