@@ -2,6 +2,7 @@ const mongoose  = require("mongoose");
 const _         = require("underscore");
 const Products = require('../models/products');
 const Category = require('../models/categories');
+const Sections = require('../models/sections');
 
 exports.insert_product = (req,res,next)=>{
     Products.find({"itemCode" : req.body.itemCode})
@@ -80,10 +81,13 @@ exports.bulkUploadProduct = (req,res,next)=>{
         var productData = req.body;
         var Count  = 0;
         for(k = 0 ; k < productData.length ; k++){
-            if(productData[k].category!= undefined){
-                var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,productData[k].section);
+            if(productData[k].section!= undefined){
+
+                var sectionObject = await sectionInsert(productData[k].section)
+
+                var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,sectionObject.section_ID);
                 
-                var insertProductObject = await insertProduct(categoryObject,productData[k]);
+                var insertProductObject = await insertProduct(sectionObject.section_ID,categoryObject,productData[k]);
                 
                 if (insertProductObject != 0) {
                     Count++;
@@ -99,6 +103,48 @@ exports.bulkUploadProduct = (req,res,next)=>{
     }
 };
 
+function sectionInsert(sectionName) {
+    return new Promise(function(resolve,reject){    
+        sectionDuplicateControl();
+        async function sectionDuplicateControl(){
+            var sectionPresent = await findSection(sectionName);
+            var sectionUrl = sectionName.replace(/\s+/g, '-').toLowerCase();
+            if(sectionPresent === 0){
+                const sectionObj = new Sections({
+                        _id                       : new mongoose.Types.ObjectId(),
+                        section                   : sectionName,
+                        sectionUrl                : sectionUrl, 
+                        createdAt                 : new Date()
+                    });
+
+                    sectionObj
+                    .save()
+                    .then(data=>{
+                        //console.log('insertCategory',data.subCategory[0]._id);
+                        resolve({section_ID : data._id});
+                    })
+                    .catch(err =>{
+                        console.log(err);
+                        reject(err);
+                    });
+            }else{
+                Sections.findOne({ section : sectionName})
+                        .exec()
+                        .then(sectionObject=>{
+                            if(sectionObject){
+                                console.log('section',sectionObject);
+                                //resolve(categoryObject);
+                                resolve({section_ID : sectionObject._id});
+                            }else{
+                                resolve(0);
+                            }
+                        })
+            }
+        }
+
+        
+    })                   
+}
 
 function categoryInsert(catgName,subcatgName,section) {
     return new Promise(function(resolve,reject){    
@@ -115,7 +161,7 @@ function categoryInsert(catgName,subcatgName,section) {
                         categoryDescription       : '',
                         categoryImage             : '',
                         categoryIcon              : '',
-                        section               : section,
+                        section_ID                : section,
                         createdAt                 : new Date()
                     });
 
@@ -145,7 +191,6 @@ function categoryInsert(catgName,subcatgName,section) {
                     )
                     .exec()
                     .then(addedsubcat=>{
-                        console.log('addedsubcat',addedsubcat);
                         if (addedsubcat.nModified == 1 ) {
                             Category.findOne({ category : catgName})
                                     .exec()
@@ -170,7 +215,19 @@ function categoryInsert(catgName,subcatgName,section) {
     })                   
 } 
 
-
+function findSection(sectionName) {
+    return new Promise(function(resolve,reject){  
+    Category.findOne({ section : sectionName})
+                .exec()
+                .then(sectionObject=>{
+                    if(sectionObject){
+                        resolve(sectionObject);
+                    }else{
+                        resolve(0);
+                    }
+                })
+    })           
+}
 
 function findCat(catgName) {
     return new Promise(function(resolve,reject){  
@@ -186,7 +243,7 @@ function findCat(catgName) {
     })           
 }
 
-var insertProduct = async (categoryObject, data) => {
+var insertProduct = async (section_ID, categoryObject, data) => {
     return new Promise(function(resolve,reject){ 
         productDuplicateControl();
         async function productDuplicateControl(){
@@ -195,7 +252,7 @@ var insertProduct = async (categoryObject, data) => {
             if (productPresent==0) {
                     const productObj = new Products({
                         _id                       : new mongoose.Types.ObjectId(),   
-                        section                   : data.section,                 
+                        section_ID                : section_ID,                 
                         category                  : data.category,
                         category_ID               : categoryObject.category_ID,
                         subCategory               : data.subCategory,
@@ -210,6 +267,7 @@ var insertProduct = async (categoryObject, data) => {
                         featureList               : data.featureList,
                         currency                  : data.currency,
                         originalPrice             : data.originalPrice,
+                        discountPercent           : data.discountPercent,  
                         discountedPrice           : data.discountedPrice,
                         offeredPrice              : data.offeredPrice,
                         actualPrice               : data.actualPrice,
@@ -217,14 +275,16 @@ var insertProduct = async (categoryObject, data) => {
                         status                    : data.status,
                         offered                   : data.offered,
                         unit                      : data.unit,
-                        size                      : req.body.size,
-                        color                     : req.body.color,
+                        size                      : data.size,
+                        color                     : data.color,
                         exclusive                 : data.exclusive,
                         featured                  : data.featured,
                         newProduct                : data.newProduct,
-                        offered                   : data.offered,
                         productVideoType          : data.productVideoType,
                         productYTubeVideo         : data.productYTubeVideo,
+                        tags                      : data.tags,
+                        fileName                  : data.filename,
+                        createdBy                 : data.createdBy,
                         createdAt                 : new Date()
                     });
                 

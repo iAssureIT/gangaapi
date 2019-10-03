@@ -4,7 +4,7 @@ const Category = require('../models/categories');
 
 exports.insert_section = (req,res,next)=>{
 	var sectionUrl = req.body.section.replace(/\s+/g, '-').toLowerCase();
-    Sections.find({"section"    : {'$regex' : '^' + req.body.section, $options: "i"} },)
+    Sections.find({"section"    : req.body.section })
         .exec()
         .then(data =>{
             if (data.length == 0) {

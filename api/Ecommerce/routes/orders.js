@@ -6,6 +6,7 @@ const orderController = require('../controllers/orders');
 router.post('/post', orderController.insert_order);
 
 router.patch('/', orderController.update_order);
+
 router.patch('/patch/updateDeliveryStatus', orderController.updateDeliveryStatus);
 
 router.get('/get/list',orderController.list_order);
