@@ -838,21 +838,20 @@ exports.cancelOrder = (req,res,next)=>{
                 })
                 .catch(err =>{
                     console.log(err);
-                    res.status(500).json({
+                    res.status(500).json({ 
                         error: err
                     });
                 });
 }
 
-exports.returnOrder = (req,res,next)=>{
+exports.returnOrder = (req,res,next)=>{ 
      Orders.updateOne(
-            { _id : req.body.orderID}, 
+            { _id : req.body.orderID, "products._id":req.body.productID}, 
             {
                 $set:{
-                    deliveryStatus : [
+                    products : [
                                         {
-                                          status : 'Returned',
-                                          userid : req.body.userid
+                                          status : 'Returned'
                                         }
                                     ]
                 }

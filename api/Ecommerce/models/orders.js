@@ -19,14 +19,15 @@ const orderSchema = mongoose.Schema({
         {
             "product_ID"        : String,
             "productName"       : String,
-            "discountedPrice"      : Number,
-            "originalPrice"       : Number,
+            "discountedPrice"   : Number,
+            "originalPrice"     : Number,
             "currency"          : String,
             "quantity"          : Number,
             "total"             : Number,
             "productImage"      : Array,
             "category"          : String,
             "subCategory"       : String,
+            "status"            : String
         }
     ],
     paymentMethod             : String,
