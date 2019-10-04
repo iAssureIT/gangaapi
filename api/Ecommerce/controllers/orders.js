@@ -9,7 +9,7 @@ const BusinessAssociate = require('../models/businessAssociate');
 const plivo         = require('plivo');
 var request         = require('request-promise');  
 const gloabalVariable 	= require('./../../../nodemon');
-
+const _ = require('underscore');
 var localUrl =  "http://localhost:"+gloabalVariable.PORT;
 
 exports.insert_order = (req,res,next)=>{ 
@@ -334,33 +334,18 @@ exports.list_order = (req,res,next)=>{
         });
 };
 exports.list_orderby_status = (req,res,next)=>{
-
-
-    if (req.params.status == "New Order") {
-      var selector = {"deliveryStatus.0.status":req.params.status}
+    Orders.aggregate([
+    { "$match": { "deliveryStatus.status" :  req.params.status} },
+    { "$redact":
+        {
+            "$cond": {
+               "if": { "$eq": [ { "$arrayElemAt": [ "$deliveryStatus.status", -1 ] }, req.params.status ] },
+               "then": "$$KEEP",
+               "else": "$$PRUNE"
+            }
+        }
     }
-    else if(req.params.status == "Verified"){
-      var selector = {"deliveryStatus.1.status":req.params.status}
-    }
-    else if(req.params.status == "Packed"){
-      var selector = {"deliveryStatus.2.status":req.params.status}
-    }
-    else if (req.params.status == "Inspection") {
-      var selector = {"deliveryStatus.3.status":req.params.status}
-    }
-    else if (req.params.status == "Dispatch Approved") {
-      var selector = {"deliveryStatus.4.status":req.params.status}
-    }
-    else if (req.params.status == "Dispatch") {
-      var selector = {"deliveryStatus.5.status":req.params.status}
-    }
-    else if (req.params.status == "Delivery Initiated") {
-      var selector = {"deliveryStatus.6.status":req.params.status}
-    }
-    else if (req.params.status == "Delivered & Paid") {
-      var selector = {"deliveryStatus.7.status":req.params.status}
-    }
-    Orders.find(selector).sort({createdAt:-1})      
+    ]).sort({createdAt:-1})      
         .exec()
         .then(data=>{
             res.status(200).json(data);
