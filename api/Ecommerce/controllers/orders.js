@@ -454,19 +454,21 @@ exports.updateDeliveryStatus = (req,res,next)=>{
 
     
     var status = req.body.status == "Delivered & Paid" ? "Paid" : "UnPaid";
-    // console.log(status);
+    console.log(req.body.status);
+
     Orders.updateOne(
             { _id : req.body.orderID}, 
             {
-                $set:{
+                $push:{
                     deliveryStatus : [
                                         {
                                           status : req.body.status,
+                                          Date   : new Date(), 
                                           userid : req.body.userid
                                         }
-                                    ],
-                    status: status             
-                }
+                                    ]             
+                },
+                status: status  
             }
             )
             .exec()
