@@ -635,15 +635,16 @@ exports.dispatchOrder = (req,res,next)=>{
     Orders.updateOne(
             { _id : req.body.orderID}, 
             {
-                $set:{
+                $push:{
                     deliveryStatus  : [
                                         {
                                           status : "Dispatch",
+                                          Date   : new Date(),
                                           userid : req.body.userid
                                         }
-                                    ],
-                    businessAssociate :  req.body.businessAssociateId
-                }
+                                    ]
+                },
+                businessAssociate :  req.body.businessAssociateId
             }
             )
             .exec()
@@ -815,10 +816,11 @@ exports.cancelOrder = (req,res,next)=>{
      Orders.updateOne(
             { _id : req.body.orderID}, 
             {
-                $set:{
+                $push:{
                     deliveryStatus : [
                                         {
                                           status : 'Cancelled',
+                                          Date   : new Date(),
                                           userid : req.body.userid
                                         }
                                     ]
@@ -850,10 +852,12 @@ exports.returnOrder = (req,res,next)=>{
      Orders.updateOne(
             { _id : req.body.orderID, "products._id":req.body.productID}, 
             {
-                $set:{
+                $push:{
                     products : [
                                         {
-                                          status : 'Returned'
+                                          status : 'Returned',
+                                          Date   : new Date(),
+                                          userid : req.body.userid
                                         }
                                     ]
                 }
