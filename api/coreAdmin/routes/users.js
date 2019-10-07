@@ -56,7 +56,7 @@ router.get('/resendotp/:userID', UserController.resendotp);
 
 router.patch('/:rolestatus',UserController.user_change_role); 
 
-router.patch('/performaction',UserController.user_performaction); 
+router.patch('/perform/action',UserController.user_performaction); 
 
 router.post('/sendlink',UserController.send_link);  
 
