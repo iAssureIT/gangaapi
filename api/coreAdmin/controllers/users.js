@@ -906,6 +906,30 @@ exports.account_status = (req, res, next) => {
 		});
 };
 
+exports.user_performaction = (req, res, next) => {
+	var field = req.body.selectedAction;
+	switch(field){
+		case 'active':
+		User.updateMany(
+			{_id: { $in: req.body.selectUsers}},
+			{$set:{"profile.status":"active"}}
+			)
+		}
+		case 'blocked':
+		User.updateMany(
+			{_id: { $in: req.body.selectUsers}},
+			{$set:{"profile.status":"blocked"}}
+			)
+		}
+		case 'delete':
+		User.deleteMany(
+			{_id: { $in: req.body.selectUsers}}
+			)
+		}
+
+	}
+};
+
 exports.account_role_add = (req, res, next) => {
 
 	User.findOne({ roles: req.body.roles })
