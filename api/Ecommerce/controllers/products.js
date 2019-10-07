@@ -799,7 +799,7 @@ exports.upload_photo_product_code = (req,res,next)=>{
     .exec()
     .then(data=>{    
         res.status(200).json({
-            "message": "Images and Video Updated"
+            "message": "Images uploaded successfully"
         });
     })
     .catch(err =>{
@@ -809,7 +809,27 @@ exports.upload_photo_product_code = (req,res,next)=>{
         });
     });
 };
-
+exports.remove_photo = (req,res,next)=>{
+    Products.updateOne(
+        { "_id" : req.body.product_ID},
+        {   
+            $push:{                            
+                "productImage" : req.body.productImage,       
+            }
+        }
+    )
+    .exec()
+    .then(data=>{    
+        res.status(200).json({
+            "message": "Images uploaded successfully"
+        });
+    })
+    .catch(err =>{
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.list_productby_section = (req,res,next)=>{
     Products.find({section_ID : req.params.sectionID, "status": "Publish"})
     .exec()

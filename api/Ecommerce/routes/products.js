@@ -43,6 +43,8 @@ router.patch('/patch/gallery', productController.upload_photo);
 
 router.patch('/patch/bulkimages/', productController.upload_photo_product_code);
 
+router.patch('/patch/bulkimages/', productController.remove_photo);
+
 router.get('/get/one/:productID', productController.fetch_product);
 
 router.get('/get/hotproduct', productController.fetch_hot_product);
