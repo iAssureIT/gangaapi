@@ -670,9 +670,9 @@ exports.dispatchOrder = (req,res,next)=>{
                              "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                              "body"      :   {
                                                  "email"     : ba.emailID,
-                                                 "subject"   : dispatchMailSubject,
-                                                 "text"      : dispatchMailSubject,
-                                                 "mail"      : 'Hello '+ba.companyName+','+'\n'+"\n <br><br>"+dispatchMailText+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                 "subject"   : "You have a order to be delivered.";,
+                                                 "text"      : "You have a order to be delivered.";,
+                                                 "mail"      : 'Hello '+ba.companyName+','+'\n'+"\n <br><br>You have a order to be delivered."<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                              },
                              "json"      : true,
                              "headers"   : {
@@ -700,7 +700,7 @@ exports.dispatchOrder = (req,res,next)=>{
                             ).then((result)=> {
                                 // console.log("src = ",src," | DST = ", dst, " | result = ", result);
                                 res.status(200).json({
-                                    message: "Dear ba, "+'\n'+"You have a order to be delivered.\n";
+                                    message:"Order dispached Successfully"
                                 });
                             })
                             .catch(otpError=>{
