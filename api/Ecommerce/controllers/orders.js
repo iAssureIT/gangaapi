@@ -670,9 +670,9 @@ exports.dispatchOrder = (req,res,next)=>{
                              "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                              "body"      :   {
                                                  "email"     : ba.emailID,
-                                                 "subject"   : "You have a order to be delivered.";,
-                                                 "text"      : "You have a order to be delivered.";,
-                                                 "mail"      : 'Hello '+ba.companyName+','+'\n'+"\n <br><br>You have a order to be delivered."<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                 "subject"   : "You have a order to be delivered.",
+                                                 "text"      : "You have a order to be delivered.",
+                                                 "mail"      : 'Hello '+ba.companyName+','+'\n'+"\n <br><br>You have a order to be delivered.<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
                                              },
                              "json"      : true,
                              "headers"   : {
@@ -894,3 +894,17 @@ exports.returnOrder = (req,res,next)=>{
                     });
                 });
 }
+
+exports.get_reports = (req,res,next)=>{
+    Orders.find({}).sort({createdAt:-1})      
+        .exec()
+        .then(data=>{
+            res.status(200).json(data);
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
