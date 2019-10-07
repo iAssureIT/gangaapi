@@ -355,6 +355,21 @@ exports.resendotp = (req, res, next) => {
 			});
 		});
 };
+exports.check_user_exists = (req,res,next)=>{
+    User.find({"emails.address" : req.params.emailID})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+
 exports.update_user_resetpassword = (req, res, next) => {
 	bcrypt.hash(req.body.pwd, 10, (err, hash) => {
 		User.updateOne(

@@ -58,6 +58,7 @@ router.patch('/:rolestatus',UserController.user_change_role);
 
 router.post('/sendlink',UserController.send_link);  
 
+router.get('/get/checkUserExists/:emailID', UserController.check_user_exists);
 
 
 
