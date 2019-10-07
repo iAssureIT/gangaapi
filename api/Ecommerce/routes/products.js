@@ -41,6 +41,8 @@ router.post('/get/list',productController.list_product_with_limits);
 
 router.patch('/patch/gallery', productController.upload_photo);
 
+router.patch('/patch/bulkimages/', productController.upload_photo_product_code);
+
 router.get('/get/one/:productID', productController.fetch_product);
 
 router.get('/get/hotproduct', productController.fetch_hot_product);

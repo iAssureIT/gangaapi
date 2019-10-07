@@ -786,7 +786,28 @@ exports.upload_photo = (req,res,next)=>{
         error: err
     });
     });
-
+};
+exports.upload_photo_product_code = (req,res,next)=>{
+    Products.updateOne(
+        { "itemCode" : req.body.itemCode},
+        {   
+            $push:{                            
+                "productImage" : req.body.productImage,       
+            }
+        }
+    )
+    .exec()
+    .then(data=>{    
+        res.status(200).json({
+            "message": "Images and Video Updated"
+        });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
 };
 
 exports.list_productby_section = (req,res,next)=>{
