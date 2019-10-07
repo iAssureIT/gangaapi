@@ -908,26 +908,57 @@ exports.account_status = (req, res, next) => {
 
 exports.user_performaction = (req, res, next) => {
 	var field = req.body.selectedAction;
-	switch(field){
+	switch (field) {
 		case 'active':
 		User.updateMany(
 			{_id: { $in: req.body.selectUsers}},
 			{$set:{"profile.status":"active"}}
 			)
-		}
+		.exec()
+		.then(data => {
+			return res.status(200).json({
+				"message": 'Selected Users activated successfully.',
+			});
+		})
+		.catch(err => {
+			res.status(500).json({
+				error: err
+			});
+		});
+		break;
 		case 'blocked':
 		User.updateMany(
 			{_id: { $in: req.body.selectUsers}},
 			{$set:{"profile.status":"blocked"}}
 			)
-		}
+		.exec()
+		.then(data => {
+			return res.status(200).json({
+				"message": 'Selected Users blocked successfully.',
+			});
+		})
+		.catch(err => {
+			res.status(500).json({
+				error: err
+			});
+		});
+		break ;
 		case 'delete':
 		User.deleteMany(
 			{_id: { $in: req.body.selectUsers}}
 			)
+		.exec()
+		.then(data => {
+			return res.status(200).json({
+				"message": 'Selected Users deleted successfully.',
+			});
+		})
+		.catch(err => {
+			res.status(500).json({
+				error: err
+			});
+		});
 		}
-
-	}
 };
 
 exports.account_role_add = (req, res, next) => {
