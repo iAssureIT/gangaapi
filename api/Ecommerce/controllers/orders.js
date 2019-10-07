@@ -700,7 +700,7 @@ exports.dispatchOrder = (req,res,next)=>{
                             ).then((result)=> {
                                 // console.log("src = ",src," | DST = ", dst, " | result = ", result);
                                 res.status(200).json({
-                                    message:"Order dispached Successfully"
+                                    message: "Dear ba, "+'\n'+"You have a order to be delivered.\n";
                                 });
                             })
                             .catch(otpError=>{
@@ -863,7 +863,7 @@ exports.returnOrder = (req,res,next)=>{
      Orders.updateOne(
             { _id : req.body.orderID, "products.product_ID":req.body.productID}, 
             {
-                $push:{
+                $set:{
                     products : [
                                         {
                                           status : 'Returned',

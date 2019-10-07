@@ -132,7 +132,7 @@ function sectionInsert(sectionName) {
                         .exec()
                         .then(sectionObject=>{
                             if(sectionObject){
-                                console.log('section',sectionObject);
+                                //console.log('section',sectionObject);
                                 //resolve(categoryObject);
                                 resolve({section_ID : sectionObject._id});
                             }else{
@@ -196,7 +196,7 @@ function categoryInsert(catgName,subcatgName,section) {
                                     .exec()
                                     .then(categoryObject=>{
                                         if(categoryObject){
-                                            console.log('subcategoryPresent',categoryObject.subCategory[categoryObject.subCategory.length-1]._id)
+                                           // console.log('subcategoryPresent',categoryObject.subCategory[categoryObject.subCategory.length-1]._id)
 
                                             //resolve(categoryObject);
                                             resolve({category_ID : categoryPresent._id, subCategory_ID : categoryObject.subCategory[categoryObject.subCategory.length-1]._id});
