@@ -819,7 +819,7 @@ exports.remove_photo = (req,res,next)=>{
     .exec()
     .then(data=>{    
         res.status(200).json({
-            "message": "Images uploaded successfully"
+            "message": "Images deleted successfully"
         });
     })
     .catch(err =>{
