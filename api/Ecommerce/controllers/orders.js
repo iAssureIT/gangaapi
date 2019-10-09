@@ -10,6 +10,7 @@ const plivo         = require('plivo');
 var request         = require('request-promise');  
 const gloabalVariable 	= require('./../../../nodemon');
 const _ = require('underscore');
+const moment = require('moment');
 var localUrl =  "http://localhost:"+gloabalVariable.PORT;
 
 exports.insert_order = (req,res,next)=>{ 
@@ -863,16 +864,13 @@ exports.returnOrder = (req,res,next)=>{
      Orders.updateOne(
             { _id : req.body.orderID, "products.product_ID":req.body.productID}, 
             {
-                $set:{
-                    products : [
-                                        {
-                                          status : 'Returned',
-                                          Date   : new Date(),
-                                          userid : req.body.userid
-                                        }
-                                    ]
-                }
-            }
+              $set:
+                  { 
+                    'products.$.status' : 'Returned',
+                    'products.$.Date'   : new Date(),
+                    'products.$.userid '           : req.body.userid
+                  }
+            } 
             )
             .exec()
                 .then(data=>{
@@ -896,7 +894,19 @@ exports.returnOrder = (req,res,next)=>{
 }
 
 exports.get_reports = (req,res,next)=>{
-    Orders.find({}).sort({createdAt:-1})      
+
+
+
+  const today = moment().startOf('day');
+  console.log("startTime",req.params.startTime);
+  console.log("endTime",moment(req.params.endTime).endOf('day').toDate());
+
+    Orders.find({
+      createdAt: {
+        $gte:  moment(req.params.startTime).startOf('day').toDate(),
+        $lte:  moment(req.params.endTime).endOf('day').toDate()
+      }
+    }).sort({createdAt:-1})      
         .exec()
         .then(data=>{
             res.status(200).json(data);
