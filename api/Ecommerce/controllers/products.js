@@ -811,11 +811,9 @@ exports.upload_photo_product_code = (req,res,next)=>{
 };
 exports.remove_photo = (req,res,next)=>{
     Products.updateOne(
-        { "_id" : req.body.product_ID},
-        {   
-            $push:{                            
-                "productImage" : req.body.productImage,       
-            }
+        {"_id": req.body.product_ID},
+        {
+            $pull: {"productImage": req.body.imageLik} 
         }
     )
     .exec()
