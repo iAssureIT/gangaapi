@@ -16,9 +16,34 @@ exports.get_returned_products = (req,res,next)=>{
         res.status(200).json(data);
     })
     .catch(err =>{
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
+        res.status(500).json({error: err});
+    });
+};
+
+exports.returnStatusUpdate = (req,res,next)=>{
+    ReturnedProducts.updateOne({ _id: req.body.id},  
+                        {
+                            $push:  { 'returnStatus' : {status : req.body.status, date: new Date()} }
+                        })
+    .exec()
+    .then(data=>{
+        res.status(200).json({"message":req.body.status+" Successfully!"});
+    })
+    .catch(err =>{
+        res.status(500).json({error: err});
+    });
+};
+
+exports.returnPickeupInitiated = (req,res,next)=>{
+    ReturnedProducts.updateOne({ _id: req.body.id}, 
+                        { $push:  { 'returnStatus' : {status : "Return Pickup Initiated", date: new Date()} } ,    
+                          $set : { pickedupBy : req.body.pickupby } 
+                        })
+    .exec()
+    .then(data=>{
+        res.status(200).json({"message":"Return Initiated Successfully!"});
+    })
+    .catch(err =>{
+        res.status(500).json({error: err});
     });
 };

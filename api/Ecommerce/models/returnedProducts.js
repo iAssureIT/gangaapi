@@ -13,6 +13,7 @@ const returnedProductsSchema = mongoose.Schema({
     dateofPurchase            : Date,
     modeofPayment             : String, 
     dateofReturn              : Date,
+    pickedupBy                : String,  
     returnStatus              : [
                                     {
                                         status:String,
