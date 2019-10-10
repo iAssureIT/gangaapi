@@ -56,6 +56,7 @@
 	const customerQueryRoutes		= require("./api/Ecommerce/routes/customerQuery"); 
 	const customerReviewRoutes		= require("./api/Ecommerce/routes/customerReview"); 
 	const SectionRoutes				= require("./api/Ecommerce/routes/sections"); 
+	const ReturnedProductsRoutes	= require("./api/Ecommerce/routes/returnedProducts"); 
 
 	app.use("/api/users",usersRoutes);
 	app.use("/api/roles",rolesRoutes);
@@ -76,7 +77,8 @@
 	app.use("/api/customerQuery", customerQueryRoutes);
 	app.use("/api/customerReview", customerReviewRoutes);
 	app.use("/api/sections", SectionRoutes);
-
+	app.use("/api/returnedProducts", ReturnedProductsRoutes);
+	
 
 	app.post('/send-email', (req, res)=> {
         console.log('send mail');

@@ -13,9 +13,9 @@ router.get('/get/list',orderController.list_order);
 
 router.get('/get/orderlist/:status',orderController.list_orderby_status);
 
-router.get('/get/list/:user_ID',orderController.list_order_by_user);
-
 router.get('/get/count',orderController.count_order);
+
+router.get('/get/list/:userID',orderController.list_order_by_user);
 
 router.post('/get/list',orderController.list_order_with_limits);
 

@@ -5,6 +5,7 @@ const Carts = require('../models/cart');
 const Masternotifications =  require('../../coreAdmin/models/masternotifications');
 const User = require('../../coreAdmin/models/users');
 const BusinessAssociate = require('../models/businessAssociate');
+const ReturnedProducts = require('../models/returnedProducts');
 
 const plivo         = require('plivo');
 var request         = require('request-promise');  
@@ -810,18 +811,22 @@ exports.dispatchOrder = (req,res,next)=>{
 };
 
 
+
 exports.list_order_by_user = (req,res,next)=>{
-    Orders.find({user_ID:req.params.user_ID}).sort({createdAt:-1})      
-        .exec()
-        .then(data=>{
-            res.status(200).json(data);
-        })
-        .catch(err =>{
-            console.log(err);
-            res.status(500).json({
-                error: err
-            });
-        });
+  console.log('user_ID',req.params.userID);
+    Orders.find({})
+    //Orders.find({"user_ID":req.params.userID})      
+    .exec()
+    .then(data=>{
+      console.log('data', data);
+      res.status(200).json(data);
+    })
+    .catch(err =>{
+      console.log(err);
+      res.status(500).json({
+          error: err
+      });
+    });
 };
 
 exports.cancelOrder = (req,res,next)=>{
@@ -861,27 +866,66 @@ exports.cancelOrder = (req,res,next)=>{
 }
 
 exports.returnOrder = (req,res,next)=>{ 
-     Orders.updateOne(
-            { _id : req.body.orderID, "products.product_ID":req.body.productID}, 
+    console.log(req.body.orderID)
+      /*Orders.findOne(
+            { _id : req.body.orderID, "products.product_ID":req.body.productID}
+            ) */
+      Orders.updateOne(
+            {_id : req.body.orderID, "products.product_ID":req.body.productID}, 
             {
               $set:
                   { 
                     'products.$.status' : 'Returned',
-                    'products.$.Date'   : new Date(),
-                    'products.$.userid '           : req.body.userid
+                    'products.$.returnedDate'   : new Date(),
                   }
             } 
             )
             .exec()
                 .then(data=>{
-                    // console.log(data);
                     if(data.nModified == 1){
-                        res.status(200).json({
-                            "message": "Order is returned Successfully."
+                        
+                        Orders.findOne({ _id : req.body.orderID, "products.product_ID":req.body.productID})
+                        .exec()
+                        .then(orders=>{
+                          const returnedproducts = new ReturnedProducts({
+                            _id                       : new mongoose.Types.ObjectId(), 
+                            orderID                   : req.body.orderID,
+                            user_ID                   : req.body.userid,
+                            product_ID                : req.body.productID,
+                            reasonForReturn           : req.body.reasonForReturn, 
+                            originalPrice             : orders.originalPrice,
+                            discountedPrice           : orders.discountedPrice,
+                            dateofPurchase            : orders.createdAt,
+                            modeofPayment             : orders.paymentMethod,
+                            dateofReturn              : new Date(),
+                            returnStatus              : [{
+                                                            status:"Return Approval Pending",
+                                                            date : new Date()
+                                                        }],
+                            refund                    : [{
+                                                            bankName      : req.body.bankname,
+                                                            bankAccountNo : req.body.bankacctno,
+                                                            IFSCCode      : req.body.ifsccode,
+                                                            amount        : orders.products[0].discountedPrice
+                                                        }],                        
+                            createdBy                 : req.body.userid,
+                            createdAt                 : new Date()
+                          })
+                          returnedproducts.save()
+                                  .then(data=>{
+                                      res.status(200).json({"message": "Product is returned. Return process will start soon!"});
+                                  })
+                                  .catch(err =>{
+                                      res.status(500).json({error: err});
+                                  });
+                        })
+                        .catch(err =>{
+                          res.status(500).json({error: err});
                         });
+              
                     }else{
                         res.status(401).json({
-                            "message": "Order Not Found"
+                            "message": "Product Not Found"
                         });
                     }
                 })

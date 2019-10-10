@@ -27,7 +27,8 @@ const orderSchema = mongoose.Schema({
             "productImage"      : Array,
             "category"          : String,
             "subCategory"       : String,
-            "status"            : String
+            "status"            : String,
+            "returnedDate"      : Date
         }
     ],
     paymentMethod             : String,
