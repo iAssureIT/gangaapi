@@ -4,13 +4,19 @@ const ReturnedProducts = require('../models/returnedProducts');
 
 exports.get_returned_products = (req,res,next)=>{
     ReturnedProducts.aggregate([{ $lookup:
-       {
+      {
          from: 'products',
          localField: 'product_ID',
          foreignField: '_id',
          as: 'productsArray'
-       }
-     }])
+       } 
+      },
+      {
+        $sort: {
+          "productsArray.createdAt": -1
+        }
+      }
+    ])
     .exec()
     .then(data=>{
         res.status(200).json(data);

@@ -814,8 +814,27 @@ exports.dispatchOrder = (req,res,next)=>{
 
 exports.list_order_by_user = (req,res,next)=>{
   console.log('user_ID',req.params.userID);
-    Orders.find({})
-    //Orders.find({"user_ID":req.params.userID})      
+    //Orders.find({}) 
+    //Orders.find({"user_ID":req.params.userID})
+    Orders.aggregate([{ $lookup:
+      {
+         from: 'returnedproducts',
+         localField: '_id',
+         foreignField: 'orderID',
+         // localField: 'products.product_ID',
+         // foreignField: 'product_ID',
+         as: 'returnProducts'
+       } 
+      },
+      {
+        $sort: {
+          "createdAt": -1
+        }
+      },
+      {
+        $match:{"user_ID":req.params.userID}
+      }
+    ])      
     .exec()
     .then(data=>{
       console.log('data', data);
