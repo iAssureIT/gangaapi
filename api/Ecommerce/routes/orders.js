@@ -31,6 +31,6 @@ router.patch('/get/cancelOrder',orderController.cancelOrder);
  
 router.patch('/get/returnOrder',orderController.returnOrder);
 
-router.get('/get/report/:startTime/:endTime',orderController.get_reports);
+router.get('/get/report/:startTime/:endTime/:startRange/:limitRange',orderController.get_reports);
 
-module.exports = router;
+module.exports = router; 

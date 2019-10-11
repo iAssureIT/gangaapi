@@ -110,6 +110,8 @@ function sectionInsert(sectionName) {
         sectionDuplicateControl();
         async function sectionDuplicateControl(){
             var sectionPresent = await findSection(sectionName);
+            //console.log('sectionPresent',sectionPresent)
+
             var sectionUrl = sectionName.replace(/\s+/g, '-').toLowerCase();
             if(sectionPresent === 0){
                 const sectionObj = new Sections({
@@ -153,31 +155,32 @@ function categoryInsert(catgName,subcatgName,section) {
         categoryDuplicateControl();
         async function categoryDuplicateControl(){
             var categoryPresent = await findCat(catgName);
-            
+            console.log('subcatgName',subcatgName);
             if(categoryPresent === 0){
                 const categoryObj = new Category({
                         _id                       : new mongoose.Types.ObjectId(),                    
                         category                  : catgName,
                         categoryUrl               : catgName.toLowerCase(),
-                        subCategory               : {subCategoryTitle:subcatgName},
+                        subCategory               : subcatgName ? {subCategoryTitle:subcatgName} : null,
                         categoryDescription       : '',
                         categoryImage             : '',
                         categoryIcon              : '',
                         section_ID                : section,
                         createdAt                 : new Date()
                     });
-
+                    //console.log('categoryObj',categoryObj);
                     categoryObj
                     .save()
                     .then(data=>{
                         //console.log('insertCategory',data.subCategory[0]._id);
-                        resolve({category_ID : data._id, subCategory_ID : data.subCategory[0]._id});
+                        resolve({category_ID : data._id, subCategory_ID : (data.subCategory ? data.subCategory[0]._id : null) });
                     })
                     .catch(err =>{
                         console.log(err);
                         reject(err);
                     });
             }else{
+                if (categoryPresent.subCategory) {
 
                 var subcatg = categoryPresent.subCategory.find(subcatgObj => subcatgObj.subCategoryTitle === subcatgName);
                 
@@ -209,6 +212,10 @@ function categoryInsert(catgName,subcatgName,section) {
                         }
                     })
                 }
+                }
+                else{
+                    resolve({category_ID : categoryPresent._id});
+                }
                 
             }
         }
@@ -219,7 +226,7 @@ function categoryInsert(catgName,subcatgName,section) {
 
 function findSection(sectionName) {
     return new Promise(function(resolve,reject){  
-    Category.findOne({ section : sectionName})
+    Sections.findOne({ section : sectionName})
                 .exec()
                 .then(sectionObject=>{
                     if(sectionObject){
@@ -258,7 +265,7 @@ var insertProduct = async (section_ID, categoryObject, data) => {
                         category                  : data.category,
                         category_ID               : categoryObject.category_ID,
                         subCategory               : data.subCategory,
-                        subCategory_ID            : categoryObject.subCategory_ID,
+                        subCategory_ID            : categoryObject.subCategory_ID ? categoryObject.subCategory_ID : null,
                         brand                     : data.brand,
                         productCode               : data.productCode,
                         itemCode                  : data.itemCode,

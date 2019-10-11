@@ -958,8 +958,6 @@ exports.returnOrder = (req,res,next)=>{
 
 exports.get_reports = (req,res,next)=>{
 
-
-
   const today = moment().startOf('day');
   console.log("startTime",req.params.startTime);
   console.log("endTime",moment(req.params.endTime).endOf('day').toDate());
@@ -972,7 +970,17 @@ exports.get_reports = (req,res,next)=>{
     }).sort({createdAt:-1})      
         .exec()
         .then(data=>{
-            res.status(200).json(data);
+          var allData = data.map((x, i)=>{
+            return {
+                "_id"                   : x._id,
+                "orderID"               : x.orderID,
+                "userFullName"          : x.userFullName,
+                "totalAmount"           : x.totalAmount,
+                "deliveryStatus"        : x.deliveryStatus[x.deliveryStatus.length-1].status
+            }
+          })
+          res.status(200).json(allData.slice(req.params.startRange, req.params.limitRange));
+          //  res.status(200).json(allData);
         })
         .catch(err =>{
             console.log(err);
