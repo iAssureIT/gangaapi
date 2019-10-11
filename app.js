@@ -9,6 +9,9 @@
 	// global.JWT_KEY = "secret";
 
 	
+
+
+
 // console.log("globalVariable.dbname",dbname);
 	mongoose.connect('mongodb://localhost/'+globalVariable.dbname,{
 	// mongoose.connect('mongodb://localhost/'+dbname,{

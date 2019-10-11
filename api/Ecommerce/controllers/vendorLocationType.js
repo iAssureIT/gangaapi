@@ -101,7 +101,7 @@ exports.count_vendor_location = (req,res,next)=>{
     });
 };
 exports.fetch_vendor_location = (req,res,next)=>{
-    VendorLocationType.find({_id : req.params.vendorCategoryID})
+    VendorLocationType.findOne({_id : req.params.vendorCategoryID})
     .exec()
     .then(data=>{
         res.status(200).json(data);

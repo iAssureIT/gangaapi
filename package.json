@@ -23,6 +23,7 @@
     "plivo": "^4.1.3",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
+    "sitemap": "^5.0.0",
     "underscore": "^1.9.1"
   }
 }

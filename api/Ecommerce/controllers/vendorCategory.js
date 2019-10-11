@@ -87,7 +87,7 @@ exports.list_vendor_category_with_limits = (req,res,next)=>{
     });
 };
 exports.count_vendor_category = (req,res,next)=>{
-    VendorCategory.find({})
+    VendorCategory.find({}).count()
     .exec()
     .then(data=>{
         res.status(200).json({"dataCount":data});
@@ -100,7 +100,7 @@ exports.count_vendor_category = (req,res,next)=>{
     });
 };
 exports.fetch_vendor_category = (req,res,next)=>{
-    VendorCategory.find({_id : req.params.vendorCategoryID})
+    VendorCategory.findOne({_id : req.params.vendorCategoryID})
     .exec()
     .then(data=>{
         res.status(200).json(data);
