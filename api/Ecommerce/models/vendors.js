@@ -18,7 +18,7 @@ const vendorsSchema = mongoose.Schema({
     locationDetails           : Array,
     contactDetails            : Array,
     productsServices          : Array,
-    vendor_ID                 : String,
+    vendorID                 : String,
     Owner_ID                  : String,
     createdBy                 : String,
     createdAt                 : Date

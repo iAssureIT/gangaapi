@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 const productsSchema = mongoose.Schema({
     _id			              : mongoose.Schema.Types.ObjectId,
+    vendor_ID                 : { type: mongoose.Schema.Types.ObjectId, ref: 'vendor' },
+    vendorName                : String,
     section                   : String,
     section_ID                : { type: mongoose.Schema.Types.ObjectId, ref: 'sections' },
     category                  : String,

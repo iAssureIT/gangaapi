@@ -24,7 +24,7 @@ exports.insert_vendor = (req,res,next)=>{
                 locationDetails           : req.body.locationDetails,
                 contactDetails            : req.body.contactDetails,
                 productsServices          : req.body.productsServices,
-                vendor_ID                 : req.body.vendor_ID,
+                vendorID                 : req.body.vendorID,
                 owner_ID                  : req.body.owner_ID,
                 createdAt                 : new Date()
             });
@@ -71,7 +71,7 @@ exports.update_vendor = (req,res,next)=>{
                     locationDetails           : req.body.locationDetails,
                     contactDetails            : req.body.contactDetails,
                     productsServices          : req.body.productsServices,
-                    vendor_ID                 : req.body.vendor_ID,
+                    vendorID                 : req.body.vendorID,
                     Owner_ID                  : req.body.Owner_ID,
                     createdAt                 : new Date()
                 }
@@ -109,6 +109,66 @@ exports.list_vendor = (req,res,next)=>{
                 error: err
             });
         });
+};
+exports.insert_vendor_location = (req,res,next)=>{
+    console.log('req', req.params, req.body);
+    Vendors.updateOne(
+        { _id:req.params.vendorID},  
+        {
+            $push:{
+                locationDetails           : req.body,
+            }
+        }
+    )
+    .exec()
+    .then(data=>{
+        if(data.nModified == 1){
+            res.status(200).json({
+                "message": "Vendor's location submitted successfully.",
+                "vendor_ID" : data._id
+            });
+        }else{
+            res.status(401).json({
+                "message": "Vendor Not Found"
+            });
+        }
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+exports.insert_vendor_contact = (req,res,next)=>{
+    console.log('req', req.params, req.body);
+    Vendors.updateOne(
+        { _id:req.params.vendorID},  
+        {
+            $push:{
+                contactDetails           : req.body,
+            }
+        }
+    )
+    .exec()
+    .then(data=>{
+        if(data.nModified == 1){
+            res.status(200).json({
+                "message": "Vendor's contact submitted successfully.",
+                "vendor_ID" : data._id
+            });
+        }else{
+            res.status(401).json({
+                "message": "Vendor Not Found"
+            });
+        }
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
 };
 exports.list_vendor_with_limits = (req,res,next)=>{
     Vendors.find()

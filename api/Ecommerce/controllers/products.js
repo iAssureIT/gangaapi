@@ -14,7 +14,9 @@ exports.insert_product = (req,res,next)=>{
             });
         }else{
             const products = new Products({
-                _id                       : new mongoose.Types.ObjectId(),   
+                _id                       : new mongoose.Types.ObjectId(), 
+                vendor_ID                 : req.body.vendor_ID, 
+                vendorName                : req.body.vendorName, 
                 section                   : req.body.section, 
                 section_ID                : req.body.section_ID,                
                 category                  : req.body.category,
@@ -329,6 +331,8 @@ exports.update_product = (req,res,next)=>{
             { _id:req.body.product_ID},  
             {
                 $set:{
+                vendor_ID                 : req.body.vendor_ID,  
+                vendorName                : req.body.vendorName, 
                 section                   : req.body.section,
                 section_ID                : req.body.section_ID,          
                 category                  : req.body.category,
@@ -598,6 +602,7 @@ exports.list_product_with_limits = (req,res,next)=>{
         var allData = data.map((x, i)=>{
             return {
                 "_id"                   : x._id,
+                "vendorName"            : x.vendorName, 
                 "productCode"           : x.productCode,
                 "itemCode"              : x.itemCode,
                 "productName"           : x.productName,
