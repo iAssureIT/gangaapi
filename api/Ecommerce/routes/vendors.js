@@ -9,9 +9,11 @@ router.patch('/patch', vendorController.update_vendor);
 
 router.get('/get/list',vendorController.list_vendor);
 
-router.patch('/location/:vendorID',vendorController.insert_vendor_location);
+router.patch('/insert/location/:vendorID',vendorController.insert_vendor_location);
+router.patch('/update/location/:vendorID/:locationID',vendorController.update_vendor_location);
+router.patch('/delete/location/:vendorID/:locationID',vendorController.delete_vendor_location);
 
-router.patch('/contact/:vendorID',vendorController.insert_vendor_contact);
+router.patch('/insert/contact/:vendorID',vendorController.insert_vendor_contact);
 
 router.get('/get/count',vendorController.count_vendor);
 
