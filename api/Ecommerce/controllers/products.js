@@ -161,7 +161,7 @@ function categoryInsert(catgName,subcatgName,section) {
                         _id                       : new mongoose.Types.ObjectId(),                    
                         category                  : catgName,
                         categoryUrl               : catgName.toLowerCase(),
-                        subCategory               : subcatgName ? {subCategoryTitle:subcatgName} : null,
+                        subCategory               : subcatgName ? {subCategoryTitle:subcatgName} : [],
                         categoryDescription       : '',
                         categoryImage             : '',
                         categoryIcon              : '',
@@ -173,7 +173,7 @@ function categoryInsert(catgName,subcatgName,section) {
                     .save()
                     .then(data=>{
                         //console.log('insertCategory',data.subCategory[0]._id);
-                        resolve({category_ID : data._id, subCategory_ID : (data.subCategory ? data.subCategory[0]._id : null) });
+                        resolve({category_ID : data._id, subCategory_ID : (data.subCategory.length>0 ? data.subCategory[0]._id : []) });
                     })
                     .catch(err =>{
                         console.log(err);
@@ -226,7 +226,7 @@ function categoryInsert(catgName,subcatgName,section) {
 
 function findSection(sectionName) {
     return new Promise(function(resolve,reject){  
-    Sections.findOne({ section : sectionName})
+    Sections.findOne({ section : { "$regex": sectionName, $options: "i"} })
                 .exec()
                 .then(sectionObject=>{
                     if(sectionObject){
@@ -240,7 +240,7 @@ function findSection(sectionName) {
 
 function findCat(catgName) {
     return new Promise(function(resolve,reject){  
-    Category.findOne({ category : catgName})
+    Category.findOne({ category : { "$regex": catgName, $options: "i"} })
                 .exec()
                 .then(categoryObject=>{
                     if(categoryObject){
@@ -256,7 +256,7 @@ var insertProduct = async (section_ID, categoryObject, data) => {
     return new Promise(function(resolve,reject){ 
         productDuplicateControl();
         async function productDuplicateControl(){
-            var productPresent = await findProduct(data.productCode,data.productName);
+            var productPresent = await findProduct(data.itemCode,data.productName);
             //console.log('productPresent',productPresent)
             if (productPresent==0) {
                     const productObj = new Products({
@@ -266,26 +266,26 @@ var insertProduct = async (section_ID, categoryObject, data) => {
                         category_ID               : categoryObject.category_ID,
                         subCategory               : data.subCategory,
                         subCategory_ID            : categoryObject.subCategory_ID ? categoryObject.subCategory_ID : null,
-                        brand                     : data.brand,
-                        productCode               : data.productCode,
-                        itemCode                  : data.itemCode,
+                        brand                     : data.brand ? data.brand : "",
+                        productCode               : data.productCode ? data.productCode : "",
+                        itemCode                  : data.itemCode ? data.itemCode : "",
                         productName               : data.productName,
                         productUrl                : data.productName.replace(/\s+/g, '-').toLowerCase(),
-                        productDetails            : data.productDetails,
-                        shortDescription          : data.shortDescription,
-                        featureList               : data.featureList,
-                        currency                  : data.currency,
-                        originalPrice             : data.originalPrice,
-                        discountPercent           : data.discountPercent,  
-                        discountedPrice           : data.discountedPrice,
-                        offeredPrice              : data.offeredPrice,
-                        actualPrice               : data.actualPrice,
-                        availableQuantity         : data.availableQuantity,
-                        status                    : data.status,
+                        productDetails            : data.productDetails ? data.productDetails : "",
+                        shortDescription          : data.shortDescription ? data.shortDescription : "",
+                        featureList               : data.featureList ? data.featureList : [],
+                        currency                  : data.currency ? data.currency : "INR",
+                        originalPrice             : data.originalPrice ? data.originalPrice : 0,
+                        discountPercent           : data.discountPercent ? data.discountPercent : 0,  
+                        discountedPrice           : data.discountedPrice ? data.discountedPrice : (data.originalPrice ? data.originalPrice : 0),
+                        offeredPrice              : data.offeredPrice ? data.offeredPrice : "",
+                        actualPrice               : data.actualPrice ? data.actualPrice : "",
+                        availableQuantity         : data.availableQuantity ? data.availableQuantity : "",
+                        status                    : data.status ? data.status : "",
                         offered                   : data.offered,
-                        unit                      : data.unit,
-                        size                      : data.size,
-                        color                     : data.color,
+                        unit                      : data.unit ? data.unit : "",
+                        size                      : data.size ? data.size : "",
+                        color                     : data.color ? data.color : "",
                         exclusive                 : data.exclusive,
                         featured                  : data.featured,
                         newProduct                : data.newProduct,
@@ -313,13 +313,13 @@ var insertProduct = async (section_ID, categoryObject, data) => {
     })
 }
 
-function findProduct(productCode, productName) {
+function findProduct(itemCode, productName) {
     return new Promise(function(resolve,reject){  
     Products.findOne(
                 { "$or": 
                     [
-                    {"productName"    : {'$regex' : '^' + productName , $options: "i"} },
-                    {"productCode"    : productCode },
+                    /*{"productName"    : {'$regex' : '^' + productName , $options: "i"} },*/
+                    {"itemCode"       : itemCode },
                     ]
                 })
 

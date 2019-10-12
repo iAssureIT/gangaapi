@@ -6,6 +6,7 @@ exports.insert_category = (req,res,next)=>{
 	Category.find({"category":req.body.category, "section":req.body.section})
 		.exec()
 		.then(data =>{
+            console.log(req.body)
             if(data && data.length > 0){
                 res.status(200).json({
                     "message": "Category already exists."
