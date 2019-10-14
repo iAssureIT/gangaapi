@@ -77,7 +77,6 @@ exports.user_signupadmin = (req, res, next) => {
 							if (newUser) {
 
 								request({
-
 									"method": "POST",
 									"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
 									"body": {
@@ -91,45 +90,49 @@ exports.user_signupadmin = (req, res, next) => {
 										"User-Agent": "Test App"
 									}
 								})
+								.then((sentemail) => {
 
-									.then((sentemail) => {
+									res.header("Access-Control-Allow-Origin", "*");
 
-										res.header("Access-Control-Allow-Origin", "*");
-
-										res.status(200).json({ message: "Mail Sent successfully" });
-									})
-									.catch((err) => {
-										res.status(500).json({
-											error: err
-										});
-									});
-
-
-
-								const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
-								const sourceMobile = "+919923393733";
-								var text = "Dear User, " + '\n' + "" + otpSmsText + " : " + OTP;
-
-								client.messages.create(
-									src = sourceMobile,
-									dst = '+91' + req.body.mobileNumber,
-									text = text
-								).then((result) => {
-
-									// return res.status(200).json("OTP "+OTP+" Sent Successfully ");
-									return res.status(200).json({
+									res.status(200).json({
 										"message": 'NEW-USER-CREATED',
 										"user_id": newUser._id,
 										"otp": OTP,
 										"mailotp": MailOTP
 									});
 								})
-									.catch(otpError => {
-										return res.status(501).json({
-											message: "Some Error Occurred in OTP Send Function",
-											error: otpError
-										});
+								.catch((err) => {
+									res.status(500).json({
+										error: err
 									});
+								});
+
+
+
+								// const client = new plivo.Client('', '');
+								// const sourceMobile = "+919923393733";
+								// var text = "Dear User, " + '\n' + "" + otpSmsText + " : " + OTP;
+
+								// client.messages.create(
+								// 	src = sourceMobile,
+								// 	dst = '+91' + req.body.mobileNumber,
+								// 	text = text
+								// ).then((result) => {
+								// 	// return res.status(200).json("OTP "+OTP+" Sent Successfully ");
+								// 	return res.status(200).json({
+								// 		"message": 'NEW-USER-CREATED',
+								// 		"user_id": newUser._id,
+								// 		"otp": OTP,
+								// 		"mailotp": MailOTP
+								// 	});
+								// })
+								// .catch(otpError => {
+								// 	console.log('otp', otpError);
+								// 	return res.status(501).json({
+								// 		message: "Some Error Occurred in OTP Send Function",
+								// 		error: otpError
+								// 	});
+								// });
 							}
 
 						})
@@ -303,15 +306,15 @@ exports.resendotp = (req, res, next) => {
 
 
 				// console.log('Plivo Client = ');
-				const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
-				const sourceMobile = "+919923393733";
-				var text = "Dear User, " + '\n' + "" + otpSmsText + ": " + OTP;
+				// const client = new plivo.Client('', '');
+				// const sourceMobile = "+919923393733";
+				// var text = "Dear User, " + '\n' + "" + otpSmsText + ": " + OTP;
 
-				client.messages.create(
-					src = sourceMobile,
-					dst = '+91' + user.profile.mobileNumber,
-					text = text
-				).then((result) => {
+				// client.messages.create(
+				// 	src = sourceMobile,
+				// 	dst = '+91' + user.profile.mobileNumber,
+				// 	text = text
+				// ).then((result) => {
 
 					User.updateOne(
 						{ _id: req.params.userID },
@@ -324,27 +327,27 @@ exports.resendotp = (req, res, next) => {
 							},
 						}
 					)
-						.exec()
-						.then(data => {
-							res.status(200).json({
-								message: "OTP Resend Successfully"
-							});
-						})
-						.catch(err => {
-							console.log(err);
-							res.status(500).json({
-								error: err
-							});
+					.exec()
+					.then(data => {
+						res.status(200).json({
+							message: "OTP Resend Successfully"
 						});
-					// return res.status(200).json("OTP "+OTP+" Sent Successfully ");
-				})
-					.catch(otpError => {
-
-						return res.status(501).json({
-							message: "Some Error Occurred in Resending OTP Send Function",
-							error: otpError
+					})
+					.catch(err => {
+						console.log(err);
+						res.status(500).json({
+							error: err
 						});
 					});
+					// return res.status(200).json("OTP "+OTP+" Sent Successfully ");
+				// })
+					// .catch(otpError => {
+
+					// 	return res.status(501).json({
+					// 		message: "Some Error Occurred in Resending OTP Send Function",
+					// 		error: otpError
+					// 	});
+					// });
 			}
 
 		})
@@ -1198,7 +1201,8 @@ exports.confirm_otps = (req, res, next) => {
 	User.findOne({ "_id": req.body.user_ID })
 		.exec()
 		.then(data => {
-			if (req.body.mobOTP === data.profile.sentMobOtp && req.body.emailOTP === data.profile.sentEmailOtp) {
+			// if (req.body.mobOTP === data.profile.sentMobOtp && req.body.emailOTP === data.profile.sentEmailOtp) {
+			if (req.body.emailOTP === data.profile.sentEmailOtp) {
 				User.updateOne(
 					{ "_id": req.body.user_ID },
 					{

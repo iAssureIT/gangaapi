@@ -10,10 +10,14 @@ router.patch('/patch', vendorController.update_vendor);
 router.get('/get/list',vendorController.list_vendor);
 
 router.patch('/insert/location/:vendorID',vendorController.insert_vendor_location);
+
 router.patch('/update/location/:vendorID/:locationID',vendorController.update_vendor_location);
+
 router.patch('/delete/location/:vendorID/:locationID',vendorController.delete_vendor_location);
 
 router.patch('/insert/contact/:vendorID',vendorController.insert_vendor_contact);
+
+router.patch('/update/contact/:vendorID/:contactID/:levelID',vendorController.insert_vendor_contact);
 
 router.get('/get/count',vendorController.count_vendor);
 

@@ -338,6 +338,33 @@ exports.insert_vendor_contact = (req, res, next) => {
         });
     });
 };
+exports.update_vendor_contact = (req, res, next) => {
+    var formValues = req.body;
+    var contactDetailsId = formValues._id;
+    Vendors.update({'_id':contactDetailsId},
+        {$set :{
+                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Designation"]      : formValues.Designation,   
+                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".ContactLevel"]     : formValues.ContactLevel,   
+                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Phone"]            : formValues.Phone,   
+                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Email"]            : formValues.Email,   
+                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Name"]             : formValues.Name,   
+                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Reportinmanager"]  : formValues.Reportinmanager,   
+                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".AltPhone"]         : formValues.AltPhone,   
+                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Landing"]          : formValues.Landing,   
+            }
+        }
+    )
+    .exec()
+    .then(data => {
+        res.status(200).json(data);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.list_vendor_with_limits = (req, res, next) => {
     Vendors.find()
         .exec()
