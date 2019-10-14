@@ -918,7 +918,7 @@ exports.user_performaction = (req, res, next) => {
 			.exec()
 			.then(data => {
 				return res.status(200).json({
-					"message": 'Selected Users activated successfully.',
+					"msg": 'Selected Users activated successfully.',
 				});
 			})
 			.catch(err => {
@@ -935,7 +935,7 @@ exports.user_performaction = (req, res, next) => {
 			.exec()
 			.then(data => {
 				return res.status(200).json({
-					"message": 'Selected Users blocked successfully.',
+					"msg": 'Selected Users blocked successfully.',
 				});
 			})
 			.catch(err => {
@@ -951,7 +951,7 @@ exports.user_performaction = (req, res, next) => {
 			.exec()
 			.then(data => {
 				return res.status(200).json({
-					"message": 'Selected Users deleted successfully.',
+					"msg": 'Selected Users deleted successfully.',
 				});
 			})
 			.catch(err => {
