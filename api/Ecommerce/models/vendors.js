@@ -30,21 +30,15 @@ const vendorsSchema = mongoose.Schema({
     ],
     contactDetails            : [
         {
-            "Location"                  : String,
-            "LocationLevel"             : [ 
-                {
-                    "contact_id"        : String,
-                    "Location"          : String,
-                    "Designation"       : String,
-                    "ContactLevel"      : String,
-                    "Phone"             : String,
-                    "Email"             : String,
-                    "Name"              : String,
-                    "Reportinmanager"   : String,
-                    "AltPhone"          : String,
-                    "Landing"           : String,
-                }, 
-            ]
+            "Location"          : String,
+            "Designation"       : String,
+            "ContactLevel"      : String,
+            "Phone"             : String,
+            "Email"             : String,
+            "Name"              : String,
+            "Reportinmanager"   : String,
+            "AltPhone"          : String,
+            "Landing"           : String,
         }, 
     ],
     productsServices          : Array,

@@ -168,7 +168,7 @@ exports.update_vendor_location = (req, res, next) => {
                 });
             } else {
                 res.status(200).json({
-                    "message": "Vendor's already location updated"
+                    "message": "Vendor's location already  updated"
                 });
             }
         })
@@ -206,128 +206,51 @@ exports.delete_vendor_location = (req, res, next) => {
             });
         });
 };
-exports.insert_vendor_contact = (req, res, next) => {
-    Vendors.findOne({'_id':req.params.vendorID,"contactDetails.Location":req.body.Location})
+exports.delete_vendor_contact = (req, res, next) => {
+    Vendors.updateOne(
+        { "_id": req.params.vendorID, "contactDetails._id": req.params.contactID },
+        {
+            $pull: { "contactDetails": { "_id": req.params.contactID } }
+        }
+    )
     .exec()
-    .then(contact => {
-        if (contact) {
-            var lengthData = contact.contactDetails.length;
-            
-            var lengthDataLevel = contact.contactDetails[lengthData - 1].LocationLevel.length;
-            var levelIndex = lengthDataLevel - 1;
-            
-            if (levelIndex != req.body.levelIndex) {
-                Vendors.update({ '_id': req.params.vendorID, "contactDetails.Location": req.body.Location },
-                    {
-                        $push: {
-                            "contactDetails.$.LocationLevel": {
-                                'Location': req.body.Location,
-                                'Designation': req.body.Designation,
-                                'ContactLevel': req.body.ContactLevel,
-                                'Phone': req.body.Phone,
-                                'Email': req.body.Email,
-                                'Name': req.body.Name,
-                                'Reportinmanager': req.body.Reportinmanager,
-                                'AltPhone': req.body.AltPhone,
-                                'Landing': req.body.Landing,
-                            },
-                        }
-                    }
-                )
-                .exec()
-                .then(data => {
-                    if (data.nModified == 1) {
-                        res.status(200).json({
-                            "message": "Vendor's contact submitted successfully.",
-                            "vendor_ID": data._id
-                        });
-                    } else {
-                        res.status(401).json({
-                            "message": "Vendor Not Found"
-                        });
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                    res.status(500).json({
-                        error: err
-                    });
-                });
-            } else {
-                Vendors.update({ '_id': req.params.vendorID },
-                    {
-                        $set: {
-                            ["contactDetails." + req.body.contactIndex + ".LocationLevel." + req.body.levelIndex + ".Designation"]: req.body.Designation,
-                            ["contactDetails." + req.body.contactIndex + ".LocationLevel." + req.body.levelIndex + ".ContactLevel"]: req.body.ContactLevel,
-                            ["contactDetails." + req.body.contactIndex + ".LocationLevel." + req.body.levelIndex + ".Phone"]: req.body.Phone,
-                            ["contactDetails." + req.body.contactIndex + ".LocationLevel." + req.body.levelIndex + ".Email"]: req.body.Email,
-                            ["contactDetails." + req.body.contactIndex + ".LocationLevel." + req.body.levelIndex + ".Name"]: req.body.Name,
-                            ["contactDetails." + req.body.contactIndex + ".LocationLevel." + req.body.levelIndex + ".Reportinmanager"]: req.body.Reportinmanager,
-                            ["contactDetails." + req.body.contactIndex + ".LocationLevel." + req.body.levelIndex + ".AltPhone"]: req.body.AltPhone,
-                            ["contactDetails." + req.body.contactIndex + ".LocationLevel." + req.body.levelIndex + ".Landing"]: req.body.Landing,
-                        }
-                    }
-                )
-                .exec()
-                .then(data => {
-                    if (data.nModified == 1) {
-                        res.status(200).json({
-                            "message": "Vendor's contact submitted successfully.",
-                            "vendor_ID": data._id
-                        });
-                    } else {
-                        res.status(401).json({
-                            "message": "Vendor Not Found"
-                        });
-                    }
-                })
-                .catch(err => {
-                    console.log(err);
-                    res.status(500).json({
-                        error: err
-                    });
-                });
+    .then(data => {
+        if (data.nModified == 1) {
+            res.status(200).json({
+                "message": "Vendor's contact deleted successfully.",
+            });
+        } else {
+            res.status(200).json({
+                "message": "Vendor's contact deleted successfully.",
+            });
+        }
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+exports.insert_vendor_contact = (req, res, next) => {
+    Vendors.updateOne(
+        { _id: req.params.vendorID },
+        {
+            $push: {
+                contactDetails: req.body,
             }
-        }else{
-            Vendors.update({ '_id': req.params.vendorID },
-                {
-                    $push: {
-                        "contactDetails": {
-                            Location: req.body.Location,
-                            LocationLevel: [{
-                                'Location': req.body.Location,
-                                'Designation': req.body.Designation,
-                                'ContactLevel': req.body.ContactLevel,
-                                'Phone': req.body.Phone,
-                                'Email': req.body.Email,
-                                'Name': req.body.Name,
-                                'Reportinmanager': req.body.Reportinmanager,
-                                'AltPhone': req.body.AltPhone,
-                                'Landing': req.body.Landing,
-                            }]
-                        },
-                    }
-                }
-
-            )
-            .exec()
-            .then(data => {
-                if (data.nModified == 1) {
-                    res.status(200).json({
-                        "message": "Vendor's contact submitted successfully.",
-                        "vendor_ID": data._id
-                    });
-                } else {
-                    res.status(401).json({
-                        "message": "Vendor Not Found"
-                    });
-                }
-            })
-            .catch(err => {
-                console.log(err);
-                res.status(500).json({
-                    error: err
-                });
+        }
+    )
+    .exec()
+    .then(data => {
+        if (data.nModified == 1) {
+            res.status(200).json({
+                "message": "Vendor's contact submitted successfully.",
+                "vendor_ID": data._id
+            });
+        } else {
+            res.status(401).json({
+                "message": "Vendor Not Found"
             });
         }
     })
@@ -339,24 +262,35 @@ exports.insert_vendor_contact = (req, res, next) => {
     });
 };
 exports.update_vendor_contact = (req, res, next) => {
-    var formValues = req.body;
-    var contactDetailsId = formValues._id;
-    Vendors.update({'_id':contactDetailsId},
-        {$set :{
-                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Designation"]      : formValues.Designation,   
-                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".ContactLevel"]     : formValues.ContactLevel,   
-                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Phone"]            : formValues.Phone,   
-                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Email"]            : formValues.Email,   
-                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Name"]             : formValues.Name,   
-                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Reportinmanager"]  : formValues.Reportinmanager,   
-                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".AltPhone"]         : formValues.AltPhone,   
-                ["contactDetails."+formValues.contactIndex+".LocationLevel."+formValues.levelIndex+".Landing"]          : formValues.Landing,   
+    console.log(req.params, req.body)
+    Vendors.updateOne(
+        { "_id": req.params.vendorID, "contactDetails._id": req.params.contactID },
+        {
+            $set: {
+                "contactDetails.$.Location"          : req.body.Location,
+                "contactDetails.$.Designation"       : req.body.Designation,
+                "contactDetails.$.ContactLevel"      : req.body.ContactLevel,
+                "contactDetails.$.Phone"             : req.body.Phone,
+                "contactDetails.$.Email"             : req.body.Email,
+                "contactDetails.$.Name"              : req.body.Name,
+                "contactDetails.$.Reportinmanager"   : req.body.Reportinmanager,
+                "contactDetails.$.AltPhone"          : req.body.AltPhone,
+                "contactDetails.$.Landing"           : req.body.Landing,
             }
         }
     )
     .exec()
     .then(data => {
-        res.status(200).json(data);
+        if(data.nModified == 1) {
+            res.status(200).json({
+                "message": "Vendor's contact updated successfully.",
+                "vendor_ID": data._id
+            });
+        }else{
+            res.status(200).json({
+                "message": "Vendor's contact already updated"
+            });
+        }
     })
     .catch(err => {
         console.log(err);
