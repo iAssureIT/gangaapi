@@ -96,7 +96,21 @@ exports.listCustomerReviewbucustomerid = (req,res,next)=>{
         });
     });
 };
-
+exports.delete_review = (req,res,next)=>{
+    CustomerReview.deleteOne({_id:req.params.reviewID})
+    .exec()
+    .then(data=>{
+        res.status(200).json({
+            "message": "Review Deleted Successfully."
+        });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.updateCustomerReview = (req, res, next) => {
     CustomerReview.updateOne(
         { _id: req.params._id},

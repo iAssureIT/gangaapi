@@ -22,5 +22,6 @@ router.post('/get/list',customerReviewController.list_review);
 
 router.get('/get/user/list/:customerID',customerReviewController.listCustomerReviewbucustomerid);
 
+router.delete('/delete/:reviewID',productController.delete_review);
 
 module.exports = router;
