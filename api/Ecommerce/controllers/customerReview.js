@@ -55,6 +55,34 @@ exports.list_customer_reviews = (req,res,next)=>{
         });
     });
 };
+exports.update_review_status = (req,res,next)=>{
+    CustomerReview.updateOne(
+        { _id:req.body.review_ID},  
+        {
+            $set:{
+                "status" : req.body.status,
+            }
+        }
+    )
+    .exec()
+    .then(data=>{
+        if(data.nModified == 1){
+            res.status(200).json({
+                "message": "Success",
+            });
+        }else{
+            res.status(401).json({
+                "message": "Product Not Found"
+            });
+        }
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.listCustomerReviewbucustomerid = (req,res,next)=>{
     CustomerReview.find({customerID : req.params.customerID})
     .exec()

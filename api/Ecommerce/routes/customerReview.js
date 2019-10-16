@@ -12,6 +12,8 @@ router.patch('/patch', customerReviewController.updateCustomerReview);
 
 router.get('/get/list/:productID',customerReviewController.listCustomerReview);
 
+router.put('/status', productController.update_review_status);
+
 router.get('/get/list',customerReviewController.list_customer_reviews);
 
 router.get('/get/count',customerReviewController.count_review);
