@@ -1000,24 +1000,24 @@ exports.get_category_reports = (req,res,next)=>{
     selector = {
     createdAt: { $gte:  moment(req.body.startTime).startOf('day').toDate() },
     createdAt: { $lte:  moment(req.body.endTime).endOf('day').toDate() },
-    "products.section"  :  req.body.section,   
-    "products.category" :  req.body.category, 
-    "products.subCategory" : req.body.subcategory
+    "products.section_ID"  :  req.body.section,   
+    "products.category_ID" :  req.body.category, 
+    "products.subCategory_ID" : req.body.subcategory
     }
   }
-  else if (req.body.category && req.body.subcategory) {
+  else if (req.body.section && req.body.category) {
     selector = {
     createdAt: { $gte:  moment(req.body.startTime).startOf('day').toDate() },
-    createdAt: { $lte:  moment(req.body.endTime).endOf('day').toDate() },  
-    "products.category" :  req.body.category, 
-    "products.subCategory" : req.body.subcategory
+    createdAt: { $lte:  moment(req.body.endTime).endOf('day').toDate() },
+    "products.section_ID"  :  req.body.section,    
+    "products.category_ID" :  req.body.category,
     }
   }
   else if (req.body.category) {
     selector = {
     createdAt: { $gte:  moment(req.body.startTime).startOf('day').toDate() },
     createdAt: { $lte:  moment(req.body.endTime).endOf('day').toDate() },  
-    "products.category" :  req.body.category  
+    "products.category_ID" :  req.body.category  
     }
   } 
   else {
