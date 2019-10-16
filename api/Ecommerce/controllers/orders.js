@@ -65,19 +65,21 @@ exports.insert_order = (req,res,next)=>{
                     productLength = productLength + 1;
                     totalQuantity = totalQuantity + parseInt(payModeObj.cartItems[k].quantity);
                     cartArray.push({
-                      "product_ID"        : payModeObj.cartItems[k].product_ID,
-                      "productName"       : payModeObj.cartItems[k].productName,
-                      "discountedPrice"   : payModeObj.cartItems[k].discountedPrice,
-                      "originalPrice"     : payModeObj.cartItems[k].originalPrice,
-                      "actualPrice"       : payModeObj.cartItems[k].actualPrice,
-                      "offeredPrice"      : payModeObj.cartItems[k].offeredPrice,
-                      "currency"          : payModeObj.cartItems[k].currency,
-                      "quantity"          : payModeObj.cartItems[k].quantity,
-                      "total"             : payModeObj.cartItems[k].totalForQantity,
-                      "productImage"      : payModeObj.cartItems[k].productImage,
-                      "category"          : payModeObj.cartItems[k].category,
-                      "subCategory"       : payModeObj.cartItems[k].subCategory,
-       
+                        "product_ID"        : payModeObj.cartItems[k].product_ID,
+                        "productName"       : payModeObj.cartItems[k].productName,
+                        "discountedPrice"   : payModeObj.cartItems[k].discountedPrice,
+                        "originalPrice"     : payModeObj.cartItems[k].originalPrice,
+                        "actualPrice"       : payModeObj.cartItems[k].actualPrice,
+                        "offeredPrice"      : payModeObj.cartItems[k].offeredPrice,
+                        "currency"          : payModeObj.cartItems[k].currency,
+                        "quantity"          : payModeObj.cartItems[k].quantity,
+                        "total"             : payModeObj.cartItems[k].totalForQantity,
+                        "productImage"      : payModeObj.cartItems[k].productImage,
+                        "section_ID"        : payModeObj.cartItems[k].section_ID,
+                        "section"           : payModeObj.cartItems[k].section,
+                        "category_ID"       : payModeObj.cartItems[k].category_ID,
+                        "category"          : payModeObj.cartItems[k].category,
+                        "subCategory_ID"    : payModeObj.cartItems[k].subCategory_ID,
                     });
                   }
                 }
