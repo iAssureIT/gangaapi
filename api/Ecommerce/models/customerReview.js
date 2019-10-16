@@ -8,6 +8,8 @@ const customerReviewSchema = mongoose.Schema({
     productID                 : String,
     rating                    : String,
     customerReview            : String,
+    status                    : String,
+    adminComment              : String,
     createdAt                 : Date
 });
 

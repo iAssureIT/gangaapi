@@ -42,6 +42,19 @@ exports.listCustomerReview = (req,res,next)=>{
         });
     });
 };
+exports.list_customer_reviews = (req,res,next)=>{
+    CustomerReview.find()
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.listCustomerReviewbucustomerid = (req,res,next)=>{
     CustomerReview.find({customerID : req.params.customerID})
     .exec()
