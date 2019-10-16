@@ -33,4 +33,7 @@ router.patch('/get/returnOrder',orderController.returnOrder);
 
 router.get('/get/report/:startTime/:endTime/:startRange/:limitRange',orderController.get_reports);
 
+router.post('/get/category-wise-report/',orderController.get_category_reports);
+
+
 module.exports = router; 

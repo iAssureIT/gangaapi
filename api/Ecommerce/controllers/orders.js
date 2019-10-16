@@ -958,7 +958,6 @@ exports.returnOrder = (req,res,next)=>{
 
 exports.get_reports = (req,res,next)=>{
 
-  const today = moment().startOf('day');
   console.log("startTime",req.params.startTime);
   console.log("endTime",moment(req.params.endTime).endOf('day').toDate());
 
@@ -973,14 +972,75 @@ exports.get_reports = (req,res,next)=>{
           var allData = data.map((x, i)=>{
             return {
                 "_id"                   : x._id,
-                "orderID"               : x.orderID,
+                "orderID"               : (x.orderID).toString(),
+                "cratedAt"              : moment(x.createdAt).format("DD/MM/YYYY hh:mm a"),
                 "userFullName"          : x.userFullName,
-                "totalAmount"           : x.totalAmount,
+                "totalAmount"           : (x.totalAmount).toString(),
                 "deliveryStatus"        : x.deliveryStatus[x.deliveryStatus.length-1].status
             }
           })
           res.status(200).json(allData.slice(req.params.startRange, req.params.limitRange));
           //  res.status(200).json(allData);
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+
+exports.get_category_reports = (req,res,next)=>{
+  
+  var selector = {};
+  if (req.body.section && req.body.category && req.body.subcategory) {
+    selector = {
+    createdAt: { $gte:  moment(req.body.startTime).startOf('day').toDate() },
+    createdAt: { $lte:  moment(req.body.endTime).endOf('day').toDate() },
+    "products.section"  :  req.body.section,   
+    "products.category" :  req.body.category, 
+    "products.subCategory" : req.body.subcategory
+    }
+  }
+  else if (req.body.category && req.body.subcategory) {
+    selector = {
+    createdAt: { $gte:  moment(req.body.startTime).startOf('day').toDate() },
+    createdAt: { $lte:  moment(req.body.endTime).endOf('day').toDate() },  
+    "products.category" :  req.body.category, 
+    "products.subCategory" : req.body.subcategory
+    }
+  }
+  else if (req.body.category) {
+    selector = {
+    createdAt: { $gte:  moment(req.body.startTime).startOf('day').toDate() },
+    createdAt: { $lte:  moment(req.body.endTime).endOf('day').toDate() },  
+    "products.category" :  req.body.category  
+    }
+  } 
+  else {
+    selector = {
+    createdAt: {
+        $gte:  moment(req.body.startTime).startOf('day').toDate(),
+        $lte:  moment(req.body.endTime).endOf('day').toDate()
+      }
+    }
+  }
+  //console.log("selector", selector);
+    Orders.find(selector).sort({createdAt:-1})      
+        .exec()
+        .then(data=>{
+          var allData = data.map((x, i)=>{
+            return {
+                "_id"                   : x._id,
+                "orderID"               : (x.orderID).toString(),
+                "cratedAt"              : moment(x.createdAt).format("DD/MM/YYYY hh:mm a"),
+                "userFullName"          : x.userFullName,
+                "totalAmount"           : (x.totalAmount).toString(),
+                "deliveryStatus"        : x.deliveryStatus[x.deliveryStatus.length-1].status
+            }
+          })
+          res.status(200).json(allData.slice(req.body.startRange, req.body.limitRange));
         })
         .catch(err =>{
             console.log(err);

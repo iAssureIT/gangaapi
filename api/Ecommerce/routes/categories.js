@@ -9,7 +9,7 @@ router.patch('/patch', categoryController.update_category);
 
 router.get('/get/list',categoryController.list_section);
 
-router.get('/get/list/:section',categoryController.list_category);
+router.get('/get/list/:section_ID',categoryController.list_category);
 
 router.get('/get/count',categoryController.count_category);
 

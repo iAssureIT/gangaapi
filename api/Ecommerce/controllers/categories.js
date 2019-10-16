@@ -95,7 +95,7 @@ exports.list_section = (req,res,next)=>{
         });
 };
 exports.list_category = (req,res,next)=>{
-    Category.find({"section":req.params.section})
+    Category.find({"section_ID":req.params.section_ID})
         .exec()
         .then(data=>{
             res.status(200).json(data);
