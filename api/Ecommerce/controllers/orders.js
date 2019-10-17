@@ -13,6 +13,7 @@ const gloabalVariable 	= require('./../../../nodemon');
 const _ = require('underscore');
 const moment = require('moment');
 var localUrl =  "http://localhost:"+gloabalVariable.PORT;
+var ObjectId = require('mongodb').ObjectID;
 
 exports.insert_order = (req,res,next)=>{ 
     var mailSubject, mailText, smsText;
@@ -816,15 +817,15 @@ exports.dispatchOrder = (req,res,next)=>{
 
 exports.list_order_by_user = (req,res,next)=>{
   console.log('user_ID',req.params.userID);
-    //Orders.find({}) 
-    //Orders.find({"user_ID":req.params.userID})
+
+    /*Orders.find({
+        "user_ID": ObjectId(req.params.userID)
+      })*/
     Orders.aggregate([{ $lookup:
       {
          from: 'returnedproducts',
          localField: '_id',
          foreignField: 'orderID',
-         // localField: 'products.product_ID',
-         // foreignField: 'product_ID',
          as: 'returnProducts'
        } 
       },
@@ -834,9 +835,9 @@ exports.list_order_by_user = (req,res,next)=>{
         }
       },
       {
-        $match:{"user_ID":req.params.userID}
+        $match:{"user_ID": ObjectId(req.params.userID)}
       }
-    ])      
+    ])   
     .exec()
     .then(data=>{
       console.log('data', data);
