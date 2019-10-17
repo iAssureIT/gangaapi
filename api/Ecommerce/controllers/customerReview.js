@@ -138,7 +138,7 @@ exports.add_admin_comment = (req, res, next) => {
         { _id: req.body.rating_ID},
         {
             $set: {
-                "adminComment "           : req.body.adminComment,
+                "adminComment"           : req.body.adminComment,
             }
         }
     )
