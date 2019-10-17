@@ -12,7 +12,7 @@ router.patch('/patch', customerReviewController.updateCustomerReview);
 
 router.get('/get/list/:productID',customerReviewController.listCustomerReview);
 
-router.put('/status', productController.update_review_status);
+router.put('/status', customerReviewController.update_review_status);
 
 router.get('/get/list',customerReviewController.list_customer_reviews);
 
@@ -22,6 +22,6 @@ router.post('/get/list',customerReviewController.list_review);
 
 router.get('/get/user/list/:customerID',customerReviewController.listCustomerReviewbucustomerid);
 
-router.delete('/delete/:reviewID',productController.delete_review);
+router.delete('/delete/:reviewID',customerReviewController.delete_review);
 
 module.exports = router;
