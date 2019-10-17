@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 
 const customerReviewSchema = mongoose.Schema({
 	_id			              : mongoose.Schema.Types.ObjectId,
-    customerID                : String,
+    customerID                : { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     customerName              : String,
-    orderID                   : String,
-    productID                 : String,
+    orderID                   : { type: mongoose.Schema.Types.ObjectId, ref: 'orders' },
+    productID                 : { type: mongoose.Schema.Types.ObjectId, ref: 'products' },
     rating                    : String,
     customerReview            : String,
     status                    : String,

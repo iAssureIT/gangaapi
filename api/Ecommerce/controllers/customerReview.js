@@ -12,6 +12,7 @@ exports.insertCustomerReview = (req,res,next)=>{
 			    productID                 : req.body.productID,
 			    rating                    : req.body.rating,
 			    customerReview            : req.body.customerReview,
+			    status                    : 'Publish',
                 createdAt                 : new Date()
             });
             customerReview.save()
