@@ -10,6 +10,8 @@ router.post('/search/post', customerReviewController.searchCustomerReview);
 
 router.patch('/patch', customerReviewController.updateCustomerReview);
 
+router.patch('/admin', customerReviewController.add_admin_comment);
+
 router.get('/get/list/:productID',customerReviewController.listCustomerReview);
 
 router.put('/status', customerReviewController.update_review_status);

@@ -114,7 +114,7 @@ exports.delete_review = (req,res,next)=>{
 };
 exports.updateCustomerReview = (req, res, next) => {
     CustomerReview.updateOne(
-        { _id: req.params._id},
+        { _id: req.body.rating_ID},
         {
             $set: {
                 "rating"                    : req.body.rating,
@@ -122,16 +122,38 @@ exports.updateCustomerReview = (req, res, next) => {
             }
         }
     )
-        .exec()
-        .then(data => {
-            res.status(200).json(data);
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({
-                error: err
-            });
+    .exec()
+    .then(data => {
+        res.status(200).json(data);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
         });
+    });
+};
+exports.add_admin_comment = (req, res, next) => {
+    CustomerReview.updateOne(
+        { _id: req.body.rating_ID},
+        {
+            $set: {
+                "adminComment "           : req.body.adminComment,
+            }
+        }
+    )
+    .exec()
+    .then(data => {
+        res.status(200).json({
+            message : 'Comment added successfully.'
+        });
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
 };
 
 exports.list_review = (req,res,next)=>{
