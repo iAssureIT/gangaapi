@@ -626,6 +626,23 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                 });
 };
 
+
+exports.changeToPreviousStatus = (req,res,next)=>{
+  Orders.updateOne(
+                {_id: ObjectId(req.body.orderID) }, 
+                { $pop:{ deliveryStatus : 1 } }
+        )
+        .exec()
+        .then(data=>{
+          res.status(200).json({
+              "message": "Order Status is updated Successfully."
+          });
+        })
+        .catch(err =>{
+            res.status(500).json({error: err});
+        });
+};
+
 exports.dispatchOrder = (req,res,next)=>{
     var dispatchMailSubject, dispatchMailText, dispatchSmsText;
     Masternotifications.findOne({"templateType":"Email","templateName":"Order Dispatched"})

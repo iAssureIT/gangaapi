@@ -9,6 +9,8 @@ router.patch('/', orderController.update_order);
 
 router.patch('/patch/updateDeliveryStatus', orderController.updateDeliveryStatus);
 
+router.patch('/patch/changeToPreviousStatus', orderController.changeToPreviousStatus);
+
 router.get('/get/list',orderController.list_order);
 
 router.get('/get/orderlist/:status',orderController.list_orderby_status);
