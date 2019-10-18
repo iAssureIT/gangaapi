@@ -408,6 +408,7 @@ exports.user_login = (req, res, next) => {
 		.exec()
 		.then(user => {
 			if (user) {
+
 				var pwd = user.services.password.bcrypt;
 				if (pwd) {
 					bcrypt.compare(req.body.password, pwd, (err, result) => {
@@ -426,13 +427,13 @@ exports.user_login = (req, res, next) => {
 									expiresIn: "1h"
 								}
 							);
-
+							console.log(user.profile.firstName);
 							res.header("Access-Control-Allow-Origin", "*");
 							res.status(200).json({
 								message: 'Auth successful',
 								token: token,
 								user_ID: user._id,
-								userFirstName: user.profile.firstname,
+								userFirstName: user.profile.firstName,
 								roles: user.roles,
 								status:user.profile.status
 							});
