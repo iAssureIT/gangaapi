@@ -99,8 +99,8 @@
             host: 'smtp.gmail.com',
             port: 587,
             auth: {
-                user: 'iassureit.webmaster@gmail.com',
-				pass: 'iAssureIT@123'
+                user: 'shhribalajielectricals@gmail.com',
+				pass: 'sbElectricals@123'
 // user: 'testtprm321@gmail.com',
 // pass: 'tprm1234'
 
@@ -109,7 +109,7 @@
         console.log('after transport');
         let mailOptions = {
             
-            from   : '"GangaExpress" <iassureit.webmaster@gmail.com>', // sender address
+            from   : '"Shree Balaji Electricals" <shhribalajielectricals@gmail.com>', // sender address
             to     : req.body.email, // list of receivers
             subject: req.body.subject, // Subject line
             text   : req.body.text, // plain text body
