@@ -278,7 +278,7 @@ exports.resendotp = (req, res, next) => {
 				request({
 
 					"method": "POST",
-					"url": "http://localhost:3060/send-email",
+					"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
 					"body": {
 						"email": user.profile.emailId,
 						"subject": otpMailSubject,

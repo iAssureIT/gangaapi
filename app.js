@@ -100,10 +100,7 @@
             port: 587,
             auth: {
                 user: 'shhribalajielectricals@gmail.com',
-				pass: 'sbElectricals@123'
-// user: 'testtprm321@gmail.com',
-// pass: 'tprm1234'
-
+				pass: 'iAssureIT@123'
             }
         });
         console.log('after transport');
@@ -114,12 +111,6 @@
             subject: req.body.subject, // Subject line
             text   : req.body.text, // plain text body
 			html   : req.body.mail // html body
-
-// from   : '"Coffic" <testtprm321@gmail.com>', // sender address
-// to     : req.body.email, // list of receivers
-// subject: req.body.subject, // Subject line
-// text   : req.body.text, // plain text body
-// html   : req.body.mail // html body
         };
         console.log('after mailoption');
         //name email mobilenumber message
