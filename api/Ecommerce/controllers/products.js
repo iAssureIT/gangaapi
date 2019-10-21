@@ -83,11 +83,11 @@ exports.bulkUploadProduct = (req,res,next)=>{
         var productData = req.body;
         var Count  = 0;
         for(k = 0 ; k < productData.length ; k++){
-            if(productData[k].section!= undefined){
+            if(productData[k].section != undefined){
 
                 var sectionObject = await sectionInsert(productData[k].section)
 
-                var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,sectionObject.section_ID);
+                var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,productData[k].section,sectionObject.section_ID);
                 
                 var insertProductObject = await insertProduct(sectionObject.section_ID,categoryObject,productData[k]);
                 
@@ -150,7 +150,7 @@ function sectionInsert(sectionName) {
     })                   
 }
 
-function categoryInsert(catgName,subcatgName,section) {
+function categoryInsert(catgName,subcatgName,sectionname,section) {
     return new Promise(function(resolve,reject){    
         categoryDuplicateControl();
         async function categoryDuplicateControl(){
@@ -165,6 +165,7 @@ function categoryInsert(catgName,subcatgName,section) {
                         categoryDescription       : '',
                         categoryImage             : '',
                         categoryIcon              : '',
+                        section                   : sectionname,
                         section_ID                : section,
                         createdAt                 : new Date()
                     });
