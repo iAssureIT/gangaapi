@@ -99,14 +99,14 @@
             host: 'smtp.gmail.com',
             port: 587,
             auth: {
-                user: 'shhribalajielectricals@gmail.com',
+                user: 'iassureit.webmaster@gmail.com',
 				pass: 'iAssureIT@123'
             }
         });
         console.log('after transport');
         let mailOptions = {
             
-            from   : '"Shree Balaji Electricals" <shhribalajielectricals@gmail.com>', // sender address
+            from   : '"GangaExpress" <iassureit.webmaster@gmail.com>', // sender address
             to     : req.body.email, // list of receivers
             subject: req.body.subject, // Subject line
             text   : req.body.text, // plain text body
