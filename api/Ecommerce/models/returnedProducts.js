@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const returnedProductsSchema = mongoose.Schema({
 	_id			              : mongoose.Schema.Types.ObjectId,
     orderID                   : { type: mongoose.Schema.Types.ObjectId, ref: 'orders' },
+    altOrderID                : Number,
     user_ID                   : { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     product_ID                : { type: mongoose.Schema.Types.ObjectId, ref: 'products' },
     reasonForReturn           : String,      

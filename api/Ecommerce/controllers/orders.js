@@ -906,11 +906,16 @@ exports.cancelOrder = (req,res,next)=>{
 
 exports.returnOrder = (req,res,next)=>{ 
     console.log(req.body.orderID)
+    console.log(req.body.productID)
       /*Orders.findOne(
             { _id : req.body.orderID, "products.product_ID":req.body.productID}
-            ) */
+            )
+            .exec()
+                .then(data=>{
+                  console.log(data);
+                })*/
       Orders.updateOne(
-            {_id : req.body.orderID, "products.product_ID":req.body.productID}, 
+            {_id : ObjectId(req.body.orderID), "products.product_ID": ObjectId(req.body.productID) }, 
             {
               $set:
                   { 
@@ -921,6 +926,7 @@ exports.returnOrder = (req,res,next)=>{
             )
             .exec()
                 .then(data=>{
+                  console.log(data);
                     if(data.nModified == 1){
                         
                         Orders.findOne({ _id : req.body.orderID, "products.product_ID":req.body.productID})
@@ -929,6 +935,7 @@ exports.returnOrder = (req,res,next)=>{
                           const returnedproducts = new ReturnedProducts({
                             _id                       : new mongoose.Types.ObjectId(), 
                             orderID                   : req.body.orderID,
+                            altOrderID                : req.body.altorderid,
                             user_ID                   : req.body.userid,
                             product_ID                : req.body.productID,
                             reasonForReturn           : req.body.reasonForReturn, 
