@@ -678,9 +678,7 @@ exports.update_user_details = (req, res, next) => {
 										}
 									})
 								} else {
-									res.status(401).json({
-										message: 'Bcrypt Auth failed 1'
-									});
+									res.status(200).json({ message: "Incorrect Password" });
 								}
 
 							})

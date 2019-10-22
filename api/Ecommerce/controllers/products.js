@@ -822,19 +822,33 @@ exports.upload_photo = (req,res,next)=>{
     });
 };
 exports.upload_photo_product_code = (req,res,next)=>{
-    Products.updateOne(
-        { "itemCode" : req.body.itemCode},
-        {   
-            $push:{                            
-                "productImage" : req.body.productImage,       
-            }
-        }
-    )
+    Products.find({"itemCode" : req.body.itemCode, "productImage": req.body.productImage})
     .exec()
     .then(data=>{    
-        res.status(200).json({
-            "message": "Images uploaded successfully"
-        });
+        if(data.length>0){
+            // console.log('image alredy exist');
+        }else{
+            Products.updateOne(
+                { "itemCode" : req.body.itemCode},
+                {   
+                    $push:{                            
+                        "productImage" : req.body.productImage,       
+                    }
+                }
+            )
+            .exec()
+            .then(data=>{    
+                res.status(200).json({
+                    "message": "Images uploaded successfully"
+                });
+            })
+            .catch(err =>{
+                console.log(err);
+                res.status(500).json({
+                    error: err
+                });
+            });
+        }
     })
     .catch(err =>{
         console.log(err);
@@ -842,6 +856,8 @@ exports.upload_photo_product_code = (req,res,next)=>{
             error: err
         });
     });
+
+    
 };
 exports.remove_photo = (req,res,next)=>{
     Products.updateOne(
