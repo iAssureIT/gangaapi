@@ -3,6 +3,8 @@ const _         = require("underscore");
 const Products = require('../models/products');
 const Category = require('../models/categories');
 const Sections = require('../models/sections');
+const Orders = require('../models/orders');
+var ObjectId = require('mongodb').ObjectID;
 
 exports.insert_product = (req,res,next)=>{
     Products.find({"itemCode" : req.body.itemCode})
@@ -749,19 +751,38 @@ exports.delete_file = (req,res,next)=>{
     
 };
 exports.delete_product = (req,res,next)=>{
-    Products.deleteOne({_id:req.params.productID})
-    .exec()
-    .then(data=>{
-        res.status(200).json({
-            "message": "Product Deleted Successfully."
+    console.log("productID",req.params.productID);
+    Orders.find({"products.product_ID" : req.params.productID })
+        .exec()
+        .then(odata=>{
+            console.log(odata);
+            if (odata) {
+                res.status(200).json({
+                    "message": "You cannot delete this product as orders are related to this product."
+                });
+            }else{
+                /*Products.deleteOne({_id:req.params.productID})
+                        .exec()
+                        .then(data=>{
+                            res.status(200).json({
+                                "message": "Product Deleted Successfully."
+                            });
+                        })
+                        .catch(err =>{
+                            console.log(err);
+                            res.status(500).json({
+                                error: err
+                            });
+                        });*/
+            }
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
         });
-    })
-    .catch(err =>{
-        console.log(err);
-        res.status(500).json({
-            error: err
-        });
-    });
+    
 };
 exports.upload_photo = (req,res,next)=>{
     console.log("input = ",req.body);

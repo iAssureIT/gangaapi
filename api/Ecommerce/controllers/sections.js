@@ -1,6 +1,7 @@
 const mongoose  = require("mongoose");
 const Sections = require('../models/sections');
 const Category = require('../models/categories');
+const Products = require('../models/products');
 
 exports.insert_section = (req,res,next)=>{
 	var sectionUrl = req.body.section.replace(/\s+/g, '-').toLowerCase();
@@ -94,7 +95,40 @@ exports.update_section = (req,res,next)=>{
 };
 
 exports.delete_section = (req,res,next)=>{
-    Sections.deleteOne({_id:req.params.sectionID})
+
+    Products.findOne({section_ID:req.params.sectionID})
+        .exec()
+        .then(pdata=>{
+            if (pdata) {
+                res.status(200).json({
+                    "message": "You cannot delete this section as products are related to this section."
+                });
+            }else{
+                Sections.deleteOne({_id:req.params.sectionID})
+                        .exec()
+                        .then(data=>{
+                            res.status(200).json({
+                                "message": "Section Deleted Successfully."
+                            });
+                        })
+                        .catch(err =>{
+                            console.log(err);
+                            res.status(500).json({
+                                error: err
+                            });
+                        });
+
+            }
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        }); 
+
+
+    /*Sections.deleteOne({_id:req.params.sectionID})
     .exec()
     .then(data=>{
         res.status(200).json({
@@ -106,7 +140,7 @@ exports.delete_section = (req,res,next)=>{
         res.status(500).json({
             error: err
         });
-    });
+    });*/
 };
 exports.count_section = (req,res,next)=>{
     Sections.find({})
