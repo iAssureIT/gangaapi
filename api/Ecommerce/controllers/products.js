@@ -826,7 +826,9 @@ exports.upload_photo_product_code = (req,res,next)=>{
     .exec()
     .then(data=>{    
         if(data.length>0){
-            // console.log('image alredy exist');
+            res.status(200).json({
+                "message": "Some images are already exist."
+            });
         }else{
             Products.updateOne(
                 { "itemCode" : req.body.itemCode},
