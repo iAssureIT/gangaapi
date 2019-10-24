@@ -968,6 +968,7 @@ exports.searchINCategory = (req,res,next)=>{
         "$or": [ 
                 {"productName"    : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
                 {"brand"          : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
+                {"section"        : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
                 {"category"       : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
                 {"subCategory"    : {'$regex' : '^' + req.body.searchstr , $options: "i"} }
             ]
