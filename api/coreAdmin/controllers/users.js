@@ -1021,6 +1021,21 @@ exports.users_count = (req, res, next) => {
 		});
 };
 
+exports.active_users_count = (req, res, next) => {
+	User.find({"profile.status":"active"}).count()
+		.exec()
+		.then(data => {
+
+			res.status(200).json({ "dataCount": data });
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({
+				error: err
+			});
+		});
+};
+
 exports.account_role_remove = (req, res, next) => {
 
 	User.updateOne(

@@ -86,18 +86,19 @@ exports.bulkUploadProduct = (req,res,next)=>{
         var Count  = 0;
         for(k = 0 ; k < productData.length ; k++){
             if(productData[k].section != undefined){
+                if (productData[k].section.trim() != '') {
+                    var sectionObject = await sectionInsert(productData[k].section)
 
-                var sectionObject = await sectionInsert(productData[k].section)
+                    var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,productData[k].section,sectionObject.section_ID);
+                    
+                    var insertProductObject = await insertProduct(sectionObject.section_ID,categoryObject,productData[k]);
+                    
+                    if (insertProductObject != 0) {
+                        Count++;
+                    }else{
 
-                var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,productData[k].section,sectionObject.section_ID);
-                
-                var insertProductObject = await insertProduct(sectionObject.section_ID,categoryObject,productData[k]);
-                
-                if (insertProductObject != 0) {
-                    Count++;
-                }else{
-
-                }
+                    }
+                }  
             }        
         }
         res.status(200).json({
@@ -925,14 +926,22 @@ exports.list_productby_subcategory = (req,res,next)=>{
 
 exports.search_product = (req,res,next)=>{
     Products.find(
-            { "$or": 
+            {
+                "$and" : [
+                { "$or": 
                     [
                     {"productName"    : {'$regex' : '^' + req.params.searchstr , $options: "i"} },
                     {"brand"          : {'$regex' : '^' + req.params.searchstr , $options: "i"} },
                     {"category"       : {'$regex' : '^' + req.params.searchstr , $options: "i"} },
                     {"subCategory"    : {'$regex' : '^' + req.params.searchstr , $options: "i"} }, 
                     ] 
+                },
+                { "$or": [{"status":"Publish"}] }
+                ]
             }
+            
+            
+
         )
     .exec()
     .then(data=>{
@@ -948,11 +957,14 @@ exports.search_product = (req,res,next)=>{
 
 
 exports.searchINCategory = (req,res,next)=>{
-
-
+    console.log('catArray', req.body.catArray);
+    var catArray = []
+    req.body.catArray.map((data,index)=>{
+        catArray.push(data.category)
+    })
     Products.find({
         //"category_ID" : {$in : [ObjectId("5d75f228fc87471d3d023ae9")]},
-        "category" : {$in : req.body.catArray},
+        "category" : {$in : catArray},
         "$or": [ 
                 {"productName"    : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
                 {"brand"          : {'$regex' : '^' + req.body.searchstr , $options: "i"} },

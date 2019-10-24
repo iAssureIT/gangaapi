@@ -8,7 +8,7 @@ exports.query_mail = (req,res,next)=>{
 	     "method"    : "POST",
 	     "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
 	     "body"      :  {
-	                         "email"     : "amit.shinde@iassureit.com",
+	                         "email"     : "priyanka.kale@iassureit.com",
 	                         "subject"   : "Customer Query",
 	                         "text"      : "Customer Query",
 	                         // "mail"      : 'Hello admin, query details are given below: ' +'\n'+ '\n Customer Name: '+req.body.customerName +'\n'+ '\n Customer MobileNo: '+req.body.customerMobile +'\n'+'\n Query: '+ req.body.customerQuery ,

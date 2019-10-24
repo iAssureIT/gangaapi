@@ -145,7 +145,7 @@ exports.insert_order = (req,res,next)=>{
                      "method"    : "POST",
                      "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                      "body"      :  {
-                                         "email"     : "amitrshinde156@gmail.com",
+                                         "email"     : "priyanka.kale@iassureit.com",
                                          "subject"   : 'Order Placed Successfully',
                                          "text"      : "WOW Its done",
                                          "mail"      : 'Hello '+'Admin'+','+'\n'+"\n <br><br>You have an order placed by "+data.profile.fullName+"."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
@@ -497,7 +497,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                              "method"    : "POST",
                              "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                              "body"      :  {
-                                                 "email"     : "amitrshinde156@gmail.com",
+                                                 "email"     : "priyanka.kale@iassureit.com",
                                                  "subject"   : 'Order delivered Successfully',
                                                  "text"      : "WOW Its done",
                                                  "mail"      : 'Hello '+'Admin'+','+'\n'+"\n <br><br>Order delivered successfully."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',

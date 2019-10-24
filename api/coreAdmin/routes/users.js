@@ -32,6 +32,8 @@ router.get('/userslist', UserController.users_directlist);
 
 router.get('/get/count', UserController.users_count); 
 
+router.get('/get/activeuserscount', UserController.active_users_count);
+
 router.put('/resetpwd/:userID',UserController.update_user_resetpassword);  
 
 router.get('/:userID',UserController.user_details); 
