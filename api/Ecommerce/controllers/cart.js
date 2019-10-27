@@ -161,7 +161,7 @@ exports.insert_cart = (req,res,next)=>{
                                     "offeredPrice"      : formValues.offeredPrice,
                                     "totalForQantity"   : formValues.totalForQantity,
                                 });
-                                // console.log('cartTotal1',cartTotal);
+                                console.log('cartTotal1',cartTotal);
                                 Carts.updateOne(
                                     {"user_ID":user_ID},
                                     { $set: {

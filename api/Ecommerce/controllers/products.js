@@ -859,9 +859,8 @@ exports.upload_photo_product_code = (req,res,next)=>{
             error: err
         });
     });
-
-    
 };
+
 exports.remove_photo = (req,res,next)=>{
     Products.updateOne(
         {"_id": req.body.product_ID},
