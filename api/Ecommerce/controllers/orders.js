@@ -1,19 +1,19 @@
 const mongoose  = require("mongoose");
 
-const Orders = require('../models/orders');
-const Carts = require('../models/cart');
-const Masternotifications =  require('../../coreAdmin/models/masternotifications');
-const User = require('../../coreAdmin/models/users');
-const BusinessAssociate = require('../models/businessAssociate');
-const ReturnedProducts = require('../models/returnedProducts');
-
-const plivo         = require('plivo');
-var request         = require('request-promise');  
-const gloabalVariable 	= require('./../../../nodemon');
-const _ = require('underscore');
-const moment = require('moment');
-var localUrl =  "http://localhost:"+gloabalVariable.PORT;
-var ObjectId = require('mongodb').ObjectID;
+const Orders                = require('../models/orders');
+const Carts                 = require('../models/cart');
+const Masternotifications   = require('../../coreAdmin/models/masternotifications');
+const User                  = require('../../coreAdmin/models/users');
+const BusinessAssociate     = require('../models/businessAssociate');
+const ReturnedProducts      = require('../models/returnedProducts');
+const Products              = require('../models/products');
+const plivo                 = require('plivo');
+var request                 = require('request-promise');  
+const gloabalVariable 	    = require('./../../../nodemon');
+const _                     = require('underscore');
+const moment                = require('moment');
+var localUrl                =  "http://localhost:"+gloabalVariable.PORT;
+var ObjectId                = require('mongodb').ObjectID;
 
 exports.insert_order = (req,res,next)=>{ 
     var mailSubject, mailText, smsText;
@@ -82,6 +82,14 @@ exports.insert_order = (req,res,next)=>{
                         "category"          : payModeObj.cartItems[k].category,
                         "subCategory_ID"    : payModeObj.cartItems[k].subCategory_ID,
                     });
+                    Products.updateOne(
+                        {"_id": payModeObj.cartItems[k].product_ID},
+                        { $inc: {
+                            "availableQuantity" : -(payModeObj.cartItems[k].quantity),
+                        }
+                    })
+                    .then()
+                    .catch();
                   }
                 }
        
@@ -89,7 +97,7 @@ exports.insert_order = (req,res,next)=>{
                 .exec()
                 .then(data=>{
                     // console.log('data===mailSubject=', mailSubject,mailText);
-                    console.log('data====', data);
+                    // console.log('data====', data);
                     request({
                      "method"    : "POST",
                      "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
@@ -118,29 +126,29 @@ exports.insert_order = (req,res,next)=>{
                         });
                     });
                    
-                    const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
-                    const sourceMobile = "+919923393733";
-                    //var text = "Dear User, "+'\n'+"Your Order has been placed successfully and will be dispached soon.\n";
+                    // const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
+                    // const sourceMobile = "+919923393733";
+                    // //var text = "Dear User, "+'\n'+"Your Order has been placed successfully and will be dispached soon.\n";
                     
 
-                    var text = smsText;
-                    client.messages.create(
-                     src=sourceMobile,
-                     dst= '+91'+data.profile.mobileNumber,
-                     text=text
-                    ).then((result)=> {
-                        // console.log("src = ",src," | DST = ", dst, " | result = ", result);
-                        res.status(200).json({
-                            message:"Order Placed Successfully"
-                        });
-                    })
-                    .catch(otpError=>{
-                        // console.log("otpError",otpError);
-                        return res.status(501).json({
-                             message: "Some Issue Occured While Placing Your Order",
-                             error: otpError
-                        });
-                    }); 
+                    // var text = smsText;
+                    // client.messages.create(
+                    //  src=sourceMobile,
+                    //  dst= '+91'+data.profile.mobileNumber,
+                    //  text=text
+                    // ).then((result)=> {
+                    //     // console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                    //     res.status(200).json({
+                    //         message:"Order Placed Successfully"
+                    //     });
+                    // })
+                    // .catch(otpError=>{
+                    //     // console.log("otpError",otpError);
+                    //     return res.status(501).json({
+                    //          message: "Some Issue Occured While Placing Your Order",
+                    //          error: otpError
+                    //     });
+                    // }); 
                    request({
                      "method"    : "POST",
                      "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
@@ -165,27 +173,27 @@ exports.insert_order = (req,res,next)=>{
                         });
                     });
                    
-                    const client2 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
-                    const sourceMobile2 = "+919923393733";
-                    var text2 = "Dear Admin, "+'\n'+"You have a Order by "+data.profile.fullName+".\n";
+                    // const client2 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
+                    // const sourceMobile2 = "+919923393733";
+                    // var text2 = "Dear Admin, "+'\n'+"You have a Order by "+data.profile.fullName+".\n";
                    
-                    client2.messages.create(
-                     src=sourceMobile2,
-                     dst= '+919049711725',
-                     text=text2
-                    ).then((result)=> {
-                        // console.log("src = ",src," | DST = ", dst, " | result = ", result);
-                        res.status(200).json({
-                            message:"Order Placed Successfully"
-                        });
-                    })
-                    .catch(otpError=>{
-                        // console.log("otpError",otpError);
-                        return res.status(501).json({
-                             message: "Some Issue Occured While Placing Your Order",
-                             error: otpError
-                        });
-                    });
+                    // client2.messages.create(
+                    //  src=sourceMobile2,
+                    //  dst= '+919049711725',
+                    //  text=text2
+                    // ).then((result)=> {
+                    //     // console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                    //     res.status(200).json({
+                    //         message:"Order Placed Successfully"
+                    //     });
+                    // })
+                    // .catch(otpError=>{
+                    //     // console.log("otpError",otpError);
+                    //     return res.status(501).json({
+                    //          message: "Some Issue Occured While Placing Your Order",
+                    //          error: otpError
+                    //     });
+                    // });
 
                    
                     const order = new Orders({
