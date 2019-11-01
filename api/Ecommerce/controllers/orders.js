@@ -42,6 +42,7 @@ exports.insert_order = (req,res,next)=>{
                       .catch()
 
       var i = 0;
+      console.log(req.body.qtys);
       if(req.body.qtys.length > 0){
         var user_ID = req.body.user_ID;
         Carts.findOne({"user_ID" : req.body.user_ID})

@@ -438,9 +438,9 @@ exports.user_login = (req, res, next) => {
 								status:user.profile.status
 							});
 						}
-						res.status(401).json({
-							message: 'Error and Result Auth failed'
-						});
+						// res.status(401).json({
+						// 	message: 'Error and Result Auth failed'
+						// });
 					})
 				} else {
 					res.status(401).json({ message: "Password not found" });
