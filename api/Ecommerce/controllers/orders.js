@@ -11,7 +11,7 @@ const plivo                 = require('plivo');
 var request                 = require('request-promise');  
 const gloabalVariable 	    = require('./../../../nodemon');
 const _                     = require('underscore');
-const moment                = require('moment');
+const moment                = require('moment-timezone');
 var localUrl                =  "http://localhost:"+gloabalVariable.PORT;
 var ObjectId                = require('mongodb').ObjectID;
 
@@ -994,9 +994,6 @@ exports.returnOrder = (req,res,next)=>{
 
 exports.get_reports = (req,res,next)=>{
 
-  console.log("startTime",req.params.startTime);
-  console.log("endTime",moment(req.params.endTime).endOf('day').toDate());
-
     Orders.find({
       createdAt: {
         $gte:  moment(req.params.startTime).startOf('day').toDate(),
@@ -1077,6 +1074,220 @@ exports.get_category_reports = (req,res,next)=>{
             }
           })
           res.status(200).json(allData.slice(req.body.startRange, req.body.limitRange));
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+exports.ytdorders = (req,res,next)=>{
+    //console.log('year',moment().tz('Asia/Kolkata').startOf('year'));
+    //console.log('day',moment().tz('Asia/Kolkata').endOf('day'));
+
+    Orders.find({
+      createdAt: {
+        $gte:  moment().tz('Asia/Kolkata').startOf('year'),
+        $lte:  moment().tz('Asia/Kolkata').endOf('day')
+      }
+    }).count()     
+        .exec()
+        .then(data=>{
+          res.status(200).json({ "dataCount": data });
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+
+exports.mtdorders = (req,res,next)=>{
+
+    Orders.find({
+      createdAt: {
+        $gte:  moment().tz('Asia/Kolkata').startOf('month'),
+        $lte:  moment().tz('Asia/Kolkata').endOf('day')
+      }
+    }).count()      
+        .exec()
+        .then(data=>{
+          res.status(200).json({ "dataCount": data });
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+
+
+exports.todaysneworders = (req,res,next)=>{
+    Orders.aggregate([
+    { "$match": { "deliveryStatus.status" :  "New Order", 
+                  "createdAt": {$gte:  moment().tz('Asia/Kolkata').startOf('day')} 
+                }
+    },
+    { "$redact":
+        {
+            "$cond": {
+               "if": { "$eq": [ { "$arrayElemAt": [ "$deliveryStatus.status", -1 ] }, "New Order" ] },
+               "then": "$$KEEP",
+               "else": "$$PRUNE"
+            }
+        }
+    },
+    {
+      $count: "count"
+    }
+    ])     
+        .exec()
+        .then(data=>{
+          if (data.length==0) {
+            res.status(200).json({ "dataCount": 0 });
+          }else{
+            res.status(200).json({ "dataCount": data[0].count });
+          }
+          
+          
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+
+exports.totalOrdersByPeriod = (req,res,next)=>{
+    //console.log('sdash',moment(req.params.startTime).tz('Asia/Kolkata').startOf('day').toDate())
+    Orders.aggregate([
+      {
+        $match:{
+          createdAt: {
+            $gte:  moment(req.params.startTime).tz('Asia/Kolkata').startOf('day').toDate()
+            //$lte:  moment().tz('Asia/Kolkata').endOf('day')
+          }
+        }
+      },
+      {
+          $unwind : "$products"
+      },
+      {
+          $group : {
+                  "_id":"$products.subCategory",
+                  "count": { $sum: 1 } 
+              }
+      }
+    ])    
+        .exec()
+        .then(data=>{
+          res.status(200).json(data);
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+
+exports.totalOrdersByState = (req,res,next)=>{
+    //console.log('sdash',moment(req.params.startTime).tz('Asia/Kolkata').startOf('day').toDate())
+    Orders.aggregate([
+      {
+          $unwind : "$products"
+      },
+      {
+          $group : {
+                  "_id":"$deliveryAddress.state",
+                  "count": { $sum: 1 } 
+              }
+      },
+      {$sort : {"count" : -1}},
+      {$limit : 10}
+    ])    
+        .exec()
+        .then(data=>{
+          res.status(200).json(data);
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+exports.sectionRevenue = (req,res,next)=>{
+    Orders.aggregate([
+      {
+          $unwind : "$products"
+      },
+      {
+          $group : {
+                  "_id":"$products.section",
+                  "revenue" : {"$sum":  { $multiply: [ "$products.quantity", "$products.discountedPrice" ] }  }
+              }
+      }
+    ]).exec()
+        .then(data=>{
+          res.status(200).json(data); 
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+
+exports.categoryRevenue = (req,res,next)=>{
+    Orders.aggregate([
+      {
+          $unwind : "$products"
+      },
+      {
+          $group : {
+                  "_id":"$products.category",
+                  "revenue" : {"$sum":  { $multiply: [ "$products.quantity", "$products.discountedPrice" ] }  }
+              }
+      }
+    ]).exec()
+        .then(data=>{
+          res.status(200).json(data); 
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+exports.subCategoryRevenue = (req,res,next)=>{
+    Orders.aggregate([
+      {
+          $unwind : "$products"
+      },
+      {
+          $group : {
+                  "_id":"$products.subCategory",
+                  "revenue" : {"$sum":  { $multiply: [ "$products.quantity", "$products.discountedPrice" ] }  }
+              }
+      }
+    ]).exec()
+        .then(data=>{
+          res.status(200).json(data); 
         })
         .catch(err =>{
             console.log(err);

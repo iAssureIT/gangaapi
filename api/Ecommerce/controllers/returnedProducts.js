@@ -1,6 +1,7 @@
 const mongoose	= require("mongoose");
 
 const ReturnedProducts = require('../models/returnedProducts');
+const moment                = require('moment-timezone');
 
 exports.get_returned_products = (req,res,next)=>{
     ReturnedProducts.aggregate([{ $lookup:
@@ -52,4 +53,55 @@ exports.returnPickeupInitiated = (req,res,next)=>{
     .catch(err =>{
         res.status(500).json({error: err});
     });
+};
+
+exports.todayscount = (req,res,next)=>{
+    ReturnedProducts.find({ "createdAt": {$gte:  moment().tz('Asia/Kolkata').startOf('day')} }).count()
+    .exec()
+    .then(data=>{
+        es.status(200).json({ "dataCount": data });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+exports.todaysPendingCount = (req,res,next)=>{
+    ReturnedProducts.aggregate([
+    { "$match": { "returnStatus.status" :  "Return Approval Pending", 
+                  "createdAt": {$gte:  moment().tz('Asia/Kolkata').startOf('day')} 
+                }
+    },
+    { "$redact":
+        {
+            "$cond": {
+               "if": { "$eq": [ { "$arrayElemAt": [ "$returnStatus.status", -1 ] }, "Return Approval Pending" ] },
+               "then": "$$KEEP",
+               "else": "$$PRUNE"
+            }
+        }
+    },
+    {
+      $count: "count"
+    }
+    ])     
+        .exec()
+        .then(data=>{
+          if (data.length==0) {
+            res.status(200).json({ "dataCount": 0 });
+          }else{
+            res.status(200).json({ "dataCount": data[0].count });
+          }
+          
+          
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
 };

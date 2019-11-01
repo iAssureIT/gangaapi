@@ -26,4 +26,15 @@ router.get('/get/user/list/:customerID',customerReviewController.listCustomerRev
 
 router.delete('/delete/:reviewID',customerReviewController.delete_review);
 
+router.get('/get/ytdreviews',customerReviewController.ytdreviews);
+
+router.get('/get/mtdreviews',customerReviewController.mtdreviews);
+
+router.get('/get/todayscount',customerReviewController.count_todaysreview);
+
+router.get('/get/todaysUnpublishedCount',customerReviewController.todaysUnpublishedCount);
+
+router.get('/get/count',customerReviewController.count_review);
+
+
 module.exports = router;

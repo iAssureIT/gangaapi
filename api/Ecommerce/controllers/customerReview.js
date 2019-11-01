@@ -1,6 +1,7 @@
 const mongoose  = require("mongoose");
 const Products = require('../models/products');
 const CustomerReview = require('../models/customerReview');
+const moment                = require('moment-timezone');
 
 exports.insertCustomerReview = (req,res,next)=>{
 	
@@ -235,6 +236,81 @@ exports.searchCustomerReview = (req, res, next)=>{
     .exec()
     .then(data=>{
         res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+
+exports.ytdreviews = (req,res,next)=>{
+    //console.log('year',moment().tz('Asia/Kolkata').startOf('year'));
+    //console.log('day',moment().tz('Asia/Kolkata').endOf('day'));
+
+    CustomerReview.find({
+      createdAt: {
+        $gte:  moment().tz('Asia/Kolkata').startOf('year'),
+        $lte:  moment().tz('Asia/Kolkata').endOf('day')
+      }
+    }).count()     
+        .exec()
+        .then(data=>{
+          res.status(200).json({ "dataCount": data });
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+
+exports.mtdreviews = (req,res,next)=>{
+
+    CustomerReview.find({
+      createdAt: {
+        $gte:  moment().tz('Asia/Kolkata').startOf('month'),
+        $lte:  moment().tz('Asia/Kolkata').endOf('day')
+      }
+    }).count()      
+        .exec()
+        .then(data=>{
+          res.status(200).json({ "dataCount": data });
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+exports.count_todaysreview = (req,res,next)=>{
+    CustomerReview.find({ "createdAt": {$gte:  moment().tz('Asia/Kolkata').startOf('day')} }).count()
+    .exec()
+    .then(data=>{
+        res.status(200).json({ "dataCount": data });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+exports.todaysUnpublishedCount = (req,res,next)=>{
+    CustomerReview.find(
+        { "createdAt": {$gte:  moment().tz('Asia/Kolkata').startOf('day')},
+         "status" : "Unpublish"
+        }).count()
+    .exec()
+    .then(data=>{
+        res.status(200).json({ "dataCount": data });
     })
     .catch(err =>{
         console.log(err);

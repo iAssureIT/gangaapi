@@ -37,5 +37,22 @@ router.get('/get/report/:startTime/:endTime/:startRange/:limitRange',orderContro
 
 router.post('/get/category-wise-report/',orderController.get_category_reports);
 
+router.get('/get/ytdorders',orderController.ytdorders);
+
+router.get('/get/mtdorders',orderController.mtdorders);
+
+router.get('/get/mtdorders',orderController.mtdorders);
+
+router.get('/get/todaysneworders',orderController.todaysneworders);
+
+router.get('/get/totalOrdersByPeriod/:startTime',orderController.totalOrdersByPeriod);
+
+router.get('/get/totalOrdersByState',orderController.totalOrdersByState);
+
+router.get('/get/sectionRevenue',orderController.sectionRevenue);
+
+router.get('/get/categoryRevenue',orderController.categoryRevenue);
+
+router.get('/get/subCategoryRevenue',orderController.subCategoryRevenue);
 
 module.exports = router; 
