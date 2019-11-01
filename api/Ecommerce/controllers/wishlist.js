@@ -8,12 +8,26 @@ exports.insert_wishlist = (req,res,next)=>{
 		.then(data =>{
             console.log('data.length', data, data.length);
             if(data && data.length>0){
-                Wishlists.find({user_ID:req.body.user_ID}).countDocuments()
+                // Wishlists.find({user_ID:req.body.user_ID}).countDocuments()
+                // .exec()
+                // .then(wishlist=>{
+                //     res.status(200).json({
+                //         "message": "Product Already Added in Wishlist!!!",
+                //         "wishlistCount": wishlist
+                //     });
+                // })
+                // .catch(err =>{
+                //     console.log(err);
+                //     res.status(500).json({
+                //         error: err
+                //     });
+                // });
+
+                Wishlists.deleteOne({user_ID:req.body.user_ID,product_ID:req.body.product_ID})
                 .exec()
-                .then(wishlist=>{
-                    res.status(201).json({
-                        "messageinfo": "Product Already Added in Wishlist!!!",
-                        "wishlistCount": wishlist
+                .then(data=>{
+                    res.status(200).json({
+                        "message": "Product deleted from wishlist successfully."
                     });
                 })
                 .catch(err =>{
