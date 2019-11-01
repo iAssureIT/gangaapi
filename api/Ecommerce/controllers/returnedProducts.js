@@ -59,7 +59,7 @@ exports.todayscount = (req,res,next)=>{
     ReturnedProducts.find({ "createdAt": {$gte:  moment().tz('Asia/Kolkata').startOf('day')} }).count()
     .exec()
     .then(data=>{
-        es.status(200).json({ "dataCount": data });
+        res.status(200).json({ "dataCount": data });
     })
     .catch(err =>{
         console.log(err);
