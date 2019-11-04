@@ -1133,5 +1133,18 @@ exports.get_minmaxprice = (req,res,next)=>{
     });
 };
 
+exports.outofstockproducts = (req,res,next)=>{
+    Products.find({ "availableQuantity" : 0 }).count()
+    .exec()
+    .then(data=>{
+        res.status(200).json({ "dataCount": data });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 
 

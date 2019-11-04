@@ -71,5 +71,6 @@ router.get('/get/getmegamenulist', productController.get_menu_list);
 
 router.post('/post/list/filterProducts', productController.filter_products);
 
+router.get('/get/outofstockproducts', productController.outofstockproducts);
 
 module.exports = router;
