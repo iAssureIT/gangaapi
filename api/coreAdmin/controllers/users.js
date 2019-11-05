@@ -155,25 +155,27 @@ exports.user_signupadmin = (req, res, next) => {
 };
 exports.vendor_signup = (req, res, next) => {
 	console.log('req', req.body)
-	var mailSubject, mailText, smsText;
-	// Masternotifications.findOne({ "templateType": "Email", "templateName": "Vendor Sign Up" })
-	// 	.exec()
-	// 	.then((maildata) => {
-	// 		mailSubject = maildata.subject;
-	// 		mailText = maildata.content
-	// 	})
-	// 	.catch()
+	var mailSubject, mailText, smsText, NotificationData;
+	Masternotifications.findOne({ "templateType": "Email", "templateName": "Vendor New Registration" })
+		.exec()
+		.then((notificationData) => {
+			NotificationData = notificationData;
+			// mailSubject = maildata.subject;
+			// mailText = maildata.content
+			
+		})
+		.catch()
 
-	// Masternotifications.findOne({ "templateType": "SMS", "templateName": "Vendor Sign Up" })
-	// 	.exec()
-	// 	.then((smsdata) => {
-	// 		var textcontent = smsdata.content;
-	// 		var regex = new RegExp(/(<([^>]+)>)/ig);
-	// 		var textcontent = smsdata.content.replace(regex, '');
-	// 		textcontent = textcontent.replace(/\&nbsp;/g, '');
-	// 		smsText = textcontent
-	// 	})
-	// 	.catch()
+	Masternotifications.findOne({ "templateType": "SMS", "templateName": "Vendor New Registration" })
+		.exec()
+		.then((smsdata) => {
+			var textcontent = smsdata.content;
+			var regex = new RegExp(/(<([^>]+)>)/ig);
+			var textcontent = smsdata.content.replace(regex, '');
+			textcontent = textcontent.replace(/\&nbsp;/g, '');
+			smsText = textcontent
+		})
+		.catch()
 	User.find()
 		.exec()
 		.then(user => {
@@ -214,12 +216,48 @@ exports.vendor_signup = (req, res, next) => {
 					user.save()
 						.then(newUser => {
 							if (newUser) {
+								var variables = {
+									"username"        : newUser.profile.emailId,
+									"password"        : req.body.pwd,
+								}
+								if(NotificationData){
+									var content = NotificationData.content;
+									if(content.indexOf('[') > -1 ){
+										var wordsplit = content.split('[');
+									}
+					
+									var tokens = [];
+									var n = 0;
+									for(i=0;i<wordsplit.length;i++){
+										if(wordsplit[i].indexOf(']') > -1 ){
+											tokensArr = wordsplit[i].split(']');
+											tokens[n] = tokensArr[0];
+											n++;
+										}
+									}
+									var numOfVar = Object.keys(variables).length;
+					
+									for(i=0; i<numOfVar; i++){
+										var tokVar = tokens[i].substr(1,tokens[i].length-2);
+										content = content.replace(tokens[i],variables[tokens[i]]);
+									}
+									content = content.split("[").join("'");
+									content = content.split("]").join("'");
+									// console.log("content = ",content);
+									var tData={
+										content:content,
+										subject:NotificationData.subject
+									}
+									mailSubject = NotificationData.subject;
+									mailText = content 
+								}//NotificationData
+
 								request({
 									"method": "POST",
 									"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
 									"body": {
 										"email": newUser.profile.emailId,
-										"subject": "Vendor",
+										"subject": mailSubject,
 										"text": "Submitted",
 										"mail": 'Hello ' + newUser.profile.fullName + ',' + '\n' + "\n <br><br>" + mailText + "<b> </b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
 									},

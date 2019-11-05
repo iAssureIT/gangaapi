@@ -42,7 +42,7 @@ const vendorsSchema = mongoose.Schema({
         }, 
     ],
     productsServices          : Array,
-    vendorID                  : String,
+    vendorID                  : Number,
     vendor_ID                 : { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     owner_ID                  : String,
     createdBy                 : String,

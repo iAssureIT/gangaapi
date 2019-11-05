@@ -9,6 +9,8 @@ router.patch('/patch', vendorController.update_vendor);
 
 router.get('/get/list',vendorController.list_vendor);
 
+router.get('/get/greatestid',vendorController.get_greatest_vendorid);
+
 router.patch('/insert/location/:vendorID',vendorController.insert_vendor_location);
 
 router.patch('/update/location/:vendorID/:locationID',vendorController.update_vendor_location);
