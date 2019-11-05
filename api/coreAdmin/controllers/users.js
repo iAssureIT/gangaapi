@@ -498,7 +498,7 @@ exports.resendotp = (req, res, next) => {
 		});
 };
 exports.check_user_exists = (req,res,next)=>{
-    User.find({"emails.address" : req.params.emailID})
+    User.find({"username" : req.params.emailID})
     .exec()
     .then(data=>{
         res.status(200).json(data);

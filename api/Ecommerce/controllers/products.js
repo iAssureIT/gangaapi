@@ -1107,15 +1107,15 @@ exports.get_menu_list = (req,res,next)=>{
 
 exports.get_minmaxprice = (req,res,next)=>{
     var priceArray = {}
-    Products.find({},{actualPrice:1}).sort({actualPrice:1}).limit(1)
+    Products.find({},{discountedPrice:1}).sort({discountedPrice:1}).limit(1)
     .exec()
     .then(data=>{
-        priceArray.min =  data[0].actualPrice ;
+        priceArray.min =  data[0].discountedPrice ;
         
-            Products.find({},{actualPrice:1}).sort({actualPrice:-1}).limit(1)
+            Products.find({},{discountedPrice:1}).sort({discountedPrice:-1}).limit(1)
             .exec()
             .then(data1=>{
-                priceArray.max =  data1[0].actualPrice ;
+                priceArray.max =  data1[0].discountedPrice ;
                 res.status(200).json(priceArray);
             })
             .catch(err =>{
