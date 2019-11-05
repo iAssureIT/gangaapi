@@ -1213,7 +1213,7 @@ exports.users_count = (req, res, next) => {
 };
 
 exports.active_users_count = (req, res, next) => {
-	User.find({"profile.status":"active",  roles: { $ne: "admin" } }).count()
+	User.find({"profile.status":"Active",  roles: { $ne: "admin" } }).count()
 		.exec()
 		.then(data => {
 
