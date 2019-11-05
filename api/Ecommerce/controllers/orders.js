@@ -82,6 +82,7 @@ exports.insert_order = (req,res,next)=>{
                         "category_ID"       : payModeObj.cartItems[k].category_ID,
                         "category"          : payModeObj.cartItems[k].category,
                         "subCategory_ID"    : payModeObj.cartItems[k].subCategory_ID,
+                        "subCategory"       : payModeObj.cartItems[k].subCategory,
                     });
                     Products.updateOne(
                         {"_id": payModeObj.cartItems[k].product_ID},
@@ -1182,7 +1183,7 @@ exports.totalOrdersByPeriod = (req,res,next)=>{
       },
       {
           $group : {
-                  "_id":"$products.subCategory",
+                  "_id":"$products.category",
                   "count": { $sum: 1 } 
               }
       }
