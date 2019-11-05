@@ -12,11 +12,15 @@ router.post('/', UserController.user_signupadmin);
 
 router.post('/ba', UserController.ba_signupadmin); 
 
+router.post('/vendor', UserController.vendor_signup); 
+
 router.post('/login',UserController.user_login); 
 
 router.post('/userslist',UserController.users_fetch); 
 
 router.get('/list', UserController.users_list); 
+
+router.get('/vendorlist', UserController.vendor_list); 
 
 router.patch('/useraddress',UserController.add_user_address); 
 

@@ -42,8 +42,9 @@ const vendorsSchema = mongoose.Schema({
         }, 
     ],
     productsServices          : Array,
-    vendorID                 : String,
-    Owner_ID                  : String,
+    vendorID                  : String,
+    vendor_ID                 : { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+    owner_ID                  : String,
     createdBy                 : String,
     createdAt                 : Date
 });

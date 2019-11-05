@@ -26,6 +26,7 @@ exports.insert_vendor = (req, res, next) => {
                 productsServices: req.body.productsServices,
                 vendorID: req.body.vendorID,
                 owner_ID: req.body.owner_ID,
+                vendor_ID : req.body.vendor_ID,
                 createdAt: new Date()
             });
             vendors.save()
@@ -72,7 +73,8 @@ exports.update_vendor = (req, res, next) => {
                 contactDetails: req.body.contactDetails,
                 productsServices: req.body.productsServices,
                 vendorID: req.body.vendorID,
-                Owner_ID: req.body.Owner_ID,
+                owner_ID: req.body.owner_ID,
+                vendor_ID: req.body.vendor_ID,
                 createdAt: new Date()
             }
         }

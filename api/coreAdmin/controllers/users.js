@@ -153,7 +153,146 @@ exports.user_signupadmin = (req, res, next) => {
 			});
 		});
 };
+exports.vendor_signup = (req, res, next) => {
+	console.log('req', req.body)
+	var mailSubject, mailText, smsText;
+	// Masternotifications.findOne({ "templateType": "Email", "templateName": "Vendor Sign Up" })
+	// 	.exec()
+	// 	.then((maildata) => {
+	// 		mailSubject = maildata.subject;
+	// 		mailText = maildata.content
+	// 	})
+	// 	.catch()
 
+	// Masternotifications.findOne({ "templateType": "SMS", "templateName": "Vendor Sign Up" })
+	// 	.exec()
+	// 	.then((smsdata) => {
+	// 		var textcontent = smsdata.content;
+	// 		var regex = new RegExp(/(<([^>]+)>)/ig);
+	// 		var textcontent = smsdata.content.replace(regex, '');
+	// 		textcontent = textcontent.replace(/\&nbsp;/g, '');
+	// 		smsText = textcontent
+	// 	})
+	// 	.catch()
+	User.find()
+		.exec()
+		.then(user => {
+			bcrypt.hash(req.body.pwd, 10, (err, hash) => {
+				if (err) {
+					return res.status(500).json({
+						error: err
+					});
+				} else {
+					
+					const user = new User({
+						_id: new mongoose.Types.ObjectId(),
+						createdAt: new Date,
+						services: {
+							password: {
+								bcrypt: hash
+							},
+						},
+						mobileNumber: req.body.mobileNumber,
+						emails: [
+							{
+								address: req.body.emailId,
+								verified: true
+							}
+						],
+						profile: {
+							firstName: req.body.firstName,
+							lastName: req.body.lastName,
+							fullName: req.body.firstName + ' ' + req.body.lastName,
+							emailId: req.body.emailId,
+							mobileNumber: req.body.mobileNumber,
+							status: req.body.status,
+						},
+						roles: (req.body.roles),
+						username: req.body.emailId,
+
+					});
+					user.save()
+						.then(newUser => {
+							if (newUser) {
+								request({
+									"method": "POST",
+									"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
+									"body": {
+										"email": newUser.profile.emailId,
+										"subject": "Vendor",
+										"text": "Submitted",
+										"mail": 'Hello ' + newUser.profile.fullName + ',' + '\n' + "\n <br><br>" + mailText + "<b> </b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
+									},
+									"json": true,
+									"headers": {
+										"User-Agent": "Test App"
+									}
+								})
+								.then((sentemail) => {
+									res.header("Access-Control-Allow-Origin", "*");
+
+									res.status(200).json({
+										"message": 'NEW-USER-CREATED',
+										"user_id": newUser._id,
+									});
+								})
+								.catch((err) => {
+									res.status(500).json({
+										error: err
+									});
+								});
+
+
+
+								// const client = new plivo.Client('', '');
+								// const sourceMobile = "+919923393733";
+								// var text = "Dear User, " + '\n' + "" + smsText + " : ";
+
+								// client.messages.create(
+								// 	src = sourceMobile,
+								// 	dst = '+91' + req.body.mobileNumber,
+								// 	text = text
+								// ).then((result) => {
+								// 	// return res.status(200).json("OTP "+OTP+" Sent Successfully ");
+								// 	return res.status(200).json({
+								// 		"message": 'NEW-USER-CREATED',
+								// 		"user_id": newUser._id,
+								// 	});
+								// })
+								// .catch(otpError => {
+								// 	console.log('otp', otpError);
+								// 	return res.status(501).json({
+								// 		message: "Some Error Occurred in OTP Send Function",
+								// 		error: otpError
+								// 	});
+								// });
+								// res.status(200).json({
+								// 	"message": 'NEW-USER-CREATED',
+								// 	"user_id": newUser._id,
+								// });
+							}
+							res.status(200).json({
+								"message": 'NEW-USER-CREATED',
+								"user_id": newUser._id,
+							});
+						})
+						.catch(err => {
+							console.log(err);
+							res.status(500).json({
+								error: err
+							});
+						});
+				}
+			});
+
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({
+				error: err
+			});
+		});
+};
 exports.add_user_address = (req, res, next) => {
 	// var roleData = req.body.role;
 
@@ -459,6 +598,20 @@ exports.user_login = (req, res, next) => {
 
 exports.users_list = (req, res, next) => {
 	User.find({ roles: { $ne: "admin" } })
+		.exec()
+		.then(users => {
+			res.status(200).json(users);
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({
+				error: err
+			});
+		});
+
+};
+exports.vendor_list = (req, res, next) => {
+	User.find({ roles: { $eq: "vendor" } })
 		.exec()
 		.then(users => {
 			res.status(200).json(users);
