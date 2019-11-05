@@ -1045,20 +1045,23 @@ exports.list_grocerybrand = (req,res,next)=>{
 
 exports.filter_products = (req,res,next)=>{
     var selector = {};
+    
     for (var key in req.body) {
-        if (key == 'price') {
-            selector.discountedPrice  = { $gt : req.body.price.min, $lt : req.body.price.max }
-        }
-        if (key == 'brands') {
-            if (req.body.brands.length>0) {
-                selector.brand = { $in: req.body.brands } 
+        if (key != 'limit') {
+            if (key == 'price') {
+            selector.discountedPrice  = { $gte : req.body.price.min, $lte : req.body.price.max }
+            }
+            if (key == 'brands') {
+                if (req.body.brands.length>0) {
+                    selector.brand = { $in: req.body.brands } 
+                }
+            }
+            if (key != 'price' && key != 'brands') {
+                selector[key] = req.body[key];
             }
         }
-        if (key != 'price' && key != 'brands') {
-            selector[key] = req.body[key];
-        }
     }
-    Products.find(selector)
+    Products.find(selector).limit(Number(req.body.limit))
     .exec()
     .then(data=>{
         //console.log(data);
