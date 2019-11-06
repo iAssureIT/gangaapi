@@ -68,6 +68,7 @@ router.post('/sendlink',UserController.send_link);
 
 router.get('/get/checkUserExists/:emailID', UserController.check_user_exists);
 
+router.post('/filterUser', UserController.filterUser); 
 
 
 

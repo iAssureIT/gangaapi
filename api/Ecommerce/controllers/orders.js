@@ -1128,6 +1128,27 @@ exports.mtdorders = (req,res,next)=>{
 };
 
 
+exports.todaysorders = (req,res,next)=>{
+    Orders.aggregate([
+    { "$match": { "createdAt": {$gte:  moment().tz('Asia/Kolkata').startOf('day')} }
+    },
+    { $count: "count" }
+    ])     
+    .exec()
+    .then(data=>{
+      if (data.length==0) {
+        res.status(200).json({ "dataCount": 0 });
+      }else{
+        res.status(200).json({ "dataCount": data[0].count });
+      }
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 
 exports.todaysneworders = (req,res,next)=>{
     Orders.aggregate([

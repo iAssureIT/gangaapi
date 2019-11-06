@@ -43,6 +43,8 @@ router.get('/get/mtdorders',orderController.mtdorders);
 
 router.get('/get/mtdorders',orderController.mtdorders);
 
+router.get('/get/todaysorders',orderController.todaysneworders);
+
 router.get('/get/todaysneworders',orderController.todaysneworders);
 
 router.get('/get/totalOrdersByPeriod/:startTime',orderController.totalOrdersByPeriod);

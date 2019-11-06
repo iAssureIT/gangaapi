@@ -1282,10 +1282,24 @@ exports.user_search = (req, res, next) => {
 		.then(data => {
 
 			if (data.length > 0) {
-				return res.status(200).json({
-					"message": 'Search-Successfull',
-					"data": data
-				});
+				var userdataarr = []
+				users.map((data, index) => {
+					userdataarr.push({
+						_id: data._id,
+						createdAt: data.createdAt,
+						username: data.username,
+						mobileNumber: data.profile.mobileNumber,
+						firstName: data.profile.firstName,
+						lastName: data.profile.lastName,
+						fullName: data.profile.fullName,
+						emailId: data.profile.emailId,
+						status: data.profile.status,
+						roles: (data.roles).toString(),
+						officeLocation: data.officeLocation,
+					});
+				})
+				
+				return res.status(200).json( userdataarr );
 			} else {
 				return res.status(404).json({
 					"message": 'No-Data-Available',
@@ -1483,4 +1497,67 @@ exports.send_link = (req, res, next) => {
 			error: err
 		});
 	});
+};
+
+
+exports.filterUser = (req, res, next) => {
+
+	var selector = {};
+	if(req.body.role && req.body.status){
+		if (req.body.role == 'all' && req.body.status == 'all' ) {
+			selector = { roles: { $ne: "admin" } };
+		}else if(req.body.role != 'all' && req.body.status != 'all'){
+			selector = { roles: { $eq: req.body.role }, "profile.status" : {$eq: req.body.status} }
+		}
+		else if(req.body.role != 'all' && req.body.status == 'all'){
+			selector = { roles: { $eq: req.body.role } }
+		}
+		else if(req.body.role == 'all' && req.body.status != 'all'){
+			selector = { roles: { $ne: "admin" }, "profile.status" : {$eq: req.body.status}  }
+		}
+	}
+	else if (req.body.role) {
+		if (req.body.role == 'all') {
+			selector = { roles: { $ne: "admin" } };
+		}else{
+			selector = { roles: { $eq: req.body.role } }
+		}
+	}
+	else if (req.body.status) {
+		if (req.body.status == 'all') {
+			selector = { roles: { $ne: "admin" } };
+		}else{
+			selector = { roles: { $ne: "admin" }, "profile.status" : {$eq: req.body.status} };
+		}
+	}
+	//console.log("selector", selector);
+	User.find(selector)
+		.exec()
+		.then(users => {
+			var userdataarr = []
+				users.map((data, index) => {
+					userdataarr.push({
+						_id: data._id,
+						createdAt: data.createdAt,
+						username: data.username,
+						mobileNumber: data.profile.mobileNumber,
+						firstName: data.profile.firstName,
+						lastName: data.profile.lastName,
+						fullName: data.profile.fullName,
+						emailId: data.profile.emailId,
+						status: data.profile.status,
+						roles: (data.roles).toString(),
+						officeLocation: data.officeLocation,
+					});
+				})
+				
+			res.status(200).json(userdataarr);
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({
+				error: err
+			});
+		});
+
 };
