@@ -916,7 +916,7 @@ exports.update_user_details = (req, res, next) => {
 									})
 								} else {
 									res.status(401).json({
-										message: 'Bcrypt Auth failed'
+										message: 'Current password is not matching'
 									});
 								}
 
@@ -1439,12 +1439,12 @@ exports.confirm_otps = (req, res, next) => {
 						});
 					})
 					.catch(error => {
-						res.status(200).json({
+						res.status(401).json({
 							"message": "Please enter correct OTP or try regenerating the OTP."
 						});
 					})
 			} else {
-				res.status(200).json({
+				res.status(401).json({
 					"message": "Please enter correct OTP or try regenerating the OTP."
 				});
 			}
