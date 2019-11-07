@@ -1103,10 +1103,10 @@ exports.user_performaction = (req, res, next) => {
 	var field = req.body.selectedAction;
 	console.log('field', field);
 	switch (field) {
-		case 'active':
+		case 'Active':
 			User.updateMany(
 				{"_id": { "$in": req.body.selectUsers}},
-				{$set:{"profile.status":"active"}}
+				{$set:{"profile.status":"Active"}}
 				)
 			.exec()
 			.then(data => {
@@ -1120,10 +1120,10 @@ exports.user_performaction = (req, res, next) => {
 				});
 			});
 		break;
-		case 'blocked':
+		case 'Blocked':
 			User.updateMany(
 				{"_id": { "$in": req.body.selectUsers}},
-				{$set:{"profile.status":"blocked"}}
+				{$set:{"profile.status":"Blocked"}}
 			)
 			.exec()
 			.then(data => {
@@ -1137,7 +1137,7 @@ exports.user_performaction = (req, res, next) => {
 				});
 			});
 		break ;
-		case 'delete':
+		case 'Delete':
 			User.deleteMany(
 				{"_id": { "$in": req.body.selectUsers}}
 				)

@@ -264,7 +264,8 @@ var insertProduct = async (section_ID, categoryObject, data) => {
             //console.log('productPresent',productPresent)
             if (productPresent==0) {
                     const productObj = new Products({
-                        _id                       : new mongoose.Types.ObjectId(),   
+                        _id                       : new mongoose.Types.ObjectId(), 
+                        vendor_ID                 : req.body.vendorID,  
                         section_ID                : section_ID,                 
                         category                  : data.category,
                         category_ID               : categoryObject.category_ID,
@@ -293,8 +294,7 @@ var insertProduct = async (section_ID, categoryObject, data) => {
                         exclusive                 : data.exclusive,
                         featured                  : data.featured,
                         newProduct                : data.newProduct,
-                        productVideoType          : data.productVideoType,
-                        productYTubeVideo         : data.productYTubeVideo,
+                        bestSeller                : data.bestSeller,  
                         tags                      : data.tags,
                         fileName                  : data.filename,
                         createdBy                 : data.createdBy,
