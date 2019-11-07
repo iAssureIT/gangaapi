@@ -33,6 +33,7 @@ const cartSchema = mongoose.Schema({
         pincode           : String,
         city              : String,
         state             : String,
+        district          : String,
         country           : String,
         mobileNumber      : String,
         addType           : String,

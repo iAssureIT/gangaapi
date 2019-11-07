@@ -503,6 +503,7 @@ exports.add_address_to_cart = (req, res, next)=>{
                             "pincode"         : req.body.pincode,
                             "city"            : req.body.city,
                             "state"           : req.body.state,
+                            "district" : req.body.district,
                             "mobileNumber"    : req.body.mobileNumber,
                             "country"         : req.body.country,
                             "addType"         : req.body.addType,

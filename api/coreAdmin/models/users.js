@@ -47,6 +47,7 @@ const userSchema = mongoose.Schema({
 		"addressLine2"    : String,
 		"pincode"         : String,
 		"block" 	      : String,
+		"district" 	      : String,
 		"city"            : String,
 		"state"           : String,
 		"country" 		  : String,

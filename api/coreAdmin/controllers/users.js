@@ -32,119 +32,124 @@ exports.user_signupadmin = (req, res, next) => {
 			otpSmsText = textcontent
 		})
 		.catch()
-	User.find()
+	User.find({username: req.body.emailId})
 		.exec()
 		.then(user => {
-			bcrypt.hash(req.body.pwd, 10, (err, hash) => {
-				if (err) {
-					return res.status(500).json({
-						error: err
-					});
-				} else {
-					const OTP = getRandomInt(1000, 9999);
-					const MailOTP = getRandomInt(100000, 999999);
-					const user = new User({
-						_id: new mongoose.Types.ObjectId(),
-						createdAt: new Date,
-						services: {
-							password: {
-								bcrypt: hash
-							},
-						},
-						mobileNumber: req.body.mobileNumber,
-						emails: [
-							{
-								address: req.body.emailId,
-								verified: true
-							}
-						],
-						profile: {
-							firstName: req.body.firstName,
-							lastName: req.body.lastName,
-							fullName: req.body.firstName + ' ' + req.body.lastName,
-							emailId: req.body.emailId,
-							mobileNumber: req.body.mobileNumber,
-							status: req.body.status,
-							sentMobOtp: OTP,
-							sentEmailOtp: MailOTP
-						},
-						roles: (req.body.roles),
-						username: req.body.emailId,
-
-					});
-					user.save()
-						.then(newUser => {
-							if (newUser) {
-
-								request({
-									"method": "POST",
-									"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
-									"body": {
-										"email": newUser.profile.emailId,
-										"subject": otpMailSubject,
-										"text": otpMailSubject,
-										"mail": 'Hello ' + newUser.profile.fullName + ',' + '\n' + "\n <br><br>" + otpMailText + "<b>" + MailOTP + "</b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
-									},
-									"json": true,
-									"headers": {
-										"User-Agent": "Test App"
-									}
-								})
-								.then((sentemail) => {
-
-									res.header("Access-Control-Allow-Origin", "*");
-
-									res.status(200).json({
-										"message": 'NEW-USER-CREATED',
-										"user_id": newUser._id,
-										"otp": OTP,
-										"mailotp": MailOTP
-									});
-								})
-								.catch((err) => {
-									res.status(500).json({
-										error: err
-									});
-								});
-
-
-
-								// const client = new plivo.Client('', '');
-								// const sourceMobile = "+919923393733";
-								// var text = "Dear User, " + '\n' + "" + otpSmsText + " : " + OTP;
-
-								// client.messages.create(
-								// 	src = sourceMobile,
-								// 	dst = '+91' + req.body.mobileNumber,
-								// 	text = text
-								// ).then((result) => {
-								// 	// return res.status(200).json("OTP "+OTP+" Sent Successfully ");
-								// 	return res.status(200).json({
-								// 		"message": 'NEW-USER-CREATED',
-								// 		"user_id": newUser._id,
-								// 		"otp": OTP,
-								// 		"mailotp": MailOTP
-								// 	});
-								// })
-								// .catch(otpError => {
-								// 	console.log('otp', otpError);
-								// 	return res.status(501).json({
-								// 		message: "Some Error Occurred in OTP Send Function",
-								// 		error: otpError
-								// 	});
-								// });
-							}
-
-						})
-						.catch(err => {
-							console.log(err);
-							res.status(500).json({
-								error: err
-							});
+			if(user.length > 0){
+				res.status(200).json({
+					message: "User already exist"
+				});
+			}else{
+				bcrypt.hash(req.body.pwd, 10, (err, hash) => {
+					if (err) {
+						return res.status(500).json({
+							error: err
 						});
-				}
-			});
+					} else {
+						const OTP = getRandomInt(1000, 9999);
+						const MailOTP = getRandomInt(100000, 999999);
+						const user = new User({
+							_id: new mongoose.Types.ObjectId(),
+							createdAt: new Date,
+							services: {
+								password: {
+									bcrypt: hash
+								},
+							},
+							mobileNumber: req.body.mobileNumber,
+							emails: [
+								{
+									address: req.body.emailId,
+									verified: true
+								}
+							],
+							profile: {
+								firstName: req.body.firstName,
+								lastName: req.body.lastName,
+								fullName: req.body.firstName + ' ' + req.body.lastName,
+								emailId: req.body.emailId,
+								mobileNumber: req.body.mobileNumber,
+								status: req.body.status,
+								sentMobOtp: OTP,
+								sentEmailOtp: MailOTP
+							},
+							roles: (req.body.roles),
+							username: req.body.emailId,
 
+						});
+						user.save()
+							.then(newUser => {
+								if (newUser) {
+
+									request({
+										"method": "POST",
+										"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
+										"body": {
+											"email": newUser.profile.emailId,
+											"subject": otpMailSubject,
+											"text": otpMailSubject,
+											"mail": 'Hello ' + newUser.profile.fullName + ',' + '\n' + "\n <br><br>" + otpMailText + "<b>" + MailOTP + "</b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
+										},
+										"json": true,
+										"headers": {
+											"User-Agent": "Test App"
+										}
+									})
+									.then((sentemail) => {
+
+										res.header("Access-Control-Allow-Origin", "*");
+
+										res.status(200).json({
+											"message": 'NEW-USER-CREATED',
+											"user_id": newUser._id,
+											"otp": OTP,
+											"mailotp": MailOTP
+										});
+									})
+									.catch((err) => {
+										res.status(500).json({
+											error: err
+										});
+									});
+
+
+
+									// const client = new plivo.Client('', '');
+									// const sourceMobile = "+919923393733";
+									// var text = "Dear User, " + '\n' + "" + otpSmsText + " : " + OTP;
+
+									// client.messages.create(
+									// 	src = sourceMobile,
+									// 	dst = '+91' + req.body.mobileNumber,
+									// 	text = text
+									// ).then((result) => {
+									// 	// return res.status(200).json("OTP "+OTP+" Sent Successfully ");
+									// 	return res.status(200).json({
+									// 		"message": 'NEW-USER-CREATED',
+									// 		"user_id": newUser._id,
+									// 		"otp": OTP,
+									// 		"mailotp": MailOTP
+									// 	});
+									// })
+									// .catch(otpError => {
+									// 	console.log('otp', otpError);
+									// 	return res.status(501).json({
+									// 		message: "Some Error Occurred in OTP Send Function",
+									// 		error: otpError
+									// 	});
+									// });
+								}
+
+							})
+							.catch(err => {
+								console.log(err);
+								res.status(500).json({
+									error: err
+								});
+							});
+					}
+				});
+			}
 		})
 		.catch(err => {
 			console.log(err);
@@ -345,6 +350,7 @@ exports.add_user_address = (req, res, next) => {
 				"deliveryAddress.$.addressLine2": req.body.addressLine2,
 				"deliveryAddress.$.pincode": req.body.pincode,
 				"deliveryAddress.$.block": req.body.block,
+				"deliveryAddress.$.district" : req.body.district,
 				"deliveryAddress.$.country": req.body.country,
 				"deliveryAddress.$.city": req.body.city,
 				"deliveryAddress.$.state": req.body.state,
@@ -355,8 +361,9 @@ exports.add_user_address = (req, res, next) => {
 	)
 		.exec()
 		.then(data => {
-
-			res.status(200).json("User Updated");
+			res.status(200).json({
+				"message": "Address updated successfully."
+			});
 		})
 		.catch(err => {
 			console.log(err);
@@ -1362,6 +1369,7 @@ exports.add_delivery_address = (req, res, next) => {
 					"addressLine2": req.body.addressLine2,
 					"pincode": req.body.pincode,
 					"block": req.body.block,
+					"district" : req.body.district,
 					"city": req.body.city,
 					"state": req.body.state,
 					"country": req.body.country,

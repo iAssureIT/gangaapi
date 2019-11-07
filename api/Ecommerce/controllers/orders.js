@@ -222,6 +222,7 @@ exports.insert_order = (req,res,next)=>{
                                               "city"            : payModeObj.deliveryAddress.city,
                                               "state"           : payModeObj.deliveryAddress.state,
                                               "mobileNumber"    : payModeObj.deliveryAddress.mobileNumber,
+                                              "district"        : payModeObj.deliveryAddress.district,
                                               "country"         : payModeObj.deliveryAddress.country,
                                               "addType"         : payModeObj.deliveryAddress.addType
                                             },

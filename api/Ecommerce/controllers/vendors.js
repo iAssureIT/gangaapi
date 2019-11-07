@@ -113,7 +113,7 @@ exports.list_vendor = (req, res, next) => {
         });
 };
 exports.get_greatest_vendorid = (req, res, next) => {
-    Vendors.findOne().sort({"vendorID":-1}).limit(1)
+    Vendors.findOne().sort({"vendorID":-1})
         .exec()
         .then(data => {
             res.status(200).json(data);

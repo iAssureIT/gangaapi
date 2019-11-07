@@ -45,6 +45,7 @@ const orderSchema = mongoose.Schema({
                                     "addressLine2"    : String,
                                     "pincode"         : String,
                                     "city"            : String,
+                                    "district"        : String,
                                     "state"           : String,
                                     "mobileNumber"    : String,
                                     "country"         : String,
