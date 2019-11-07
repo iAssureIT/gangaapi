@@ -21,13 +21,13 @@ exports.insert_order = (req,res,next)=>{
                       .exec()
                       .then((maildata)=>{
                         if (maildata) {
-                          mailSubject = maildata.subject;
-                          mailText = maildata.content
+                          mailSubject = maildata.subject ? maildata.subject : "Order is placed successfully";
+                          mailText = maildata.content ? maildata.content : "Order is placed successfully"
                         }
                       })
                       .catch()
 
-    Masternotifications.findOne({"templateType":"SMS","templateName":"Order Placed Successfully"})
+    /*Masternotifications.findOne({"templateType":"SMS","templateName":"Order Placed Successfully"})
                       .exec()
                       .then((smsdata)=>{  
                           if (smsdata) {
@@ -39,7 +39,7 @@ exports.insert_order = (req,res,next)=>{
                           }
                           
                       })
-                      .catch()
+                      .catch()*/
 
       var i = 0;
       console.log(req.body.qtys);
@@ -210,7 +210,7 @@ exports.insert_order = (req,res,next)=>{
                       "status"            : "UnPaid",
                       "createdAt"         : new Date(),
                       "products"          : cartArray,
-                      "paymentMethod"     : payModeObj.paymentMethod,
+                      "paymentMethod"     : req.body.paymentMethod,
                       "productLength"     : productLength,
                       "totalQuantity"     : totalQuantity,
                       'deliveryAddress'   : {
@@ -245,8 +245,7 @@ exports.insert_order = (req,res,next)=>{
                                     {"_id": userCart._id},
                                     { $set: {
                                     "cartItems" : [],
-                                    "cartTotal" : 0,
-                                    "paymentMethod" : ""
+                                    "cartTotal" : 0
                                     }
                                 })
                                 .exec()
@@ -461,12 +460,12 @@ exports.updateDeliveryStatus = (req,res,next)=>{
     Masternotifications.findOne({"templateType":"Email","templateName":"Order Delivered"})
                       .exec()
                       .then((maildata)=>{
-                        DeliveryMailSubject = maildata.subject;
-                        DeliveryMailText = maildata.content
+                        DeliveryMailSubject = maildata.subject ? maildata.subject : "Order is Delivered & Paid Successfully";
+                        DeliveryMailText = maildata.content ? maildata.content : "Order is Delivered & Paid Successfully"
                       })
                       .catch()
 
-    Masternotifications.findOne({"templateType":"SMS","templateName":"Order Delivered"})
+    /*Masternotifications.findOne({"templateType":"SMS","templateName":"Order Delivered"})
                       .exec()
                       .then((smsdata)=>{
                           var textcontent = smsdata.content;                              
@@ -475,9 +474,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                           textcontent   = textcontent.replace(/\&nbsp;/g, '');
                           DeliverySmsText = textcontent;
                       })
-                      .catch()
-
-
+                      .catch()*/
 
     
     var status = req.body.status == "Delivered & Paid" ? "Paid" : "UnPaid";
@@ -659,12 +656,12 @@ exports.dispatchOrder = (req,res,next)=>{
     Masternotifications.findOne({"templateType":"Email","templateName":"Order Dispatched"})
                       .exec()
                       .then((maildata)=>{
-                        dispatchMailSubject = maildata.subject;
-                        dispatchMailText = maildata.content
+                        dispatchMailSubject = maildata.subject ?  maildata.subject : "Order is Dispatched Successfully";
+                        dispatchMailText = maildata.content ? maildata.content : "Order is Dispatched Successfully";
                       })
                       .catch()
 
-    Masternotifications.findOne({"templateType":"SMS","templateName":"Order Dispatched"})
+    /*Masternotifications.findOne({"templateType":"SMS","templateName":"Order Dispatched"})
                       .exec()
                       .then((smsdata)=>{ 
                           var textcontent = smsdata.content;                              
@@ -673,7 +670,7 @@ exports.dispatchOrder = (req,res,next)=>{
                           textcontent   = textcontent.replace(/\&nbsp;/g, '');                                                
                           dispatchSmsText = textcontent
                       })
-                      .catch()
+                      .catch()*/
     // console.log(req.body.orderID);
     // console.log('businessAssociateId',req.body.businessAssociateId);
     Orders.updateOne(

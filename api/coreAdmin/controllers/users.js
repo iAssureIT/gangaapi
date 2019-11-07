@@ -17,12 +17,12 @@ exports.user_signupadmin = (req, res, next) => {
 	Masternotifications.findOne({ "templateType": "Email", "templateName": "Sign Up" })
 		.exec()
 		.then((maildata) => {
-			otpMailSubject = maildata.subject;
-			otpMailText = maildata.content
+			otpMailSubject = maildata.subject ? maildata.subject : "Verify your Account";
+			otpMailText = maildata.content ? maildata.content : "Your account verification code is "
 		})
 		.catch()
 
-	Masternotifications.findOne({ "templateType": "SMS", "templateName": "Sign Up" })
+	/*Masternotifications.findOne({ "templateType": "SMS", "templateName": "Sign Up" })
 		.exec()
 		.then((smsdata) => {
 			var textcontent = smsdata.content;
@@ -30,7 +30,7 @@ exports.user_signupadmin = (req, res, next) => {
 			var textcontent = smsdata.content.replace(regex, '');
 			textcontent = textcontent.replace(/\&nbsp;/g, '');
 			otpSmsText = textcontent
-		})
+		})*/
 		.catch()
 	User.find({username: req.body.emailId})
 		.exec()
@@ -159,7 +159,7 @@ exports.user_signupadmin = (req, res, next) => {
 		});
 };
 exports.vendor_signup = (req, res, next) => {
-	console.log('req', req.body)
+	
 	var mailSubject, mailText, smsText, NotificationData;
 	Masternotifications.findOne({ "templateType": "Email", "templateName": "Vendor New Registration" })
 		.exec()
@@ -437,8 +437,8 @@ exports.resendotp = (req, res, next) => {
 	Masternotifications.findOne({ "templateType": "Email", "templateName": "Sign Up" })
 		.exec()
 		.then((maildata) => {
-			otpMailSubject = maildata.subject;
-			otpMailText = maildata.content
+			otpMailSubject = maildata.subject ? maildata.subject : "Verify your Account";;
+			otpMailText = maildata.content ? maildata.content : "Your account verification code is "
 		})
 		.catch()
 
