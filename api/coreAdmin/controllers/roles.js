@@ -8,6 +8,7 @@ exports.create_role = (req,res,next)=>{
 		.exec()
 		.then(data =>{
 			if(data){
+                console.log();
 				return res.status(200).json({
 					message: ' Role already exists'
 				});
