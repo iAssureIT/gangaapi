@@ -9,8 +9,8 @@ router.patch('/returnStatusUpdate',returnedProductsController.returnStatusUpdate
 
 router.patch('/returnPickeupInitiated',returnedProductsController.returnPickeupInitiated);
 
-router.get('/get/todayscount',returnedProductsController.todayscount);
+router.get('/get/count',returnedProductsController.returnedCount);
 
-router.get('/get/todaysPendingCount',returnedProductsController.todaysPendingCount);
+router.get('/get/PendingCount',returnedProductsController.PendingCount);
 
 module.exports = router;

@@ -303,11 +303,8 @@ exports.count_todaysreview = (req,res,next)=>{
     });
 };
 
-exports.todaysUnpublishedCount = (req,res,next)=>{
-    CustomerReview.find(
-        { "createdAt": {$gte:  moment().tz('Asia/Kolkata').startOf('day')},
-         "status" : "Unpublish"
-        }).count()
+exports.UnpublishedCount = (req,res,next)=>{
+    CustomerReview.find({ "status" : "Unpublish" }).count()
     .exec()
     .then(data=>{
         res.status(200).json({ "dataCount": data });

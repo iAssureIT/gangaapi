@@ -32,7 +32,7 @@ router.get('/get/mtdreviews',customerReviewController.mtdreviews);
 
 router.get('/get/todayscount',customerReviewController.count_todaysreview);
 
-router.get('/get/todaysUnpublishedCount',customerReviewController.todaysUnpublishedCount);
+router.get('/get/UnpublishedCount',customerReviewController.UnpublishedCount);
 
 router.get('/get/count',customerReviewController.count_review);
 

@@ -1157,12 +1157,10 @@ exports.todaysorders = (req,res,next)=>{
         });
     });
 };
-
-exports.todaysneworders = (req,res,next)=>{
+ 
+exports.neworderscount = (req,res,next)=>{
     Orders.aggregate([
-    { "$match": { "deliveryStatus.status" :  "New Order", 
-                  "createdAt": {$gte:  moment().tz('Asia/Kolkata').startOf('day')} 
-                }
+    { "$match": { "deliveryStatus.status" :  "New Order" }
     },
     { "$redact":
         {

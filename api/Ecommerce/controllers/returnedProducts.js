@@ -55,8 +55,8 @@ exports.returnPickeupInitiated = (req,res,next)=>{
     });
 };
 
-exports.todayscount = (req,res,next)=>{
-    ReturnedProducts.find({ "createdAt": {$gte:  moment().tz('Asia/Kolkata').startOf('day')} }).count()
+exports.returnedCount = (req,res,next)=>{
+    ReturnedProducts.find({}).count()
     .exec()
     .then(data=>{
         res.status(200).json({ "dataCount": data });
@@ -69,11 +69,9 @@ exports.todayscount = (req,res,next)=>{
     });
 };
 
-exports.todaysPendingCount = (req,res,next)=>{
+exports.PendingCount = (req,res,next)=>{
     ReturnedProducts.aggregate([
-    { "$match": { "returnStatus.status" :  "Return Approval Pending", 
-                  "createdAt": {$gte:  moment().tz('Asia/Kolkata').startOf('day')} 
-                }
+    { "$match": { "returnStatus.status" :  "Return Approval Pending" }
     },
     { "$redact":
         {
