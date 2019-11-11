@@ -17,8 +17,14 @@ exports.user_signupadmin = (req, res, next) => {
 	Masternotifications.findOne({ "templateType": "Email", "templateName": "Sign Up" })
 		.exec()
 		.then((maildata) => {
-			otpMailSubject = maildata.subject ? maildata.subject : "Verify your Account";
-			otpMailText = maildata.content ? maildata.content : "Your account verification code is "
+			if (maildata) {
+				otpMailSubject = maildata.subject;
+				otpMailText = maildata.content;
+			}else{
+				otpMailSubject = "Verify your Account";
+				otpMailText = "Your account verification code is ";
+			}
+			
 		})
 		.catch()
 
@@ -80,7 +86,7 @@ exports.user_signupadmin = (req, res, next) => {
 						user.save()
 							.then(newUser => {
 								if (newUser) {
-
+									console.log(otpMailSubject)
 									request({
 										"method": "POST",
 										"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
@@ -437,8 +443,13 @@ exports.resendotp = (req, res, next) => {
 	Masternotifications.findOne({ "templateType": "Email", "templateName": "Sign Up" })
 		.exec()
 		.then((maildata) => {
-			otpMailSubject = maildata.subject ? maildata.subject : "Verify your Account";;
-			otpMailText = maildata.content ? maildata.content : "Your account verification code is "
+			if (maildata) {
+				otpMailSubject = maildata.subject;
+				otpMailText = maildata.content;
+			}else{
+				otpMailSubject = "Verify your Account";;
+				otpMailText = "Your account verification code is "
+			}
 		})
 		.catch()
 

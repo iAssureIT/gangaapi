@@ -21,8 +21,11 @@ exports.insert_order = (req,res,next)=>{
                       .exec()
                       .then((maildata)=>{
                         if (maildata) {
-                          mailSubject = maildata.subject ? maildata.subject : "Order is placed successfully";
-                          mailText = maildata.content ? maildata.content : "Order is placed successfully"
+                          mailSubject = maildata.subject;
+                          mailText = maildata.content;
+                        }else{
+                          mailSubject = "Order is placed successfully";
+                          mailText = "Order is placed successfully"
                         }
                       })
                       .catch()
@@ -98,16 +101,12 @@ exports.insert_order = (req,res,next)=>{
                 User.findOne({"_id":req.body.user_ID})
                 .exec()
                 .then(data=>{
-                    // console.log('data===mailSubject=', mailSubject,mailText);
-                    // console.log('data====', data);
                     request({
                      "method"    : "POST",
                      "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                      "body"      :   {
                                          "email"     : data.profile.emailId,
                                          "subject"   : mailSubject,
-                                         // "subject"   : 'Order Placed Successfully',
-                                         // "text"      : "WOW Its done",
                                          "text"      : mailSubject,
                                          "mail"      : 'Hello '+data.profile.fullName+','+'\n'+mailText,
                                          // "mail"      : 'Hello '+data.profile.fullName+','+'\n'+"\n <br><br>Your Order has been placed successfully and will be dispached soon."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
@@ -460,8 +459,14 @@ exports.updateDeliveryStatus = (req,res,next)=>{
     Masternotifications.findOne({"templateType":"Email","templateName":"Order Delivered"})
                       .exec()
                       .then((maildata)=>{
-                        DeliveryMailSubject = maildata.subject ? maildata.subject : "Order is Delivered & Paid Successfully";
-                        DeliveryMailText = maildata.content ? maildata.content : "Order is Delivered & Paid Successfully"
+                        if (maildata) {
+                          DeliveryMailSubject = maildata.subject;
+                          DeliveryMailText = maildata.content;
+                        }else{
+                          DeliveryMailSubject = "Order is Delivered & Paid Successfully";
+                          DeliveryMailText = "Order is Delivered & Paid Successfully"
+                        }
+                        
                       })
                       .catch()
 
@@ -656,8 +661,13 @@ exports.dispatchOrder = (req,res,next)=>{
     Masternotifications.findOne({"templateType":"Email","templateName":"Order Dispatched"})
                       .exec()
                       .then((maildata)=>{
-                        dispatchMailSubject = maildata.subject ?  maildata.subject : "Order is Dispatched Successfully";
-                        dispatchMailText = maildata.content ? maildata.content : "Order is Dispatched Successfully";
+                        if (maildata) {
+                          dispatchMailSubject = maildata.subject;
+                          dispatchMailText = maildata.content;
+                        }else{
+                          dispatchMailSubject = "Order is Dispatched Successfully";
+                          dispatchMailText = "Order is Dispatched Successfully";
+                        }
                       })
                       .catch()
 
