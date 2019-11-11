@@ -1267,7 +1267,8 @@ exports.sectionRevenue = (req,res,next)=>{
                   "_id":"$products.section",
                   "revenue" : {"$sum":  { $multiply: [ "$products.quantity", "$products.discountedPrice" ] }  }
               }
-      }
+      },
+      { $limit  :5  }
     ]).exec()
         .then(data=>{
           res.status(200).json(data); 
@@ -1291,7 +1292,8 @@ exports.categoryRevenue = (req,res,next)=>{
                   "_id":"$products.category",
                   "revenue" : {"$sum":  { $multiply: [ "$products.quantity", "$products.discountedPrice" ] }  }
               }
-      }
+      },
+      { $limit  :5  }
     ]).exec()
         .then(data=>{
           res.status(200).json(data); 
@@ -1314,7 +1316,8 @@ exports.subCategoryRevenue = (req,res,next)=>{
                   "_id":"$products.subCategory",
                   "revenue" : {"$sum":  { $multiply: [ "$products.quantity", "$products.discountedPrice" ] }  }
               }
-      }
+      },
+      { $limit  :5  }
     ]).exec()
         .then(data=>{
           res.status(200).json(data); 

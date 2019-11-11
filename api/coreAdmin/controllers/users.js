@@ -607,13 +607,8 @@ exports.user_login = (req, res, next) => {
 				var pwd = user.services.password.bcrypt;
 				if (pwd) {
 					bcrypt.compare(req.body.password, pwd, (err, result) => {
-
-						if (err) {
-							res.status(401).json({
-								message: 'Bcrypt Auth failed'
-							});
-						}
-						if(result) {
+						
+						if (result) {
 							const token = jwt.sign({
 								email: req.body.email,
 								userId: user._id,
@@ -622,7 +617,6 @@ exports.user_login = (req, res, next) => {
 									expiresIn: "1h"
 								}
 							);
-							console.log(user.profile.firstName);
 							res.header("Access-Control-Allow-Origin", "*");
 							res.status(200).json({
 								message: 'Auth successful',
@@ -633,15 +627,17 @@ exports.user_login = (req, res, next) => {
 								status:user.profile.status
 							});
 						}
-						// res.status(401).json({
-						// 	message: 'Error and Result Auth failed'
-						// });
+						else {
+							res.status(401).json({
+								message: 'Invalid password, Please enter valid password!'
+							});
+						}
 					})
 				} else {
-					res.status(401).json({ message: "Password not found" });
+					res.status(401).json({ message: "Invalid password, Please enter valid password!" });
 				}
 			} else {
-				res.status(401).json({ message: "User Not found" });
+				res.status(401).json({ message: "This email is not registered with us. Please sign up." });
 			}
 		})
 		.catch(err => {

@@ -929,10 +929,13 @@ exports.search_product = (req,res,next)=>{
                 "$and" : [
                 { "$or": 
                     [
-                    {"productName"    : {'$regex' : '^' + req.params.searchstr , $options: "i"} },
-                    {"brand"          : {'$regex' : '^' + req.params.searchstr , $options: "i"} },
-                    {"category"       : {'$regex' : '^' + req.params.searchstr , $options: "i"} },
-                    {"subCategory"    : {'$regex' : '^' + req.params.searchstr , $options: "i"} }, 
+                    {"productName"    : {'$regex' : req.params.searchstr , $options: "i"} },
+                    {"brand"          : {'$regex' : req.params.searchstr , $options: "i"} },
+                    {"category"       : {'$regex' : req.params.searchstr , $options: "i"} },
+                    {"subCategory"    : {'$regex' : req.params.searchstr , $options: "i"} },
+                    {"productDetails" : {'$regex' : req.params.searchstr , $options: "i"} }, 
+                    {"shortDescription" : {'$regex' : req.params.searchstr , $options: "i"} }, 
+                    {"featureList.feature" : {'$regex' : req.params.searchstr , $options: "i"} } 
                     ] 
                 },
                 { "$or": [{"status":"Publish"}] }
@@ -965,11 +968,14 @@ exports.searchINCategory = (req,res,next)=>{
         //"category_ID" : {$in : [ObjectId("5d75f228fc87471d3d023ae9")]},
         "category" : {$in : catArray},
         "$or": [ 
-                {"productName"    : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
-                {"brand"          : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
-                {"section"        : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
-                {"category"       : {'$regex' : '^' + req.body.searchstr , $options: "i"} },
-                {"subCategory"    : {'$regex' : '^' + req.body.searchstr , $options: "i"} }
+                {"productName"    : {'$regex' : req.body.searchstr , $options: "i"} },
+                {"brand"          : {'$regex' : req.body.searchstr , $options: "i"} },
+                {"section"        : {'$regex' : req.body.searchstr , $options: "i"} },
+                {"category"       : {'$regex' : req.body.searchstr , $options: "i"} },
+                {"subCategory"    : {'$regex' : req.body.searchstr , $options: "i"} },
+                {"productDetails" : {'$regex' : req.params.searchstr , $options: "i"} }, 
+                {"shortDescription" : {'$regex' : req.params.searchstr , $options: "i"} }, 
+                {"featureList.feature" : {'$regex' : req.params.searchstr , $options: "i"} } 
             ]
         })
     .exec()
