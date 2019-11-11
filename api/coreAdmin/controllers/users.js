@@ -603,38 +603,47 @@ exports.user_login = (req, res, next) => {
 		.exec()
 		.then(user => {
 			if (user) {
-
-				var pwd = user.services.password.bcrypt;
-				if (pwd) {
-					bcrypt.compare(req.body.password, pwd, (err, result) => {
-						
-						if (result) {
-							const token = jwt.sign({
-								email: req.body.email,
-								userId: user._id,
-							}, gloabalVariable.JWT_KEY,
-								{
-									expiresIn: "1h"
-								}
-							);
-							res.header("Access-Control-Allow-Origin", "*");
-							res.status(200).json({
-								message: 'Auth successful',
-								token: token,
-								user_ID: user._id,
-								userFirstName: user.profile.firstName,
-								roles: user.roles,
-								status:user.profile.status
-							});
-						}
-						else {
-							res.status(401).json({
-								message: 'Invalid password, Please enter valid password!'
-							});
-						}
-					})
-				} else {
-					res.status(401).json({ message: "Invalid password, Please enter valid password!" });
+				if(user.profile.status == 'Unverified'){
+					res.status(401).json({
+						message: "Need to Verify OTP, Please Verify Your OPT First <a href='confirm-otp/"+user._id+"'>Click here</a>"
+					});
+				}else if(user.profile.status == 'Blocked'){
+					res.status(401).json({
+						message: "Your account is blocked, Please contact admin."
+					});
+				}else{
+					var pwd = user.services.password.bcrypt;
+					if (pwd) {
+						bcrypt.compare(req.body.password, pwd, (err, result) => {
+							
+							if (result) {
+								const token = jwt.sign({
+									email: req.body.email,
+									userId: user._id,
+								}, gloabalVariable.JWT_KEY,
+									{
+										expiresIn: "1h"
+									}
+								);
+								res.header("Access-Control-Allow-Origin", "*");
+								res.status(200).json({
+									message: 'Auth successful',
+									token: token,
+									user_ID: user._id,
+									userFirstName: user.profile.firstName,
+									roles: user.roles,
+									status:user.profile.status
+								});
+							}
+							else {
+								res.status(401).json({
+									message: 'Invalid password, Please enter valid password!'
+								});
+							}
+						})
+					} else {
+						res.status(401).json({ message: "Invalid password, Please enter valid password!" });
+					}
 				}
 			} else {
 				res.status(401).json({ message: "This email is not registered with us. Please sign up." });
