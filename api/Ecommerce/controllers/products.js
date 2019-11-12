@@ -959,13 +959,14 @@ exports.search_product = (req,res,next)=>{
 
 
 exports.searchINCategory = (req,res,next)=>{
-    console.log('catArray', req.body.catArray);
+    
     var catArray = []
     req.body.catArray.map((data,index)=>{
         catArray.push(data.category)
     })
-    Products.find({
-        //"category_ID" : {$in : [ObjectId("5d75f228fc87471d3d023ae9")]},
+    var selector = {};
+    if (req.body.searchstr) {
+        selector = {
         "category" : {$in : catArray},
         "$or": [ 
                 {"productName"    : {'$regex' : req.body.searchstr , $options: "i"} },
@@ -973,11 +974,16 @@ exports.searchINCategory = (req,res,next)=>{
                 {"section"        : {'$regex' : req.body.searchstr , $options: "i"} },
                 {"category"       : {'$regex' : req.body.searchstr , $options: "i"} },
                 {"subCategory"    : {'$regex' : req.body.searchstr , $options: "i"} },
-                {"productDetails" : {'$regex' : req.params.searchstr , $options: "i"} }, 
-                {"shortDescription" : {'$regex' : req.params.searchstr , $options: "i"} }, 
-                {"featureList.feature" : {'$regex' : req.params.searchstr , $options: "i"} } 
+                {"productDetails" : {'$regex' : req.body.searchstr , $options: "i"} }, 
+                {"shortDescription" : {'$regex' : req.body.searchstr , $options: "i"} }, 
+                {"featureList.feature" : {'$regex' : req.body.searchstr , $options: "i"} } 
             ]
-        })
+        };
+    }else{
+        selector = { "category" : {$in : catArray} };
+    }
+    
+    Products.find(selector)
     .exec()
     .then(data=>{
 
