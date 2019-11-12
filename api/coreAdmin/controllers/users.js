@@ -877,11 +877,11 @@ exports.update_user_details = (req, res, next) => {
 											)
 												.exec()
 												.then(data => {
-													if (data.nModified == 1) {
+													// if (data.nModified == 1) {
 														res.status(200).json({ message: "User details updated successfully." });
-													} else {
-														res.status(401).json({ message: "User Not Found" });
-													}
+													// } else {
+													// 	res.status(401).json({ message: "User Not Found" });
+													// }
 												})
 												.catch(err => {
 													console.log(err);
@@ -897,7 +897,7 @@ exports.update_user_details = (req, res, next) => {
 
 							})
 						} else {
-							res.status(401).json({ message: "Password not found" });
+							res.status(401).json({ message: "Password not match" });
 						}
 						break;
 					case 'email':
@@ -923,11 +923,11 @@ exports.update_user_details = (req, res, next) => {
 											)
 												.exec()
 												.then(data => {
-													if (data.nModified == 1) {
+													// if (data.nModified == 1) {
 														res.status(200).json({ message: "User details updated successfully." });
-													} else {
-														res.status(401).json({ message: "User Not Found" });
-													}
+													// } else {
+													// 	res.status(401).json({ message: "User Not Found" });
+													// }
 												})
 												.catch(err => {
 													console.log(err);
@@ -945,7 +945,7 @@ exports.update_user_details = (req, res, next) => {
 
 							})
 						} else {
-							res.status(401).json({ message: "Password not found" });
+							res.status(401).json({ message: "Password not match" });
 						}
 						break;
 					case 'password':
@@ -975,11 +975,11 @@ exports.update_user_details = (req, res, next) => {
 											)
 												.exec()
 												.then(data => {
-													if (data.nModified == 1) {
+													// if (data.nModified == 1) {
 														res.status(200).json({ message: "User details updated successfully." });
-													} else {
-														res.status(401).json({ message: "User Not Found" });
-													}
+													// } else {
+													// 	res.status(401).json({ message: "User Not Found" });
+													// }
 												})
 												.catch(err => {
 													console.log(err);
@@ -991,13 +991,13 @@ exports.update_user_details = (req, res, next) => {
 									})
 								} else {
 									res.status(401).json({
-										message: 'Bcrypt Auth failed'
+										message: 'Password not match'
 									});
 								}
 
 							})
 						} else {
-							res.status(401).json({ message: "Password not found" });
+							res.status(401).json({ message: "Password not match" });
 						}
 						break;
 					case 'name':
@@ -1013,11 +1013,11 @@ exports.update_user_details = (req, res, next) => {
 						)
 							.exec()
 							.then(data => {
-								if (data.nModified == 1) {
+								// if (data.nModified == 1) {
 									res.status(200).json({ message: "User details updated successfully." });
-								} else {
-									res.status(401).json({ message: "User Not Found" });
-								}
+								// } else {
+								// 	res.status(401).json({ message: "User Not Found" });
+								// }
 							})
 							.catch(err => {
 								console.log(err);
@@ -1029,7 +1029,7 @@ exports.update_user_details = (req, res, next) => {
 				}
 
 			} else {
-				res.status(401).json({ message: "User Not found" });
+				res.status(401).json({ message: "User Not found, Please contact admin." });
 			}
 		})
 		.catch(err => {
