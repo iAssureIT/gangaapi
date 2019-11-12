@@ -897,7 +897,7 @@ exports.update_user_details = (req, res, next) => {
 
 							})
 						} else {
-							res.status(401).json({ message: "Password not match" });
+							res.status(401).json({ message: "Current password isn't valid." });
 						}
 						break;
 					case 'email':
@@ -939,13 +939,13 @@ exports.update_user_details = (req, res, next) => {
 									})
 								} else {
 									res.status(401).json({
-										message: 'Current password is not matching'
+										message: "Current password isn't valid."
 									});
 								}
 
 							})
 						} else {
-							res.status(401).json({ message: "Password not match" });
+							res.status(401).json({ message: "Current password isn't valid." });
 						}
 						break;
 					case 'password':
@@ -991,13 +991,13 @@ exports.update_user_details = (req, res, next) => {
 									})
 								} else {
 									res.status(401).json({
-										message: 'Password not match'
+										message: "Current password isn't valid."
 									});
 								}
 
 							})
 						} else {
-							res.status(401).json({ message: "Password not match" });
+							res.status(401).json({ message: "Current password isn't valid." });
 						}
 						break;
 					case 'name':
