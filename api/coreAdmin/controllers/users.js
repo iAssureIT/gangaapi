@@ -1512,7 +1512,7 @@ exports.send_link = (req, res, next) => {
 				});
 			});
 		}else{
-			res.status(200).json({ message: "User Not Found" });
+			res.status(401).json({ message: "User Not Found" });
 		}
 	})
 	.catch(err => {
