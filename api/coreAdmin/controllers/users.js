@@ -1495,7 +1495,7 @@ exports.send_link = (req, res, next) => {
 					"email": req.body.username,
 					"subject": "Reset Password Link",
 					"text": "Reset Password Link text",
-					"mail": 'Hello ' + user.profile.fullName + ',' + '\n' + "\n <br><br> qagangaexpress.iassureit.com/resetpassword/" + user._id + "<b> </b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
+					"mail": 'Hello ' + user.profile.fullName + ',' + '\n' + "\n <br><br> http://qagangaexpress.iassureit.com/resetpassword/" + user._id + "<b> </b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
 				},
 				"json": true,
 				"headers": {
