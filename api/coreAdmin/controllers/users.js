@@ -1306,7 +1306,7 @@ exports.user_search = (req, res, next) => {
 
 			if (data.length > 0) {
 				var userdataarr = []
-				users.map((data, index) => {
+				data.map((data, index) => {
 					userdataarr.push({
 						_id: data._id,
 						createdAt: data.createdAt,
