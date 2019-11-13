@@ -999,9 +999,9 @@ exports.searchINCategory = (req,res,next)=>{
 
 exports.list_brand = (req,res,next)=>{
     
-    Products.distinct("brand", {"section_ID": req.params.sectionID})
+    Products.distinct("brand", { "section_ID": req.params.sectionID })
     .exec()
-    .then(data=>{
+    .then(data=>{ _id:{$in : req.body.publishData}
         res.status(200).json(data);
     })
     .catch(err =>{
@@ -1011,6 +1011,21 @@ exports.list_brand = (req,res,next)=>{
         });
     });
 };
+exports.listBrandBySections = (req,res,next)=>{
+    
+    Products.distinct("brand", {"section_ID": { $in : req.body.sectionID } })
+    .exec()
+    .then(data=>{ _id:{$in : req.body.publishData}
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
 exports.list_size = (req,res,next)=>{
     
     Products.distinct("size", {"section_ID": req.params.sectionID})

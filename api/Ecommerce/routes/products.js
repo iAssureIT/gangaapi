@@ -59,6 +59,8 @@ router.post('/post/searchINCategory', productController.searchINCategory);
 
 router.get('/get/listBrand/:sectionID', productController.list_brand);
 
+router.post('/get/listBrandBySections', productController.listBrandBySections);
+
 router.get('/get/listSize/:sectionID', productController.list_size);
 
 router.get('/get/listColor/:sectionID', productController.list_color);
