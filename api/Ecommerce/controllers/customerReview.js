@@ -86,7 +86,23 @@ exports.update_review_status = (req,res,next)=>{
     });
 };
 exports.listCustomerReviewbucustomerid = (req,res,next)=>{
+    
     CustomerReview.find({customerID : req.params.customerID})
+    .aggregate([
+        { $lookup:
+            {
+             from: 'products',
+             localField: 'productID',
+             foreignField: '_id',
+             as: 'productDetails'
+            }
+        },
+        {
+            $sort: {
+              "reviewlist.createdAt": -1
+            }
+        }
+    ])
     .exec()
     .then(data=>{
         res.status(200).json(data);
@@ -175,18 +191,16 @@ exports.list_review = (req,res,next)=>{
    ])
     .skip(parseInt(req.body.startRange))
     .limit(parseInt(req.body.limitRange))
-        .exec()
-        .then(data=>{
-            res.status(200).json(data);
-        })
-        .catch(err =>{
-            console.log(err);
-            res.status(500).json({
-                error: err
-            });
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
         });
-
-
+    });
 };
 
 exports.count_review = (req,res,next)=>{
