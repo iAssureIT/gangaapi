@@ -1015,7 +1015,7 @@ exports.listBrandBySections = (req,res,next)=>{
     
     Products.distinct("brand", {"section_ID": { $in : req.body.sectionID } })
     .exec()
-    .then(data=>{ _id:{$in : req.body.publishData}
+    .then(data=>{ 
         res.status(200).json(data);
     })
     .catch(err =>{

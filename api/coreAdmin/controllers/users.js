@@ -13,21 +13,7 @@ function getRandomInt(min, max) {
 }
 
 exports.user_signupadmin = (req, res, next) => {
-	var otpMailSubject, otpMailText, otpSmsText;
-	Masternotifications.findOne({ "templateType": "Email", "templateName": "Sign Up" })
-		.exec()
-		.then((maildata) => {
-			if (maildata) {
-				otpMailSubject = maildata.subject;
-				otpMailText = maildata.content;
-			}else{
-				otpMailSubject = "Verify your Account";
-				otpMailText = "Your account verification code is ";
-			}
-			
-		})
-		.catch()
-
+	
 	/*Masternotifications.findOne({ "templateType": "SMS", "templateName": "Sign Up" })
 		.exec()
 		.then((smsdata) => {
@@ -36,8 +22,8 @@ exports.user_signupadmin = (req, res, next) => {
 			var textcontent = smsdata.content.replace(regex, '');
 			textcontent = textcontent.replace(/\&nbsp;/g, '');
 			otpSmsText = textcontent
-		})*/
-		.catch()
+		})
+		.catch()*/
 	User.find({username: req.body.emailId})
 		.exec()
 		.then(user => {
@@ -86,37 +72,106 @@ exports.user_signupadmin = (req, res, next) => {
 						user.save()
 							.then(newUser => {
 								if (newUser) {
-									console.log(otpMailSubject)
-									request({
-										"method": "POST",
-										"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
-										"body": {
-											"email": newUser.profile.emailId,
-											"subject": otpMailSubject,
-											"text": otpMailSubject,
-											"mail": 'Hello ' + newUser.profile.fullName + ',' + '\n' + "\n <br><br>" + otpMailText + "<b>" + MailOTP + "</b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
-										},
-										"json": true,
-										"headers": {
-											"User-Agent": "Test App"
-										}
-									})
-									.then((sentemail) => {
+									var header = "<table><tbody><tr><td align='center' width='100%'><a><img src='http://qagangaexpress.iassureit.com/images/GangaExpress.png' style='width:25%'></a></td></tr></table>";
+									var body = "";
+									var footer = "<table width='100%' bgcolor='#232f3e' height='50'><tbody><tr><td>"
+									footer += "<span style='color:#fff'>GangaExpress Copyright <i class='fa fa-copyright'></i> 2019 - 2020. All Rights Reserved.</span>";
+									footer += "<span style='float:right;color:#fff'>gangaexpress@gmail.com</span></td></tr></tbody></table>"
+									
+									var otpMailSubject, otpSmsText;
+									Masternotifications.findOne({ "templateType": "Email", "templateName": "Sign Up" })
+										.exec()
+										.then((maildata) => {
+											if (maildata) {
+												otpMailSubject = maildata.subject != '' ? maildata.subject : "Verify your GangaExpress account" ;
+												if (maildata.content != '') {
 
-										res.header("Access-Control-Allow-Origin", "*");
+													var variables = {
+														"username"      : newUser.profile.fullName,
+														"otp"        	: MailOTP,
+													}
+													
+														var content = maildata.content;
+														if(content.indexOf('[') > -1 ){
+															var wordsplit = content.split('[');
+														}
+										
+														var tokens = [];
+														var n = 0;
+														for(i=0;i<wordsplit.length;i++){
+															if(wordsplit[i].indexOf(']') > -1 ){
+																tokensArr = wordsplit[i].split(']');
+																tokens[n] = tokensArr[0];
+																n++;
+															}
+														}
+														var numOfVar = Object.keys(variables).length;
+										
+														for(i=0; i<numOfVar; i++){
+															var tokVar = tokens[i].substr(1,tokens[i].length-2);
+															content = content.replace(tokens[i],variables[tokens[i]]);
+														}
+														content = content.split("[").join(" ");
+														content = content.split("]").join(" ");
+														
+														body += header + "<table><tr><td>"+content+"</td></tr></table>";
 
-										res.status(200).json({
-											"message": 'NEW-USER-CREATED',
-											"user_id": newUser._id,
-											"otp": OTP,
-											"mailotp": MailOTP
-										});
-									})
-									.catch((err) => {
-										res.status(500).json({
-											error: err
-										});
-									});
+												}else{
+													body += header + "<table><tr><td><p>Dear "+newUser.profile.fullName+", </p>\n";
+													body += "<p>Thank you for registration with GangaExpress.</p>";
+													body += "<p>As part of our registration process, we screen every new profile to ensure its credibility by validating email provided by user on GangaExpress.";
+													body += "While screening the profile, we verify that details put in by user are correct and genuine.</p></td></tr>";
+													body += "<tr><p>Your account verification code is <b>"+MailOTP+"</b> </p></tr>"
+													body += "</tbody></table>";
+												}
+												
+											}else{
+												otpMailSubject = "Verify your GangaExpress account";
+												
+												body += header + "<table><tr><td><p>Dear "+newUser.profile.fullName+", </p>\n";
+												body += "<p>Thank you for registration with GangaExpress.</p>";
+												body += "<p>As part of our registration process, we screen every new profile to ensure its credibility by validating email provided by user on GangaExpress.";
+												body += "While screening the profile, we verify that details put in by user are correct and genuine.</p></td></tr>";
+												body += "<tr><p>Your account verification code is <b>"+MailOTP+"</b> </p></tr>"
+												body += "</tbody></table>";
+											}
+											body += footer;
+											request({
+												"method": "POST",
+												"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
+												"body": {
+													"email": newUser.profile.emailId,
+													"subject": otpMailSubject,
+													"text": otpMailSubject,
+													//"mail": 'Hello ' + newUser.profile.fullName + ',' + '\n' + "\n <br><br>" + otpMailText + "<b>" + MailOTP + "</b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
+													"mail" : body
+												},
+												"json": true,
+												"headers": {
+													"User-Agent": "Test App"
+												}
+											})
+											.then((sentemail) => {
+
+												res.header("Access-Control-Allow-Origin", "*");
+
+												res.status(200).json({
+													"message": 'NEW-USER-CREATED',
+													"user_id": newUser._id,
+													"otp": OTP,
+													"mailotp": MailOTP
+												});
+											})
+											.catch((err) => {
+												res.status(500).json({
+													error: err
+												});
+											});
+										})
+										.catch()
+
+									
+									
 
 
 
@@ -439,46 +494,88 @@ exports.ba_signupadmin = (req, res, next) => {
 		})
 };
 exports.resendotp = (req, res, next) => {
-	var otpMailSubject, otpMailText, otpSmsText;
-	Masternotifications.findOne({ "templateType": "Email", "templateName": "Sign Up" })
-		.exec()
-		.then((maildata) => {
-			if (maildata) {
-				otpMailSubject = maildata.subject;
-				otpMailText = maildata.content;
-			}else{
-				otpMailSubject = "Verify your Account";;
-				otpMailText = "Your account verification code is "
-			}
-		})
-		.catch()
 
-	Masternotifications.findOne({ "templateType": "SMS", "templateName": "Sign Up" })
-		.exec()
-		.then((smsdata) => {
-			var textcontent = smsdata.content;
-			var regex = new RegExp(/(<([^>]+)>)/ig);
-			var textcontent = smsdata.content.replace(regex, '');
-			textcontent = textcontent.replace(/\&nbsp;/g, '');
-			otpSmsText = textcontent
-		})
-		.catch()
 	User.findOne({ _id: req.params.userID })
 		.exec()
 		.then(user => {
 			const OTP = getRandomInt(1000, 9999);
 			const MailOTP = getRandomInt(100000, 999999);
 			if (user) {
+				var header = "<table><tbody><tr><td align='center' width='100%'><a><img src='http://qagangaexpress.iassureit.com/images/GangaExpress.png' style='width:25%'></a></td></tr></table>";
+				var body = "";
+				var footer = "<table width='100%' bgcolor='#232f3e' height='50'><tbody><tr><td>"
+				footer += "<span style='color:#fff'>GangaExpress Copyright <i class='fa fa-copyright'></i> 2019 - 2020. All Rights Reserved.</span>";
+				footer += "<span style='float:right;color:#fff'>gangaexpress@gmail.com</span></td></tr></tbody></table>"
+				
+				var otpMailSubject, otpSmsText;
 
-				request({
+				Masternotifications.findOne({ "templateType": "Email", "templateName": "Sign Up" })
+				.exec()
+				.then((maildata) => {
+					if (maildata) {
+						otpMailSubject = maildata.subject != '' ? maildata.subject : "Verify your GangaExpress account" ;
+						if (maildata.content != '') {
 
+							var variables = {
+								"username"      : user.profile.fullName,
+								"otp"        	: MailOTP,
+							}
+							
+								var content = maildata.content;
+								if(content.indexOf('[') > -1 ){
+									var wordsplit = content.split('[');
+								}
+				
+								var tokens = [];
+								var n = 0;
+								for(i=0;i<wordsplit.length;i++){
+									if(wordsplit[i].indexOf(']') > -1 ){
+										tokensArr = wordsplit[i].split(']');
+										tokens[n] = tokensArr[0];
+										n++;
+									}
+								}
+								var numOfVar = Object.keys(variables).length;
+				
+								for(i=0; i<numOfVar; i++){
+									var tokVar = tokens[i].substr(1,tokens[i].length-2);
+									content = content.replace(tokens[i],variables[tokens[i]]);
+								}
+								content = content.split("[").join(" ");
+								content = content.split("]").join(" ");
+								
+								body += header + "<table><tr><td>"+content+"</td></tr></table>";
+
+						}else{
+							body += header + "<table><tr><td><p>Dear "+user.profile.fullName+", </p>\n";
+							body += "<p>Thank you for registration with GangaExpress.</p>";
+							body += "<p>As part of our registration process, we screen every new profile to ensure its credibility by validating email provided by user on GangaExpress.";
+							body += "While screening the profile, we verify that details put in by user are correct and genuine.</p></td></tr>";
+							body += "<tr><p>Your account verification code is <b>"+MailOTP+"</b> </p></tr>"
+							body += "</tbody></table>";
+						}
+						
+					}else{
+						otpMailSubject = "Verify your GangaExpress account";
+						
+						body += header + "<table><tr><td><p>Dear "+user.profile.fullName+", </p>\n";
+						body += "<p>Thank you for registration with GangaExpress.</p>";
+						body += "<p>As part of our registration process, we screen every new profile to ensure its credibility by validating email provided by user on GangaExpress.";
+						body += "While screening the profile, we verify that details put in by user are correct and genuine.</p></td></tr>";
+						body += "<tr><p>Your account verification code is <b>"+MailOTP+"</b> </p></tr>"
+						body += "</tbody></table>";
+					}
+					body += footer;
+
+					request({
 					"method": "POST",
 					"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
 					"body": {
 						"email": user.profile.emailId,
 						"subject": otpMailSubject,
 						"text": otpMailSubject,
-						"mail": 'Hello ' + user.profile.fullName + ',' + '\n' + "\n <br><br>" + otpMailText + "<b>" + MailOTP + "</b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
+						"mail":body
+						//"mail": 'Hello ' + user.profile.fullName + ',' + '\n' + "\n <br><br>" + otpMailText + "<b>" + MailOTP + "</b>" + '\n' + '\n' + ' </b><br><br>\nRegards,<br>Team GangaExpress',
 					},
 					"json": true,
 					"headers": {
@@ -486,18 +583,31 @@ exports.resendotp = (req, res, next) => {
 					}
 				})
 
-					.then((sentemail) => {
+				.then((sentemail) => {
 
-						res.header("Access-Control-Allow-Origin", "*");
+					res.header("Access-Control-Allow-Origin", "*");
 
-						res.status(200).json({ message: "Mail Sent successfully" });
-					})
-					.catch((err) => {
-						// console.log("call to api",err);
-						res.status(500).json({
-							error: err
-						});
+					res.status(200).json({ message: "Mail Sent successfully" });
+				})
+				.catch((err) => {
+					// console.log("call to api",err);
+					res.status(500).json({
+						error: err
 					});
+				});
+				})
+				.catch()
+
+				/*Masternotifications.findOne({ "templateType": "SMS", "templateName": "Sign Up" })
+				.exec()
+				.then((smsdata) => {
+					var textcontent = smsdata.content;
+					var regex = new RegExp(/(<([^>]+)>)/ig);
+					var textcontent = smsdata.content.replace(regex, '');
+					textcontent = textcontent.replace(/\&nbsp;/g, '');
+					otpSmsText = textcontent
+				})
+				.catch()*/
 
 
 				// console.log('Plivo Client = ');
@@ -1309,7 +1419,6 @@ exports.user_search = (req, res, next) => {
 				data.map((data, index) => {
 					userdataarr.push({
 						_id: data._id,
-						createdAt: data.createdAt,
 						username: data.username,
 						mobileNumber: data.profile.mobileNumber,
 						firstName: data.profile.firstName,
@@ -1319,6 +1428,7 @@ exports.user_search = (req, res, next) => {
 						status: data.profile.status,
 						roles: (data.roles).toString(),
 						officeLocation: data.officeLocation,
+						createdAt: data.createdAt,
 					});
 				})
 				

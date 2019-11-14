@@ -16,20 +16,7 @@ var localUrl                =  "http://localhost:"+gloabalVariable.PORT;
 var ObjectId                = require('mongodb').ObjectID;
 
 exports.insert_order = (req,res,next)=>{ 
-    var mailSubject, mailText, smsText;
-    Masternotifications.findOne({"templateType":"Email","templateName":"Order Placed Successfully"})
-                      .exec()
-                      .then((maildata)=>{
-                        if (maildata) {
-                          mailSubject = maildata.subject;
-                          mailText = maildata.content;
-                        }else{
-                          mailSubject = "Order is placed successfully";
-                          mailText = "Order is placed successfully"
-                        }
-                      })
-                      .catch()
-
+    
     /*Masternotifications.findOne({"templateType":"SMS","templateName":"Order Placed Successfully"})
                       .exec()
                       .then((smsdata)=>{  
@@ -45,7 +32,7 @@ exports.insert_order = (req,res,next)=>{
                       .catch()*/
 
       var i = 0;
-      console.log(req.body.qtys);
+      //console.log(req.body.qtys);
       if(req.body.qtys.length > 0){
         var user_ID = req.body.user_ID;
         Carts.findOne({"user_ID" : req.body.user_ID})
@@ -101,102 +88,7 @@ exports.insert_order = (req,res,next)=>{
                 User.findOne({"_id":req.body.user_ID})
                 .exec()
                 .then(data=>{
-                    request({
-                     "method"    : "POST",
-                     "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
-                     "body"      :   {
-                                         "email"     : data.profile.emailId,
-                                         "subject"   : mailSubject,
-                                         "text"      : mailSubject,
-                                         "mail"      : 'Hello '+data.profile.fullName+','+'\n'+mailText,
-                                         // "mail"      : 'Hello '+data.profile.fullName+','+'\n'+"\n <br><br>Your Order has been placed successfully and will be dispached soon."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
-                                     },
-                     "json"      : true,
-                     "headers"   : {
-                                     "User-Agent": "Test App"
-                                 }
-                    })
-                    .then((sentemail)=>{
-                        res.header("Access-Control-Allow-Origin","*");
-                        res.status(200).json({message:"Mail Sent successfully"});
-                    })
-                    .catch((err) =>{
 
-                        res.status(500).json({
-                            error: err
-                        });
-                    });
-                   
-                    // const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
-                    // const sourceMobile = "+919923393733";
-                    // //var text = "Dear User, "+'\n'+"Your Order has been placed successfully and will be dispached soon.\n";
-                    
-
-                    // var text = smsText;
-                    // client.messages.create(
-                    //  src=sourceMobile,
-                    //  dst= '+91'+data.profile.mobileNumber,
-                    //  text=text
-                    // ).then((result)=> {
-                    //     // console.log("src = ",src," | DST = ", dst, " | result = ", result);
-                    //     res.status(200).json({
-                    //         message:"Order Placed Successfully"
-                    //     });
-                    // })
-                    // .catch(otpError=>{
-                    //     // console.log("otpError",otpError);
-                    //     return res.status(501).json({
-                    //          message: "Some Issue Occured While Placing Your Order",
-                    //          error: otpError
-                    //     });
-                    // }); 
-                   request({
-                     "method"    : "POST",
-                     "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
-                     "body"      :  {
-                                         "email"     : "priyanka.kale@iassureit.com",
-                                         "subject"   : 'Order Placed Successfully',
-                                         "text"      : "WOW Its done",
-                                         "mail"      : 'Hello '+'Admin'+','+'\n'+"\n <br><br>You have an order placed by "+data.profile.fullName+"."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
-                                    },
-                     "json"      : true,
-                     "headers"   : {
-                                     "User-Agent": "Test App"
-                                 }
-                    })
-                    .then((sentemail)=>{
-                        res.header("Access-Control-Allow-Origin","*");
-                        res.status(200).json({message:"Mail Sent successfully"});
-                    })
-                    .catch((err) =>{
-                        res.status(500).json({
-                            error: err
-                        });
-                    });
-                   
-                    // const client2 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
-                    // const sourceMobile2 = "+919923393733";
-                    // var text2 = "Dear Admin, "+'\n'+"You have a Order by "+data.profile.fullName+".\n";
-                   
-                    // client2.messages.create(
-                    //  src=sourceMobile2,
-                    //  dst= '+919049711725',
-                    //  text=text2
-                    // ).then((result)=> {
-                    //     // console.log("src = ",src," | DST = ", dst, " | result = ", result);
-                    //     res.status(200).json({
-                    //         message:"Order Placed Successfully"
-                    //     });
-                    // })
-                    // .catch(otpError=>{
-                    //     // console.log("otpError",otpError);
-                    //     return res.status(501).json({
-                    //          message: "Some Issue Occured While Placing Your Order",
-                    //          error: otpError
-                    //     });
-                    // });
-
-                   
                     const order = new Orders({
                         _id               : new mongoose.Types.ObjectId(),
                       "orderID"           : Math.round(new Date().getTime()/1000),
@@ -235,7 +127,189 @@ exports.insert_order = (req,res,next)=>{
                     });
                     order.save()
                     .then(orderdata=>{
-                        // console.log('Order data', orderdata);
+                      
+                        var header = "<table><tbody><tr><td align='center' width='100%'><a><img src='http://qagangaexpress.iassureit.com/images/GangaExpress.png' style='width:25%'></a></td></tr></table>";
+                        var body = "";
+                        var footer = "<table width='100%' bgcolor='#232f3e' height='50'><tbody><tr><td>"
+                        footer += "<span style='color:#fff'>GangaExpress Copyright <i class='fa fa-copyright'></i> 2019 - 2020. All Rights Reserved.</span>";
+                        footer += "<span style='float:right;color:#fff'>gangaexpress@gmail.com</span></td></tr></tbody></table>"
+                        
+                        var mailSubject, mailText, smsText;
+                        Masternotifications.findOne({"templateType":"Email","templateName":"Order Placed Successfully"})
+                            .exec()
+                            .then((maildata)=>{
+                              
+                              if (maildata) {
+                                mailSubject = maildata.subject != '' ? maildata.subject : "Your order is placed successfully.";
+                                  var variables = {
+                                    "username"      : data.profile.fullName
+                                  }
+                                
+                                  var content = maildata.content;
+                                  if(content.indexOf('[') > -1 ){
+                                    var wordsplit = content.split('[');
+                                  }
+                          
+                                  var tokens = [];
+                                  var n = 0;
+                                  for(i=0;i<wordsplit.length;i++){
+                                    if(wordsplit[i].indexOf(']') > -1 ){
+                                      tokensArr = wordsplit[i].split(']');
+                                      tokens[n] = tokensArr[0];
+                                      n++;
+                                    }
+                                  }
+                                  var numOfVar = Object.keys(variables).length;
+                          
+                                  for(i=0; i<numOfVar; i++){
+                                    var tokVar = tokens[i].substr(1,tokens[i].length-2);
+                                    content = content.replace(tokens[i],variables[tokens[i]]);
+                                  }
+                                  content = content.split("[").join(" ");
+                                  content = content.split("]").join(" ");
+
+                                  body += header + "<table><tr><td>"+content+"</td></tr></table>";
+                                  body += "<tr><b><p>Your order will be sent to:</p></b>";
+                                  
+                                  body += "<p style='margin:0'>"+orderdata.deliveryAddress.name+"</p>";
+                                  body += "<p style='margin:0'>"+orderdata.deliveryAddress.addressLine1+"</p>";
+                                  body += "<p style='margin:0'>"+orderdata.deliveryAddress.addressLine2+"</p>";
+                                  body += "<p style='margin:0'>"+orderdata.deliveryAddress.city+" "+orderdata.deliveryAddress.state+" "+orderdata.deliveryAddress.pincode+"</p>";
+                                  body += "<p style='margin:0'>"+orderdata.deliveryAddress.country+"</p></tr>";
+                                  body += "</tbody></table>";
+
+                                  body += "<h3>Order Details</h3>";
+                                  body += "<table width='100%' style='border-top:1px solid #333'><thead align='left'><tr><th>Product Name</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead><tbody>";
+                                  
+                                  cartArray.map((productdata,index)=>{
+
+                                    body += "<tr><td>"+productdata.productName+"</td><td>"+productdata.discountedPrice+"</td><td>"+productdata.quantity+"</td><td>"+productdata.total+"</td></tr>";
+                                  })
+                                  
+                                  body += "</tbody></table><br>";
+
+                              }else{
+                                mailSubject = "Your order is placed successfully.";
+                                body += header + "<table><tr><td><h3>Dear "+data.profile.fullName+", </h3>\n";
+                                body += "<p>Thank you for your order. We’ll send a confirmation when your order ships.</p></tr>";
+                                
+                                body += "<tr><b><p>Your order will be sent to:</p></b>";
+                                body += "<p style='margin:0'>"+orderdata.deliveryAddress.name+"</p>";
+                                body += "<p style='margin:0'>"+orderdata.deliveryAddress.addressLine1+"</p>";
+                                body += "<p style='margin:0'>"+orderdata.deliveryAddress.addressLine2+"</p>";
+                                body += "<p style='margin:0'>"+orderdata.deliveryAddress.city+" "+orderdata.deliveryAddress.state+" "+orderdata.deliveryAddress.pincode+"</p>";
+                                body += "<p style='margin:0'>"+orderdata.deliveryAddress.country+"</p></tr>";
+                                body += "</tbody></table>";
+
+                                body += "<h3>Order Details</h3>";
+                                body += "<table width='100%' style='border-top:1px solid #333'><thead align='left'><tr><th>Product Name</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead><tbody>";
+                                
+                                cartArray.map((productdata,index)=>{
+
+                                  body += "<tr><td>"+productdata.productName+"</td><td>"+productdata.discountedPrice+"</td><td>"+productdata.quantity+"</td><td>"+productdata.total+"</td></tr>";
+                                })
+                                
+                                
+                                body += "</tbody></table><br>";
+                               
+                              }
+                              body += footer;
+                              request({
+                                 "method"    : "POST",
+                                 "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
+                                 "body"      :   {
+                                                     "email"     : data.profile.emailId,
+                                                     "subject"   : mailSubject,
+                                                     "text"      : mailSubject,
+                                                     "mail"      : body 
+                                                     //"mail"      : 'Hello '+data.profile.fullName+','+'\n'+mailText,
+                                                     // "mail"      : 'Hello '+data.profile.fullName+','+'\n'+"\n <br><br>Your Order has been placed successfully and will be dispached soon."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                 },
+                                 "json"      : true,
+                                 "headers"   : { "User-Agent": "Test App" }
+                                })
+                                .then((sentemail)=>{
+                                    res.header("Access-Control-Allow-Origin","*");
+                                    res.status(200).json({ "message": 'Order placed successfully' });
+                                })
+                                .catch((err) =>{
+                                    res.status(500).json({
+                                        error: err
+                                    });
+                                }); 
+                            })
+                            .catch()
+
+                        
+                       
+                        // const client = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
+                        // const sourceMobile = "+919923393733";
+                        // //var text = "Dear User, "+'\n'+"Your Order has been placed successfully and will be dispached soon.\n";
+                        
+
+                        // var text = smsText;
+                        // client.messages.create(
+                        //  src=sourceMobile,
+                        //  dst= '+91'+data.profile.mobileNumber,
+                        //  text=text
+                        // ).then((result)=> {
+                        //     // console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                        //     res.status(200).json({
+                        //         message:"Order Placed Successfully"
+                        //     });
+                        // })
+                        // .catch(otpError=>{
+                        //     // console.log("otpError",otpError);
+                        //     return res.status(501).json({
+                        //          message: "Some Issue Occured While Placing Your Order",
+                        //          error: otpError
+                        //     });
+                        // }); 
+                       request({
+                         "method"    : "POST",
+                         "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
+                         "body"      :  {
+                                             "email"     : "priyanka.kale@iassureit.com",
+                                             "subject"   : 'Order Placed Successfully',
+                                             "text"      : "WOW Its done",
+                                             "mail"      : 'Hello '+'Admin'+','+'\n'+"\n <br><br>You have an order placed by "+data.profile.fullName+"."+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                        },
+                         "json"      : true,
+                         "headers"   : {
+                                         "User-Agent": "Test App"
+                                     }
+                        })
+                        .then((sentemail)=>{
+                            res.header("Access-Control-Allow-Origin","*");
+                            res.status(200).json({message:"Mail Sent successfully"});
+                        })
+                        .catch((err) =>{
+                            res.status(500).json({
+                                error: err
+                            });
+                        });
+                       
+                        // const client2 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
+                        // const sourceMobile2 = "+919923393733";
+                        // var text2 = "Dear Admin, "+'\n'+"You have a Order by "+data.profile.fullName+".\n";
+                       
+                        // client2.messages.create(
+                        //  src=sourceMobile2,
+                        //  dst= '+919049711725',
+                        //  text=text2
+                        // ).then((result)=> {
+                        //     // console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                        //     res.status(200).json({
+                        //         message:"Order Placed Successfully"
+                        //     });
+                        // })
+                        // .catch(otpError=>{
+                        //     // console.log("otpError",otpError);
+                        //     return res.status(501).json({
+                        //          message: "Some Issue Occured While Placing Your Order",
+                        //          error: otpError
+                        //     });
+                        // });
                         Carts.findOne({"user_ID":req.body.user_ID})
                         .exec()
                         .then(userCart=>{
@@ -455,33 +529,17 @@ exports.delete_order = (req,res,next)=>{
  
 exports.updateDeliveryStatus = (req,res,next)=>{
 
-  var DeliveryMailSubject, DeliveryMailText, DeliverySmsText;
-    Masternotifications.findOne({"templateType":"Email","templateName":"Order Delivered"})
-                      .exec()
-                      .then((maildata)=>{
-                        if (maildata) {
-                          DeliveryMailSubject = maildata.subject;
-                          DeliveryMailText = maildata.content;
-                        }else{
-                          DeliveryMailSubject = "Order is Delivered & Paid Successfully";
-                          DeliveryMailText = "Order is Delivered & Paid Successfully"
-                        }
-                        
-                      })
-                      .catch()
+  /*Masternotifications.findOne({"templateType":"SMS","templateName":"Order Delivered"})
+  .exec()
+  .then((smsdata)=>{
+      var textcontent = smsdata.content;                              
+      var regex = new RegExp(/(<([^>]+)>)/ig);
+      var textcontent = smsdata.content.replace(regex, '');
+      textcontent   = textcontent.replace(/\&nbsp;/g, '');
+      DeliverySmsText = textcontent;
+  })
+  .catch()*/
 
-    /*Masternotifications.findOne({"templateType":"SMS","templateName":"Order Delivered"})
-                      .exec()
-                      .then((smsdata)=>{
-                          var textcontent = smsdata.content;                              
-                          var regex = new RegExp(/(<([^>]+)>)/ig);
-                          var textcontent = smsdata.content.replace(regex, '');
-                          textcontent   = textcontent.replace(/\&nbsp;/g, '');
-                          DeliverySmsText = textcontent;
-                      })
-                      .catch()*/
-
-    
     var status = req.body.status == "Delivered & Paid" ? "Paid" : "UnPaid";
     console.log(req.body.status);
 
@@ -530,7 +588,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                                 });
                             });
                            
-                            const client2 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
+                            /*const client2 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
                             const sourceMobile2 = "+919923393733";
                             var text2 = "Dear Admin, "+'\n'+"Order delivered successfully.\n";
                            
@@ -550,7 +608,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                                      message: "Some Issue Occured While Placing Your Order",
                                      error: otpError
                                 });
-                            });
+                            });*/
 
 
                             Orders.findOne({_id:req.body.orderID})
@@ -559,15 +617,102 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                               User.findOne({_id : orderData.user_ID})
                               .exec()
                               .then(customerData =>{
-                                      if(customerData){   
-                                       request({
+                                var header = "<table><tbody><tr><td align='center' width='100%'><a><img src='http://qagangaexpress.iassureit.com/images/GangaExpress.png' style='width:25%'></a></td></tr></table>";
+                                var body = "";
+                                var footer = "<table width='100%' bgcolor='#232f3e' height='50'><tbody><tr><td>"
+                                footer += "<span style='color:#fff'>GangaExpress Copyright <i class='fa fa-copyright'></i> 2019 - 2020. All Rights Reserved.</span>";
+                                footer += "<span style='float:right;color:#fff'>gangaexpress@gmail.com</span></td></tr></tbody></table>"
+                                
+                                var mailSubject, mailText, smsText;
+
+                                if(customerData){ 
+                                  Masternotifications.findOne({"templateType":"Email","templateName":"Order Delivered"})
+                                  .exec()
+                                  .then((maildata)=>{
+                                      if (maildata) {
+                                      mailSubject = maildata.subject != '' ? maildata.subject : "Your order is delivered successfully.";
+                                        var variables = {
+                                          "username"      : customerData.profile.fullName
+                                        }
+                                      
+                                        var content = maildata.content;
+                                        if(content.indexOf('[') > -1 ){
+                                          var wordsplit = content.split('[');
+                                        }
+                                
+                                        var tokens = [];
+                                        var n = 0;
+                                        for(i=0;i<wordsplit.length;i++){
+                                          if(wordsplit[i].indexOf(']') > -1 ){
+                                            tokensArr = wordsplit[i].split(']');
+                                            tokens[n] = tokensArr[0];
+                                            n++;
+                                          }
+                                        }
+                                        var numOfVar = Object.keys(variables).length;
+                                
+                                        for(i=0; i<numOfVar; i++){
+                                          var tokVar = tokens[i].substr(1,tokens[i].length-2);
+                                          content = content.replace(tokens[i],variables[tokens[i]]);
+                                        }
+                                        content = content.split("[").join(" ");
+                                        content = content.split("]").join(" ");
+
+                                        body += header + "<table><tr><td>"+content+"</td></tr></table>";
+                                        body += "<tr><b><p>Your order is delivered to:</p></b>";
+                                        
+                                        body += "<p style='margin:0'>"+orderData.deliveryAddress.name+"</p>";
+                                        body += "<p style='margin:0'>"+orderData.deliveryAddress.addressLine1+"</p>";
+                                        body += "<p style='margin:0'>"+orderData.deliveryAddress.addressLine2+"</p>";
+                                        body += "<p style='margin:0'>"+orderData.deliveryAddress.city+" "+orderData.deliveryAddress.state+" "+orderData.deliveryAddress.pincode+"</p>";
+                                        body += "<p style='margin:0'>"+orderData.deliveryAddress.country+"</p></tr>";
+                                        body += "</tbody></table>";
+
+                                        body += "<h3>Order Details</h3>";
+                                        body += "<table width='100%' style='border-top:1px solid #333'><thead align='left'><tr><th>Product Name</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead><tbody>";
+                                        
+                                        orderData.products.map((productdata,index)=>{
+
+                                          body += "<tr><td>"+productdata.productName+"</td><td>"+productdata.discountedPrice+"</td><td>"+productdata.quantity+"</td><td>"+productdata.total+"</td></tr>";
+                                        })
+                                        
+                                        body += "</tbody></table><br>";
+
+                                    }else{
+                                      mailSubject = "Your order is delivered successfully.";
+                                      body += header + "<table><tr><td><h3>Dear "+customerData.profile.fullName+", </h3>\n";
+                                      body += "<p>Thank you for your order. Your order is delivered successfully.</p></tr>";
+                                      
+                                      body += "<tr><b><p>Your order is delivered to:</p></b>";
+                                      body += "<p style='margin:0'>"+orderData.deliveryAddress.name+"</p>";
+                                      body += "<p style='margin:0'>"+orderData.deliveryAddress.addressLine1+"</p>";
+                                      body += "<p style='margin:0'>"+orderData.deliveryAddress.addressLine2+"</p>";
+                                      body += "<p style='margin:0'>"+orderData.deliveryAddress.city+" "+orderData.deliveryAddress.state+" "+orderData.deliveryAddress.pincode+"</p>";
+                                      body += "<p style='margin:0'>"+orderData.deliveryAddress.country+"</p></tr>";
+                                      body += "</tbody></table>";
+
+                                      body += "<h3>Order Details</h3>";
+                                      body += "<table width='100%' style='border-top:1px solid #333'><thead align='left'><tr><th>Product Name</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead><tbody>";
+                                      
+                                      orderData.products.map((productdata,index)=>{
+
+                                        body += "<tr><td>"+productdata.productName+"</td><td>"+productdata.discountedPrice+"</td><td>"+productdata.quantity+"</td><td>"+productdata.total+"</td></tr>";
+                                      })
+                                      
+                                      
+                                      body += "</tbody></table><br>";
+                                     
+                                    }
+                                    body += footer;
+                                      request({
                                        "method"    : "POST",
                                        "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
                                        "body"      :   {
                                                            "email"     : customerData.profile.emailId,
-                                                           "subject"   : DeliveryMailSubject,
-                                                           "text"      : DeliveryMailSubject,
-                                                           "mail"      : 'Hello '+customerData.profile.fullName+','+'\n'+"\n <br><br>"+DeliveryMailText+"<b></b>"+'\n'+'\n'+'<br><br>\nRegards,<br>Team GangaExpress',
+                                                           "subject"   : mailSubject,
+                                                           "text"      : mailSubject,
+                                                           "mail"      : body
+                                                           //"mail"      : 'Hello '+customerData.profile.fullName+','+'\n'+"\n <br><br>"+DeliveryMailText+"<b></b>"+'\n'+'\n'+'<br><br>\nRegards,<br>Team GangaExpress',
                                                        },
                                        "json"      : true,
                                        "headers"   : {
@@ -584,7 +729,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                                           });
                                       });
                                      
-                                      const client4 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
+                                      /*const client4 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
                                       const sourceMobile4 = "+919923393733";
                                       var text4 = DeliverySmsText;
                                      
@@ -603,8 +748,12 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                                                message: "Some Issue Occured While Delivering Your Order",
                                                error: otpError
                                           });
-                                      }); 
-                                    }
+                                      });*/
+                                    
+                                  })
+                                  .catch()  
+                                    
+                                }
                                     
                                   })
                                   .catch(err =>{
@@ -657,20 +806,7 @@ exports.changeToPreviousStatus = (req,res,next)=>{
 };
 
 exports.dispatchOrder = (req,res,next)=>{
-    var dispatchMailSubject, dispatchMailText, dispatchSmsText;
-    Masternotifications.findOne({"templateType":"Email","templateName":"Order Dispatched"})
-                      .exec()
-                      .then((maildata)=>{
-                        if (maildata) {
-                          dispatchMailSubject = maildata.subject;
-                          dispatchMailText = maildata.content;
-                        }else{
-                          dispatchMailSubject = "Order is Dispatched Successfully";
-                          dispatchMailText = "Order is Dispatched Successfully";
-                        }
-                      })
-                      .catch()
-
+    
     /*Masternotifications.findOne({"templateType":"SMS","templateName":"Order Dispatched"})
                       .exec()
                       .then((smsdata)=>{ 
@@ -729,7 +865,7 @@ exports.dispatchOrder = (req,res,next)=>{
                                 });
                             });
                            
-                            const client3 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
+                            /*const client3 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
                             const sourceMobile3 = "+919923393733";
                             var text3 = "Dear ba, "+'\n'+"You have a order to be delivered.\n";
                            
@@ -749,7 +885,7 @@ exports.dispatchOrder = (req,res,next)=>{
                                      message: "Some Issue Occured While Placing Your Order",
                                      error: otpError
                                 });
-                            }); 
+                            });*/ 
                           }
                           
                            
@@ -769,58 +905,153 @@ exports.dispatchOrder = (req,res,next)=>{
                       User.findOne({_id : orderData.user_ID})
                       .exec()
                       .then(customerData =>{
-                              if(customerData){   
-                               request({
-                               "method"    : "POST",
-                               "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
-                               "body"      :   {
-                                                   "email"     : customerData.profile.emailId,
-                                                   "subject"   : dispatchMailSubject,
-                                                   "text"      : dispatchMailSubject,
-                                                   "mail"      : 'Hello '+customerData.profile.fullName+','+'\n'+"\n <br><br>"+dispatchMailText+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
-                                               },
-                               "json"      : true,
-                               "headers"   : {
-                                               "User-Agent": "Test App"
-                                           }
-                              })
-                              .then((sentemail)=>{
-                                  res.header("Access-Control-Allow-Origin","*");
-                                  res.status(200).json({message:"Mail Sent successfully"});
-                              })
-                              .catch((err) =>{
-                                  res.status(500).json({
-                                      error: err
-                                  });
-                              });
-                             
-                              const client4 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
-                              const sourceMobile4 = "+919923393733";
-                              var text4 = dispatchSmsText;
-                              client4.messages.create(
-                               src=sourceMobile4,
-                               dst= '+91'+customerData.profile.mobileNumber,
-                               text=text4
-                              ).then((result)=> {
-                                  // console.log("src = ",src," | DST = ", dst, " | result = ", result);
-                                  res.status(200).json({
-                                      message:"Order dispached Successfully"
-                                  });
-                              })
-                              .catch(otpError=>{
-                                  return res.status(501).json({
-                                       message: "Some Issue Occured While Placing Your Order",
-                                       error: otpError
-                                  });
-                              }); 
-                            }
-                            
-                          })
-                          .catch(err =>{
-                              res.status(500).json({
-                                  error: err
-                              });
-                          }); 
+                        
+                        var header = "<table><tbody><tr><td align='center' width='100%'><a><img src='http://qagangaexpress.iassureit.com/images/GangaExpress.png' style='width:25%'></a></td></tr></table>";
+                        var body = "";
+                        var footer = "<table width='100%' bgcolor='#232f3e' height='50'><tbody><tr><td>"
+                        footer += "<span style='color:#fff'>GangaExpress Copyright <i class='fa fa-copyright'></i> 2019 - 2020. All Rights Reserved.</span>";
+                        footer += "<span style='float:right;color:#fff'>gangaexpress@gmail.com</span></td></tr></tbody></table>"
+                        
+                        var mailSubject, mailText, smsText;
+
+                        if(customerData){   
+                        var mailSubject, dispatchSmsText;
+                        Masternotifications.findOne({"templateType":"Email","templateName":"Order Dispatched"})
+                        .exec()
+                        .then((maildata)=>{
+                          
+                            if (maildata) {
+                                mailSubject = maildata.subject != '' ? maildata.subject : "Your order is dispatched successfully.";
+                                  var variables = {
+                                    "username"      : customerData.profile.fullName
+                                  }
+                                
+                                  var content = maildata.content;
+                                  if(content.indexOf('[') > -1 ){
+                                    var wordsplit = content.split('[');
+                                  }
+                          
+                                  var tokens = [];
+                                  var n = 0;
+                                  for(i=0;i<wordsplit.length;i++){
+                                    if(wordsplit[i].indexOf(']') > -1 ){
+                                      tokensArr = wordsplit[i].split(']');
+                                      tokens[n] = tokensArr[0];
+                                      n++;
+                                    }
+                                  }
+                                  var numOfVar = Object.keys(variables).length;
+                          
+                                  for(i=0; i<numOfVar; i++){
+                                    var tokVar = tokens[i].substr(1,tokens[i].length-2);
+                                    content = content.replace(tokens[i],variables[tokens[i]]);
+                                  }
+                                  content = content.split("[").join(" ");
+                                  content = content.split("]").join(" ");
+
+                                  body += header + "<table><tr><td>"+content+"</td></tr></table>";
+                                  body += "<tr><b><p>Your order will be sent to:</p></b>";
+                                  
+                                  body += "<p style='margin:0'>"+orderData.deliveryAddress.name+"</p>";
+                                  body += "<p style='margin:0'>"+orderData.deliveryAddress.addressLine1+"</p>";
+                                  body += "<p style='margin:0'>"+orderData.deliveryAddress.addressLine2+"</p>";
+                                  body += "<p style='margin:0'>"+orderData.deliveryAddress.city+" "+orderData.deliveryAddress.state+" "+orderData.deliveryAddress.pincode+"</p>";
+                                  body += "<p style='margin:0'>"+orderData.deliveryAddress.country+"</p></tr>";
+                                  body += "</tbody></table>";
+
+                                  body += "<h3>Order Details</h3>";
+                                  body += "<table width='100%' style='border-top:1px solid #333'><thead align='left'><tr><th>Product Name</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead><tbody>";
+                                  
+                                  orderData.products.map((productdata,index)=>{
+
+                                    body += "<tr><td>"+productdata.productName+"</td><td>"+productdata.discountedPrice+"</td><td>"+productdata.quantity+"</td><td>"+productdata.total+"</td></tr>";
+                                  })
+                                  
+                                  body += "</tbody></table><br>";
+
+                              }else{
+                                mailSubject = "Your order is dispatched successfully.";
+                                body += header + "<table><tr><td><h3>Dear "+customerData.profile.fullName+", </h3>\n";
+                                body += "<p>Thank you for your order. Your order will be delivered soon.</p></tr>";
+                                
+                                body += "<tr><b><p>Your order will be sent to:</p></b>";
+                                body += "<p style='margin:0'>"+orderData.deliveryAddress.name+"</p>";
+                                body += "<p style='margin:0'>"+orderData.deliveryAddress.addressLine1+"</p>";
+                                body += "<p style='margin:0'>"+orderData.deliveryAddress.addressLine2+"</p>";
+                                body += "<p style='margin:0'>"+orderData.deliveryAddress.city+" "+orderData.deliveryAddress.state+" "+orderData.deliveryAddress.pincode+"</p>";
+                                body += "<p style='margin:0'>"+orderData.deliveryAddress.country+"</p></tr>";
+                                body += "</tbody></table>";
+
+                                body += "<h3>Order Details</h3>";
+                                body += "<table width='100%' style='border-top:1px solid #333'><thead align='left'><tr><th>Product Name</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead><tbody>";
+                                
+                                orderData.products .map((productdata,index)=>{
+
+                                  body += "<tr><td>"+productdata.productName+"</td><td>"+productdata.discountedPrice+"</td><td>"+productdata.quantity+"</td><td>"+productdata.total+"</td></tr>";
+                                })
+                                
+                                
+                                body += "</tbody></table><br>";
+                               
+                              }
+                              body += footer;
+                              request({
+                                 "method"    : "POST",
+                                 "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
+                                 "body"      :   {
+                                                     "email"     : customerData.profile.emailId,
+                                                     "subject"   : mailSubject,
+                                                     "text"      : mailSubject,
+                                                     "mail"      : body
+                                                     //"mail"      : 'Hello '+customerData.profile.fullName+','+'\n'+"\n <br><br>"+dispatchMailText+"<b></b>"+'\n'+'\n'+' </b><br><br>\nRegards,<br>Team GangaExpress',
+                                                 },
+                                 "json"      : true,
+                                 "headers"   : {
+                                                 "User-Agent": "Test App"
+                                             }
+                                })
+                                .then((sentemail)=>{
+                                    res.header("Access-Control-Allow-Origin","*");
+                                    res.status(200).json({message:"Mail Sent successfully"});
+                                })
+                                .catch((err) =>{
+                                    res.status(500).json({
+                                        error: err
+                                    });
+                                });
+                          
+                        })
+                        .catch()  
+                         
+                         
+                       
+                        /*const client4 = new plivo.Client('MAMZU2MWNHNGYWY2I2MZ', 'MWM1MDc4NzVkYzA0ZmE0NzRjMzU2ZTRkNTRjOTcz');
+                        const sourceMobile4 = "+919923393733";
+                        var text4 = dispatchSmsText;
+                        client4.messages.create(
+                         src=sourceMobile4,
+                         dst= '+91'+customerData.profile.mobileNumber,
+                         text=text4
+                        ).then((result)=> {
+                            // console.log("src = ",src," | DST = ", dst, " | result = ", result);
+                            res.status(200).json({
+                                message:"Order dispached Successfully"
+                            });
+                        })
+                        .catch(otpError=>{
+                            return res.status(501).json({
+                                 message: "Some Issue Occured While Placing Your Order",
+                                 error: otpError
+                            });
+                        }); */
+                      }
+                      
+                    })
+                    .catch(err =>{
+                        res.status(500).json({
+                            error: err
+                        });
+                    }); 
 
                     })
                     .catch(err =>{
