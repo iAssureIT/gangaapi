@@ -87,8 +87,10 @@ exports.update_review_status = (req,res,next)=>{
 };
 exports.listCustomerReviewbucustomerid = (req,res,next)=>{
     
-    CustomerReview.find({customerID : req.params.customerID})
-    .aggregate([
+    CustomerReview.aggregate([
+        {$match:
+            {customerID : req.params.customerID} 
+        },
         { $lookup:
             {
              from: 'products',
