@@ -76,15 +76,15 @@ exports.update_section = (req,res,next)=>{
         )
         .exec()
         .then(data=>{
-            if(data.nModified == 1){
+            // if(data.nModified == 1){
                 res.status(200).json({
                     "message": "Section Updated Successfully."
                 });
-            }else{
-                res.status(401).json({
-                    "message": "Section Not Found"
-                });
-            }
+            // }else{
+            //     res.status(401).json({
+            //         "message": "Section Not Found"
+            //     });
+            // }
         })
         .catch(err =>{
             console.log(err);
