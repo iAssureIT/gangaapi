@@ -1265,7 +1265,8 @@ exports.get_reports = (req,res,next)=>{
 
 
 exports.get_category_reports = (req,res,next)=>{
-  
+  console.log("startTime", req.body.startTime);
+  console.log("endTime", req.body.endTime);
   var selector = {};
   if (req.body.section && req.body.category && req.body.subcategory) {
     selector = {
@@ -1299,7 +1300,7 @@ exports.get_category_reports = (req,res,next)=>{
       }
     }
   }
-  //console.log("selector", selector);
+  
     Orders.find(selector).sort({createdAt:-1})      
         .exec()
         .then(data=>{
