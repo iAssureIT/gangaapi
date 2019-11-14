@@ -968,7 +968,8 @@ exports.searchINCategory = (req,res,next)=>{
     if (req.body.searchstr) {
         selector = {
         "category" : {$in : catArray},
-        "$or": [ 
+        "$and" : [
+        {   "$or": [ 
                 {"productName"    : {'$regex' : req.body.searchstr , $options: "i"} },
                 {"brand"          : {'$regex' : req.body.searchstr , $options: "i"} },
                 {"section"        : {'$regex' : req.body.searchstr , $options: "i"} },
@@ -978,7 +979,10 @@ exports.searchINCategory = (req,res,next)=>{
                 {"shortDescription" : {'$regex' : req.body.searchstr , $options: "i"} }, 
                 {"featureList.feature" : {'$regex' : req.body.searchstr , $options: "i"} } 
             ]
-        };
+        }, 
+        { "$or": [{"status":"Publish"}] }
+        ]}
+        ;
     }else{
         selector = { "category" : {$in : catArray} };
     }
@@ -1013,7 +1017,7 @@ exports.list_brand = (req,res,next)=>{
 };
 exports.listBrandBySections = (req,res,next)=>{
     
-    Products.distinct("brand", {"section_ID": { $in : req.body.sectionID } })
+    Products.distinct("brand", {"category": { $in : req.body.categories } })
     .exec()
     .then(data=>{ 
         res.status(200).json(data);
