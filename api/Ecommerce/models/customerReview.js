@@ -6,7 +6,7 @@ const customerReviewSchema = mongoose.Schema({
     customerName              : String,
     orderID                   : { type: mongoose.Schema.Types.ObjectId, ref: 'orders' },
     productID                 : { type: mongoose.Schema.Types.ObjectId, ref: 'products' },
-    rating                    : String,
+    rating                    : Number,
     customerReview            : String,
     status                    : String,
     adminComment              : String,

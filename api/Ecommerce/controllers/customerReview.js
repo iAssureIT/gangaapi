@@ -85,12 +85,26 @@ exports.update_review_status = (req,res,next)=>{
         });
     });
 };
-exports.listCustomerReviewbucustomerid = (req,res,next)=>{
-    
+exports.customerReviewAvg = (req,res,next)=>{
     CustomerReview.aggregate([
+        { $group: { _id : 1, avg : { $avg: "$rating" } } },
         {$match:
-            {"customerID" : req.params.customerID} 
-        },
+            {"productID" : req.params.productID} 
+        }
+    ])
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+exports.listCustomerReviewbucustomerid = (req,res,next)=>{
+    CustomerReview.aggregate([
         { $lookup:
             {
              from: 'products',
@@ -98,6 +112,9 @@ exports.listCustomerReviewbucustomerid = (req,res,next)=>{
              foreignField: '_id',
              as: 'productDetails'
             }
+        },
+        {$match:
+            {"customerID" : req.params.customerID} 
         },
         {
             $sort: {
