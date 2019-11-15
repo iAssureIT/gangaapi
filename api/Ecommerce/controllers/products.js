@@ -264,8 +264,7 @@ var insertProduct = async (section_ID, categoryObject, data) => {
             //console.log('productPresent',productPresent)
             if (productPresent==0) {
                     const productObj = new Products({
-                        _id                       : new mongoose.Types.ObjectId(), 
-                        vendor_ID                 : req.body.vendorID,  
+                        _id                       : new mongoose.Types.ObjectId(),  
                         section_ID                : section_ID,                 
                         category                  : data.category,
                         category_ID               : categoryObject.category_ID,
@@ -286,7 +285,7 @@ var insertProduct = async (section_ID, categoryObject, data) => {
                         offeredPrice              : data.offeredPrice ? data.offeredPrice : "",
                         actualPrice               : data.actualPrice ? data.actualPrice : "",
                         availableQuantity         : data.availableQuantity ? data.availableQuantity : "",
-                        status                    : data.status ? data.status : "",
+                        status                    : "Draft",
                         offered                   : data.offered,
                         unit                      : data.unit ? data.unit : "",
                         size                      : data.size ? data.size : "",
@@ -752,17 +751,16 @@ exports.delete_file = (req,res,next)=>{
     
 };
 exports.delete_product = (req,res,next)=>{
-    console.log("productID",req.params.productID);
     Orders.find({"products.product_ID" : req.params.productID })
         .exec()
         .then(odata=>{
-            console.log(odata);
-            if (odata) {
+            console.log('odata',odata);
+            if (odata.length > 0) {
                 res.status(200).json({
                     "message": "You cannot delete this product as orders are related to this product."
                 });
             }else{
-                /*Products.deleteOne({_id:req.params.productID})
+                Products.deleteOne({_id:req.params.productID})
                         .exec()
                         .then(data=>{
                             res.status(200).json({
@@ -774,7 +772,7 @@ exports.delete_product = (req,res,next)=>{
                             res.status(500).json({
                                 error: err
                             });
-                        });*/
+                        });
             }
         })
         .catch(err =>{
@@ -984,7 +982,7 @@ exports.searchINCategory = (req,res,next)=>{
         ]}
         ;
     }else{
-        selector = { "category" : {$in : catArray} };
+        selector = { "category" : {$in : catArray}, "status":"Publish" };
     }
     
     Products.find(selector)

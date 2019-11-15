@@ -33,9 +33,13 @@ router.patch('/get/cancelOrder',orderController.cancelOrder);
  
 router.patch('/get/returnOrder',orderController.returnOrder);
 
-router.get('/get/report/:startTime/:endTime/:startRange/:limitRange',orderController.get_reports);
+router.post('/get/report-count',orderController.get_reports_count);
 
-router.post('/get/category-wise-report/',orderController.get_category_reports);
+router.post('/get/report/:startRange/:limitRange',orderController.get_reports);
+
+router.post('/get/category-wise-report-count',orderController.get_category_reports_count);
+
+router.post('/get/category-wise-report/:startRange/:limitRange',orderController.get_category_reports);
 
 router.get('/get/ytdorders',orderController.ytdorders);
 

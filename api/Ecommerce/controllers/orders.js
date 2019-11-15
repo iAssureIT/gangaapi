@@ -1231,13 +1231,32 @@ exports.returnOrder = (req,res,next)=>{
                     });
                 });
 }
+exports.get_reports_count = (req,res,next)=>{
+
+    Orders.find({
+      createdAt: {
+        $gte:  moment(req.body.startDate).startOf('day').toDate(),
+        $lte:  moment(req.body.endDate).endOf('day').toDate()
+      }
+    }).sort({createdAt:-1})      
+        .exec()
+        .then(data=>{
+          res.status(200).json({"dataCount":data.length});
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
 
 exports.get_reports = (req,res,next)=>{
 
     Orders.find({
       createdAt: {
-        $gte:  moment(req.params.startTime).startOf('day').toDate(),
-        $lte:  moment(req.params.endTime).endOf('day').toDate()
+        $gte:  moment(req.body.startDate).startOf('day').toDate(),
+        $lte:  moment(req.body.endDate).endOf('day').toDate()
       }
     }).sort({createdAt:-1})      
         .exec()
@@ -1263,10 +1282,7 @@ exports.get_reports = (req,res,next)=>{
         });
 };
 
-
-exports.get_category_reports = (req,res,next)=>{
-  console.log("startTime", req.body.startTime);
-  console.log("endTime", req.body.endTime);
+exports.get_category_reports_count = (req,res,next)=>{
   var selector = {};
   if (req.body.section && req.body.category && req.body.subcategory) {
     selector = {
@@ -1304,6 +1320,54 @@ exports.get_category_reports = (req,res,next)=>{
     Orders.find(selector).sort({createdAt:-1})      
         .exec()
         .then(data=>{
+          res.status(200).json({"dataCount":data.length});
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+
+exports.get_category_reports = (req,res,next)=>{
+  var selector = {};
+  if (req.body.section && req.body.category && req.body.subcategory) {
+    selector = {
+    createdAt: { $gte:  moment(req.body.startTime).startOf('day').toDate() },
+    createdAt: { $lte:  moment(req.body.endTime).endOf('day').toDate() },
+    "products.section_ID"  :  req.body.section,   
+    "products.category_ID" :  req.body.category, 
+    "products.subCategory_ID" : req.body.subcategory
+    }
+  }
+  else if (req.body.section && req.body.category) {
+    selector = {
+    createdAt: { $gte:  moment(req.body.startTime).startOf('day').toDate() },
+    createdAt: { $lte:  moment(req.body.endTime).endOf('day').toDate() },
+    "products.section_ID"  :  req.body.section,    
+    "products.category_ID" :  req.body.category,
+    }
+  }
+  else if (req.body.category) {
+    selector = {
+    createdAt: { $gte:  moment(req.body.startTime).startOf('day').toDate() },
+    createdAt: { $lte:  moment(req.body.endTime).endOf('day').toDate() },  
+    "products.category_ID" :  req.body.category  
+    }
+  } 
+  else {
+    selector = {
+    createdAt: {
+        $gte:  moment(req.body.startTime).startOf('day').toDate(),
+        $lte:  moment(req.body.endTime).endOf('day').toDate()
+      }
+    }
+  }
+  //console.log(selector)
+    Orders.find(selector).sort({createdAt:-1})      
+        .exec()
+        .then(data=>{
           var allData = data.map((x, i)=>{
             return {
                 "_id"                   : x._id,
@@ -1314,7 +1378,7 @@ exports.get_category_reports = (req,res,next)=>{
                 "deliveryStatus"        : x.deliveryStatus[x.deliveryStatus.length-1].status
             }
           })
-          res.status(200).json(allData.slice(req.body.startRange, req.body.limitRange));
+          res.status(200).json(allData.slice(req.params.startRange, req.params.limitRange));
         })
         .catch(err =>{
             console.log(err);
