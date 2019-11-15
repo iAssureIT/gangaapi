@@ -1,6 +1,7 @@
 const mongoose  = require("mongoose");
 const Products = require('../models/products');
 const CustomerReview = require('../models/customerReview');
+var ObjectID = require('mongodb').ObjectID;
 const moment                = require('moment-timezone');
 
 exports.insertCustomerReview = (req,res,next)=>{
@@ -87,10 +88,10 @@ exports.update_review_status = (req,res,next)=>{
 };
 exports.customerReviewAvg = (req,res,next)=>{
     CustomerReview.aggregate([
-        { $group: { _id : 1, avg : { $avg: "$rating" } } },
         {$match:
-            {"productID" : req.params.productID} 
-        }
+            {"productID" : ObjectID(req.params.productID)} 
+        },
+        { $group: { _id : 1, avg : { $avg: "$rating" } } }
     ])
     .exec()
     .then(data=>{
@@ -105,6 +106,9 @@ exports.customerReviewAvg = (req,res,next)=>{
 };
 exports.listCustomerReviewbucustomerid = (req,res,next)=>{
     CustomerReview.aggregate([
+        {$match:
+            {"customerID" : ObjectID(req.params.customerID)} 
+        },
         { $lookup:
             {
              from: 'products',
@@ -112,9 +116,6 @@ exports.listCustomerReviewbucustomerid = (req,res,next)=>{
              foreignField: '_id',
              as: 'productDetails'
             }
-        },
-        {$match:
-            {"customerID" : req.params.customerID} 
         },
         {
             $sort: {
