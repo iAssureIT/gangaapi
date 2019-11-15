@@ -406,7 +406,8 @@ exports.remove_cart_item = (req, res, next)=>{
             .then(data=>{
                 if(data.nModified == 1){
                     res.status(200).json({
-                        "message": "Product removed from cart successfully."
+                        "message": "Product removed from cart successfully.",
+                        "cartCount" : cartData.cartItems.length
                     });
                 }else{
                     res.status(401).json({
