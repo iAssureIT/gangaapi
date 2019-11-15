@@ -405,10 +405,19 @@ exports.remove_cart_item = (req, res, next)=>{
             .exec()
             .then(data=>{
                 if(data.nModified == 1){
-                    res.status(200).json({
-                        "message": "Product removed from cart successfully.",
-                        "cartCount" : cartData.cartItems.length
-                    });
+                    Carts.findOne({"user_ID": req.body.user_ID}) 
+                    .exec()
+                    .then(cartDatas=>{
+                        res.status(200).json({
+                            "message": "Product removed from cart successfully.",
+                            "cartCount" : cartDatas.cartItems.length
+                        });
+                    })
+                    .catch(err=>{
+                        res.status(500).json({
+                            error: err
+                        });
+                    })
                 }else{
                     res.status(401).json({
                         "message": "Cart Not Found 1"
