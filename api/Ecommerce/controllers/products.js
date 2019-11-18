@@ -88,10 +88,10 @@ exports.bulkUploadProduct = (req,res,next)=>{
             if(productData[k].section != undefined){
                 if (productData[k].section.trim() != '') {
                     var sectionObject = await sectionInsert(productData[k].section)
-
+                    //console.log('sectionObject',sectionObject)
                     var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,productData[k].section,sectionObject.section_ID);
-                    
-                    var insertProductObject = await insertProduct(sectionObject.section_ID,categoryObject,productData[k]);
+                    //console.log('categoryObject',categoryObject)
+                    var insertProductObject = await insertProduct(sectionObject.section_ID, sectionObject.section, categoryObject,productData[k]);
                     
                     if (insertProductObject != 0) {
                         Count++;
@@ -128,20 +128,19 @@ function sectionInsert(sectionName) {
                     .save()
                     .then(data=>{
                         //console.log('insertCategory',data.subCategory[0]._id);
-                        resolve({section_ID : data._id});
+                        resolve({ section_ID : data._id, section: sectionName });
                     })
                     .catch(err =>{
                         console.log(err);
                         reject(err);
                     });
             }else{
-                Sections.findOne({ section : sectionName})
+                Sections.findOne({ section : { "$regex": sectionName, $options: "i"} })
                         .exec()
                         .then(sectionObject=>{
                             if(sectionObject){
                                 //console.log('section',sectionObject);
-                                //resolve(categoryObject);
-                                resolve({section_ID : sectionObject._id});
+                                resolve({section_ID : sectionObject._id, section : sectionObject.section});
                             }else{
                                 resolve(0);
                             }
@@ -158,7 +157,7 @@ function categoryInsert(catgName,subcatgName,sectionname,section) {
         categoryDuplicateControl();
         async function categoryDuplicateControl(){
             var categoryPresent = await findCat(catgName);
-            console.log('subcatgName',subcatgName);
+            //console.log('subcatgName',subcatgName);
             if(categoryPresent === 0){
                 const categoryObj = new Category({
                         _id                       : new mongoose.Types.ObjectId(),                    
@@ -177,7 +176,7 @@ function categoryInsert(catgName,subcatgName,sectionname,section) {
                     .save()
                     .then(data=>{
                         //console.log('insertCategory',data.subCategory[0]._id);
-                        resolve({category_ID : data._id, subCategory_ID : (data.subCategory.length>0 ? data.subCategory[0]._id : []) });
+                        resolve({category_ID : data._id, category : catgName, subCategory_ID : (data.subCategory.length>0 ? data.subCategory[0]._id : []) });
                     })
                     .catch(err =>{
                         console.log(err);
@@ -189,7 +188,7 @@ function categoryInsert(catgName,subcatgName,sectionname,section) {
                 var subcatg = categoryPresent.subCategory.find(subcatgObj => subcatgObj.subCategoryTitle === subcatgName);
                 
                 if(subcatg){
-                    resolve({category_ID : categoryPresent._id, subCategory_ID : subcatg._id});
+                    resolve({category_ID : categoryPresent._id, category: categoryPresent.category, subCategory_ID : subcatg._id});
                 }else{
                     //update Category collection for a new subCategory;
                     Category.updateOne(
@@ -208,7 +207,7 @@ function categoryInsert(catgName,subcatgName,sectionname,section) {
                                            // console.log('subcategoryPresent',categoryObject.subCategory[categoryObject.subCategory.length-1]._id)
 
                                             //resolve(categoryObject);
-                                            resolve({category_ID : categoryPresent._id, subCategory_ID : categoryObject.subCategory[categoryObject.subCategory.length-1]._id});
+                                            resolve({category_ID : categoryPresent._id, category: categoryPresent.category, subCategory_ID : categoryObject.subCategory[categoryObject.subCategory.length-1]._id});
                                         }else{
                                             resolve(0);
                                         }
@@ -218,7 +217,7 @@ function categoryInsert(catgName,subcatgName,sectionname,section) {
                 }
                 }
                 else{
-                    resolve({category_ID : categoryPresent._id});
+                    resolve({category_ID : categoryPresent._id, category: categoryPresent.category});
                 }
                 
             }
@@ -256,20 +255,21 @@ function findCat(catgName) {
     })           
 }
 
-var insertProduct = async (section_ID, categoryObject, data) => {
+var insertProduct = async (section_ID, section, categoryObject, data) => {
     return new Promise(function(resolve,reject){ 
         productDuplicateControl();
         async function productDuplicateControl(){
             var productPresent = await findProduct(data.itemCode,data.productName);
-            //console.log('productPresent',productPresent)
+            
             if (productPresent==0) {
                     const productObj = new Products({
                         _id                       : new mongoose.Types.ObjectId(),  
-                        section_ID                : section_ID,                 
-                        category                  : data.category,
+                        section_ID                : section_ID,           
+                        section                   : section,      
+                        category                  : categoryObject.category,
                         category_ID               : categoryObject.category_ID,
                         subCategory               : data.subCategory,
-                        subCategory_ID            : categoryObject.subCategory_ID ? categoryObject.subCategory_ID : null,
+                        subCategory_ID            : categoryObject.subCategory_ID && categoryObject.subCategory_ID.length > 0 ? categoryObject.subCategory_ID : null,
                         brand                     : data.brand ? data.brand : "",
                         productCode               : data.productCode ? data.productCode : "",
                         itemCode                  : data.itemCode ? data.itemCode : "",

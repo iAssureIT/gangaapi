@@ -6,6 +6,8 @@ const User = require('../models/users');
 var request = require('request-promise');
 const gloabalVariable = require('./../../../nodemon');
 const Masternotifications = require('../models/masternotifications');
+const BusinessAssociate = require('../../Ecommerce/models/businessAssociate');
+
 function getRandomInt(min, max) {
 	min = Math.ceil(min);
 	max = Math.floor(max);
@@ -889,19 +891,46 @@ exports.user_details = (req, res, next) => {
 };
 // Handle delete contact
 exports.delete_user = function (req, res, next) {
-	User.deleteOne({
-		_id: req.params.userID
-	}, function (err) {
-		if (err) {
-			return res.json({
+	User.findOne({ _id: req.params.userID })
+		.exec()
+		.then(user => {
+			//console.log(user.roles);
+			if (user) {
+				if (user.roles.indexOf("ba") != -1) {
+					console.log("in if");
+					BusinessAssociate.deleteOne({userID:req.params.userID})
+					    .exec()
+					    .then(data=>{
+					        // res.status(200).json({
+					        //     "message": "Business Associate Deleted Successfully."
+					        // });
+					    })
+					    .catch(err =>{
+					        console.log(err);
+					        // res.status(500).json({
+					        //     error: err
+					        // });
+					    });
+				}
+				User.deleteOne({ _id: req.params.userID }, function (err) {
+					if (err) {
+						return res.json({
+							error: err
+						});
+					}
+					res.json({
+						status: "success",
+						message: 'User is deleted!'
+					});
+				});
+			}
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({
 				error: err
 			});
-		}
-		res.json({
-			status: "success",
-			message: 'Users deleted'
 		});
-	});
 };
 
 exports.deleteall_user = function (req, res, next) {
