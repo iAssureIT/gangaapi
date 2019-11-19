@@ -19,6 +19,8 @@ router.post('/get/list',wishlistsController.list_wishlist_with_limits);
 
 router.get('/get/one/:wishID', wishlistsController.fetch_wishlist);
 
+router.get('/get/one/productwish/:userID/:productID', wishlistsController.fetch_wishlist_product);
+
 router.delete('/delete/:wishlist_ID',wishlistsController.delete_wishlist);
 
 // router.delete('/',wishlistsController.deleteall_wishlist);

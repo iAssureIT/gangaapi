@@ -1,5 +1,5 @@
 const mongoose	= require("mongoose");
-
+var ObjectID = require('mongodb').ObjectID;
 const Wishlists = require('../models/wishlist');
 
 exports.insert_wishlist = (req,res,next)=>{
@@ -142,6 +142,19 @@ exports.usercount_wishlist = (req,res,next)=>{
 
 exports.fetch_wishlist = (req,res,next)=>{
     Wishlists.find({_id : req.params.wishID})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+exports.fetch_wishlist_product = (req,res,next)=>{
+    Wishlists.findOne({"user_ID" : ObjectID(req.params.userID), "product_ID": ObjectID(req.params.productID)})
     .exec()
     .then(data=>{
         res.status(200).json(data);
