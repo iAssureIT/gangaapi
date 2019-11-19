@@ -154,7 +154,7 @@ exports.fetch_wishlist = (req,res,next)=>{
     });
 };
 exports.fetch_wishlist_product = (req,res,next)=>{
-    Wishlists.findOne({"user_ID" : ObjectID(req.params.userID), "product_ID": ObjectID(req.params.productID)})
+    Wishlists.findOne({"customerID" : ObjectID(req.params.userID), "productID": ObjectID(req.params.productID)})
     .exec()
     .then(data=>{
         res.status(200).json(data);
