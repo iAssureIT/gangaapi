@@ -45,6 +45,20 @@ exports.listCustomerReview = (req,res,next)=>{
         });
     });
 };
+exports.listCustomerProductReview = (req,res,next)=>{
+    console.log('param', req.params);
+    CustomerReview.findOne({"customerID": ObjectID(req.params.customerID),  "productID" : ObjectID(req.params.productID), "orderID": ObjectID(req.params.orderID)})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.list_customer_reviews = (req,res,next)=>{
     CustomerReview.find()
     .exec()
@@ -150,18 +164,21 @@ exports.delete_review = (req,res,next)=>{
     });
 };
 exports.updateCustomerReview = (req, res, next) => {
+    console.log('rating', req.body);
     CustomerReview.updateOne(
         { _id: req.body.rating_ID},
         {
             $set: {
                 "rating"                    : req.body.rating,
-                "customerReview "           : req.body.customerReview,
+                "customerReview"           : req.body.customerReview,
             }
         }
     )
     .exec()
     .then(data => {
-        res.status(200).json(data);
+        res.status(200).json({
+            "message": "Your review updated successfully."
+        });
     })
     .catch(err => {
         console.log(err);

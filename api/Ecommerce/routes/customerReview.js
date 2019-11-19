@@ -24,6 +24,8 @@ router.post('/get/list',customerReviewController.list_review);
 
 router.get('/get/user/list/:customerID',customerReviewController.listCustomerReviewbucustomerid);
 
+router.get('/get/order/list/:customerID/:orderID/:productID', customerReviewController.listCustomerProductReview);
+
 router.get('/get/avg/:productID',customerReviewController.customerReviewAvg);
 
 router.delete('/delete/:reviewID',customerReviewController.delete_review);
