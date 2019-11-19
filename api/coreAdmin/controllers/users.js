@@ -1011,6 +1011,7 @@ exports.update_user_details = (req, res, next) => {
 														"profile.lastName": req.body.lastName,
 														"profile.fullName": req.body.firstName + ' ' + req.body.lastName,
 														"profile.emailId": req.body.emailId,
+														"profile.mobileNumber": req.body.mobileNumber,
 													}
 												}
 											)
@@ -1057,6 +1058,7 @@ exports.update_user_details = (req, res, next) => {
 														"profile.lastName": req.body.lastName,
 														"profile.fullName": req.body.firstName + ' ' + req.body.lastName,
 														"profile.emailId": req.body.emailId,
+														"profile.mobileNumber": req.body.mobileNumber,
 													}
 												}
 											)
@@ -1108,6 +1110,7 @@ exports.update_user_details = (req, res, next) => {
 														},
 														"profile.firstName": req.body.firstName,
 														"profile.lastName": req.body.lastName,
+														"profile.mobileNumber": req.body.mobileNumber,
 														"profile.fullName": req.body.firstName + ' ' + req.body.lastName,
 													}
 												}
@@ -1146,6 +1149,7 @@ exports.update_user_details = (req, res, next) => {
 								$set: {
 									"profile.firstName": req.body.firstName,
 									"profile.lastName": req.body.lastName,
+									"profile.mobileNumber": req.body.mobileNumber,
 									"profile.fullName": req.body.firstName + ' ' + req.body.lastName,
 								}
 							}
