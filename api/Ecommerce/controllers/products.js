@@ -1139,7 +1139,7 @@ exports.get_menu_list = (req,res,next)=>{
 
 exports.get_minmaxprice = (req,res,next)=>{
     var priceArray = {}
-    Products.find({},{discountedPrice:1}).sort({discountedPrice:1}).limit(1)
+    Products.find({"section_ID": req.params.sectionID},{discountedPrice:1}).sort({discountedPrice:1}).limit(1)
     .exec()
     .then(data=>{
         priceArray.min =  data[0].discountedPrice ;

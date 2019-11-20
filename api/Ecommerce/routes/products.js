@@ -65,7 +65,7 @@ router.get('/get/listSize/:sectionID', productController.list_size);
 
 router.get('/get/listColor/:sectionID', productController.list_color);
 
-router.get('/get/minmaxprice', productController.get_minmaxprice);
+router.get('/get/minmaxprice/:sectionID', productController.get_minmaxprice);
 
 router.get('/get/listGroceryBrand', productController.list_grocerybrand);
 
