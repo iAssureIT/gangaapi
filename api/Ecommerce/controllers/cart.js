@@ -157,8 +157,7 @@ exports.insert_cart = (req,res,next)=>{
                                     "quantity"          : formValues.quantity,
                                     "discountedPrice"   : formValues.discountedPrice,
                                     "originalPrice"     : formValues.originalPrice,
-                                    "actualPrice"       : formValues.actualPrice,
-                                    "offeredPrice"      : formValues.offeredPrice,
+                                    "discountPercent"   : formValues.discountPercent,
                                     "totalForQantity"   : formValues.totalForQantity,
                                 });
                                 console.log('cartTotal1',cartTotal);
@@ -214,8 +213,7 @@ exports.insert_cart = (req,res,next)=>{
                         "quantity"          : formValues.quantity,
                         "discountedPrice"   : formValues.discountedPrice,
                         "originalPrice"     : formValues.originalPrice,
-                        "actualPrice"       : formValues.actualPrice,
-                        "offeredPrice"      : formValues.offeredPrice,
+                        "discountPercent"   : formValues.discountPercent,
                         "totalForQantity"   : formValues.totalForQantity,
                     }];
                     //console.log('cartItems',cartItems);
@@ -268,8 +266,7 @@ exports.insert_cart = (req,res,next)=>{
                     "quantity"          : formValues.quantity,
                     "discountedPrice"   : formValues.discountedPrice,
                     "originalPrice"     : formValues.originalPrice,
-                    "actualPrice"       : formValues.actualPrice,
-                    "offeredPrice"      : formValues.offeredPrice,
+                    "discountPercent"   : formValues.discountPercent,
                     "totalForQantity"   : formValues.totalForQantity,
                 }];
                 
@@ -379,8 +376,7 @@ exports.remove_cart_item = (req, res, next)=>{
                                 "quantity"          : cartData.cartItems[i].quantity,
                                 "discountedPrice"   : cartData.cartItems[i].discountedPrice,
                                 "originalPrice"     : cartData.cartItems[i].originalPrice,
-                                "actualPrice"       : cartData.cartItems[i].actualPrice,
-                                "offeredPrice"      : cartData.cartItems[i].offeredPrice,
+                                "discountPercent"   : cartData.cartItems[i].discountPercent,
                                 "totalForQantity"   : cartData.cartItems[i].totalForQantity,
                                 "createdAt"         : cartData.cartItems[i].createdAt,
                                 "cartIndex"         : cartLengthRef,
