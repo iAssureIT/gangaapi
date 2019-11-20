@@ -1144,7 +1144,7 @@ exports.get_minmaxprice = (req,res,next)=>{
     .then(data=>{
         priceArray.min =  data[0].discountedPrice ;
         
-            Products.find({},{discountedPrice:1}).sort({discountedPrice:-1}).limit(1)
+            Products.find({"section_ID": req.params.sectionID},{discountedPrice:1}).sort({discountedPrice:-1}).limit(1)
             .exec()
             .then(data1=>{
                 priceArray.max =  data1[0].discountedPrice ;
