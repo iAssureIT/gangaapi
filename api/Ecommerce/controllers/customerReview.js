@@ -1,7 +1,7 @@
 const mongoose  = require("mongoose");
 const Products = require('../models/products');
 const CustomerReview = require('../models/customerReview');
-var ObjectID = require('mongodb').ObjectID;
+var ObjectId = require('mongodb').ObjectID;
 const moment                = require('moment-timezone');
 
 exports.insertCustomerReview = (req,res,next)=>{
@@ -47,7 +47,7 @@ exports.listCustomerReview = (req,res,next)=>{
 };
 exports.listCustomerProductReview = (req,res,next)=>{
     console.log('param', req.params);
-    CustomerReview.findOne({"customerID": ObjectID(req.params.customerID),  "productID" : ObjectID(req.params.productID), "orderID": ObjectID(req.params.orderID)})
+    CustomerReview.findOne({"customerID": ObjectId(req.params.customerID),  "productID" : ObjectId(req.params.productID), "orderID": ObjectId(req.params.orderID)})
     .exec()
     .then(data=>{
         res.status(200).json(data);
@@ -103,7 +103,7 @@ exports.update_review_status = (req,res,next)=>{
 exports.customerReviewAvg = (req,res,next)=>{
     CustomerReview.aggregate([
         {$match:
-            {"productID" : req.params.productID} 
+            {"productID" : ObjectId(req.params.productID)} 
         },
         { $group: { _id : 1, avg : { $avg: "$rating" } } }
     ])
@@ -121,7 +121,7 @@ exports.customerReviewAvg = (req,res,next)=>{
 exports.listCustomerReviewbucustomerid = (req,res,next)=>{
     CustomerReview.aggregate([
         {$match:
-            {"customerID" : ObjectID(req.params.customerID)} 
+            {"customerID" : ObjectId(req.params.customerID)} 
         },
         { $lookup:
             {
