@@ -105,7 +105,7 @@ exports.customerReviewAvg = (req,res,next)=>{
         {$match:
             {"productID" : ObjectId(req.params.productID)} 
         },
-        { $group: { _id : 1, avg : { $avg: "rating" } } }
+        { $group: { _id : null, "reviewAvg" : { $avg: "$rating" } } }
     ])
     .exec()
     .then(data=>{
