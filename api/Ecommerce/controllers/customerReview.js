@@ -103,7 +103,7 @@ exports.update_review_status = (req,res,next)=>{
 exports.customerReviewAvg = (req,res,next)=>{
     CustomerReview.aggregate([
         {$match:
-            {"productID" : ObjectID(req.params.productID)} 
+            {"productID" : req.params.productID} 
         },
         { $group: { _id : 1, avg : { $avg: "$rating" } } }
     ])
