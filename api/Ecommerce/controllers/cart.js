@@ -512,9 +512,11 @@ exports.add_address_to_cart = (req, res, next)=>{
                             "addressLine2"    : req.body.addressLine2,
                             "pincode"         : req.body.pincode,
                             "city"            : req.body.city,
+                            "stateCode"       : req.body.stateCode,
                             "state"           : req.body.state,
-                            "district" : req.body.district,
+                            "district"        : req.body.district,
                             "mobileNumber"    : req.body.mobileNumber,
+                            "countryCode"     : req.body.countryCode,
                             "country"         : req.body.country,
                             "addType"         : req.body.addType,
                         }

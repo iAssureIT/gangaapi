@@ -402,11 +402,11 @@ exports.vendor_signup = (req, res, next) => {
 exports.add_user_address = (req, res, next) => {
 	// var roleData = req.body.role;
 
-
+	console.log(req.body)
 	User.updateOne(
 		{ "_id": req.body.user_ID, "deliveryAddress._id": req.body.deliveryAddressID },
 		{
-			$set: {
+			$set: { 
 				"deliveryAddress.$.name": req.body.name,
 				"deliveryAddress.$.email": req.body.email,
 				"deliveryAddress.$.addressLine1": req.body.addressLine1,
@@ -415,8 +415,10 @@ exports.add_user_address = (req, res, next) => {
 				"deliveryAddress.$.block": req.body.block,
 				"deliveryAddress.$.district" : req.body.district,
 				"deliveryAddress.$.country": req.body.country,
+				"deliveryAddress.$.countryCode": req.body.countryCode,
 				"deliveryAddress.$.city": req.body.city,
 				"deliveryAddress.$.state": req.body.state,
+				"deliveryAddress.$.stateCode": req.body.stateCode,
 				"deliveryAddress.$.mobileNumber": req.body.mobileNumber,
 				"deliveryAddress.$.addType": req.body.addType,
 			}
@@ -1530,7 +1532,9 @@ exports.add_delivery_address = (req, res, next) => {
 					"block": req.body.block,
 					"district" : req.body.district,
 					"city": req.body.city,
+					"stateCode": req.body.stateCode,
 					"state": req.body.state,
+					"countryCode": req.body.countryCode,
 					"country": req.body.country,
 					"mobileNumber": req.body.mobileNumber,
 					"addType": req.body.addType,
