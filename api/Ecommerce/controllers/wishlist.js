@@ -12,7 +12,7 @@ exports.insert_wishlist = (req,res,next)=>{
                 .exec()
                 .then(data=>{
                     res.status(200).json({
-                        "message": "Product deleted from wishlist successfully."
+                        "message": "Product removed from wishlist successfully."
                     });
                 })
                 .catch(err =>{
@@ -34,7 +34,7 @@ exports.insert_wishlist = (req,res,next)=>{
                     .exec()
                     .then(wishlist=>{
                         res.status(200).json({
-                            "message": "Product Added in Wishlist Successfully.",
+                            "message": "Product added in wishlist Successfully.",
                             "wishlistCount": wishlist
                         });
                     })
@@ -172,7 +172,7 @@ exports.delete_wishlist = (req,res,next)=>{
     .exec()
     .then(data=>{
         res.status(200).json({
-            "message": "Product deleted from wishlist successfully."
+            "message": "Product removed from wishlist successfully."
         });
     })
     .catch(err =>{
