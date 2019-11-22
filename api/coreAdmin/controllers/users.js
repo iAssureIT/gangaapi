@@ -744,7 +744,7 @@ exports.user_login = (req, res, next) => {
 									message: 'Auth successful',
 									token: token,
 									user_ID: user._id,
-									userFirstName: user.profile.firstName,
+									userFirstName: user.profile.fullName,
 									roles: user.roles,
 									status:user.profile.status
 								});
@@ -772,7 +772,7 @@ exports.user_login = (req, res, next) => {
 };
 
 exports.users_list = (req, res, next) => {
-	User.find({ roles: { $ne: "admin" } })
+	User.find({ roles: { $ne: "superAdmin" } })
 		.exec()
 		.then(users => {
 			res.status(200).json(users);
@@ -800,7 +800,7 @@ exports.vendor_list = (req, res, next) => {
 
 };
 exports.users_directlist = (req, res, next) => {
-	User.find({ roles: { $ne: "admin" } })
+	User.find({ roles: { $ne: "superAdmin" } })
 		.select("_id username roles createdAt profile.firstName profile.lastName profile.mobNumber profile.fullname profile.emailId profile.status ")
 
 		.exec()
@@ -842,7 +842,7 @@ exports.users_directlist = (req, res, next) => {
 
 };
 exports.users_fetch = (req, res, next) => {
-	User.find({ roles: { $ne: "admin" } })
+	User.find({ roles: { $ne: "superAdmin" } })
 		.sort({ createdAt: -1 })
 		.select("_id username createdAt profile roles officeLocation")
 		.exec()
@@ -1366,7 +1366,7 @@ exports.account_role_add = (req, res, next) => {
 		});
 };
 exports.users_count = (req, res, next) => {
-	User.find({ roles: { $ne: "admin" } }).count()
+	User.find({ roles: { $ne: "superAdmin" } }).count()
 		.exec()
 		.then(data => {
 
@@ -1381,7 +1381,7 @@ exports.users_count = (req, res, next) => {
 };
 
 exports.active_users_count = (req, res, next) => {
-	User.find({"profile.status":"Active",  roles: { $ne: "admin" } }).count()
+	User.find({"profile.status":"Active",  roles: { $ne: "superAdmin" } }).count()
 		.exec()
 		.then(data => {
 
@@ -1704,7 +1704,7 @@ exports.filterUser = (req, res, next) => {
 	var selector = {};
 	if(req.body.role && req.body.status){
 		if (req.body.role == 'all' && req.body.status == 'all' ) {
-			selector = { roles: { $ne: "admin" } };
+			selector = { roles: { $ne: "superAdmin" } };
 		}else if(req.body.role != 'all' && req.body.status != 'all'){
 			selector = { roles: { $eq: req.body.role }, "profile.status" : {$eq: req.body.status} }
 		}
@@ -1712,21 +1712,21 @@ exports.filterUser = (req, res, next) => {
 			selector = { roles: { $eq: req.body.role } }
 		}
 		else if(req.body.role == 'all' && req.body.status != 'all'){
-			selector = { roles: { $ne: "admin" }, "profile.status" : {$eq: req.body.status}  }
+			selector = { roles: { $ne: "superAdmin" }, "profile.status" : {$eq: req.body.status}  }
 		}
 	}
 	else if (req.body.role) {
 		if (req.body.role == 'all') {
-			selector = { roles: { $ne: "admin" } };
+			selector = { roles: { $ne: "superAdmin" } };
 		}else{
 			selector = { roles: { $eq: req.body.role } }
 		}
 	}
 	else if (req.body.status) {
 		if (req.body.status == 'all') {
-			selector = { roles: { $ne: "admin" } };
+			selector = { roles: { $ne: "superAdmin" } };
 		}else{
-			selector = { roles: { $ne: "admin" }, "profile.status" : {$eq: req.body.status} };
+			selector = { roles: { $ne: "superAdmin" }, "profile.status" : {$eq: req.body.status} };
 		}
 	}
 	//console.log("selector", selector);
@@ -1766,7 +1766,7 @@ exports.filterUserCount = (req, res, next) => {
 	var selector = {};
 	if(req.body.role && req.body.status){
 		if (req.body.role == 'all' && req.body.status == 'all' ) {
-			selector = { roles: { $ne: "admin" } };
+			selector = { roles: { $ne: "superAdmin" } };
 		}else if(req.body.role != 'all' && req.body.status != 'all'){
 			selector = { roles: { $eq: req.body.role }, "profile.status" : {$eq: req.body.status} }
 		}
@@ -1774,21 +1774,21 @@ exports.filterUserCount = (req, res, next) => {
 			selector = { roles: { $eq: req.body.role } }
 		}
 		else if(req.body.role == 'all' && req.body.status != 'all'){
-			selector = { roles: { $ne: "admin" }, "profile.status" : {$eq: req.body.status}  }
+			selector = { roles: { $ne: "superAdmin" }, "profile.status" : {$eq: req.body.status}  }
 		}
 	}
 	else if (req.body.role) {
 		if (req.body.role == 'all') {
-			selector = { roles: { $ne: "admin" } };
+			selector = { roles: { $ne: "superAdmin" } };
 		}else{
 			selector = { roles: { $eq: req.body.role } }
 		}
 	}
 	else if (req.body.status) {
 		if (req.body.status == 'all') {
-			selector = { roles: { $ne: "admin" } };
+			selector = { roles: { $ne: "superAdmin" } };
 		}else{
-			selector = { roles: { $ne: "admin" }, "profile.status" : {$eq: req.body.status} };
+			selector = { roles: { $ne: "superAdmin" }, "profile.status" : {$eq: req.body.status} };
 		}
 	}
 	//console.log("selector", selector);
