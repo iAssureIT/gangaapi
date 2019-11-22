@@ -42,7 +42,9 @@ router.put('/resetpwd/:userID',UserController.update_user_resetpassword);
 
 router.get('/:userID',UserController.user_details); 
 
-router.post('/searchValue',UserController.user_search); 
+router.post('/searchValue',UserController.user_search);
+
+router.post('/searchValueCount',UserController.searchValueCount); 
 
 router.post('/officesearchValue',UserController.search_user_office); 
 
@@ -70,6 +72,7 @@ router.get('/get/checkUserExists/:emailID', UserController.check_user_exists);
 
 router.post('/filterUser', UserController.filterUser); 
 
+router.post('/filterUserCount', UserController.filterUserCount); 
 
 
 module.exports = router;

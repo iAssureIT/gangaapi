@@ -1430,7 +1430,6 @@ exports.account_role_remove = (req, res, next) => {
 
 exports.user_search = (req, res, next) => {
 	// console.log("req.body.searchText",req.body.searchText);
-
 	User.find(
 		{
 			$or: [
@@ -1467,7 +1466,8 @@ exports.user_search = (req, res, next) => {
 					});
 				})
 				
-				return res.status(200).json( userdataarr );
+				//return res.status(200).json( userdataarr );
+				return res.status(200).json(userdataarr.slice(req.body.startRange, req.body.limitRange));
 			} else {
 				return res.status(404).json({
 					"message": 'No-Data-Available',
@@ -1483,6 +1483,34 @@ exports.user_search = (req, res, next) => {
 		});
 };
 
+ 
+exports.searchValueCount = (req, res, next) => {
+	User.find(
+		{
+			$or: [
+				{ "profile.fullName": { "$regex": req.body.searchText, $options: "i" } },
+				{ "profile.firstName": { "$regex": req.body.searchText, $options: "i" } },
+				{ "profile.lastName": { "$regex": req.body.searchText, $options: "i" } },
+				{ "profile.emailId": { "$regex": req.body.searchText, $options: "i" } },
+				{ "profile.mobileNumber": { "$regex": req.body.searchText, $options: "i" } },
+				// {"roles"				:	{ "$regex": { $in: [req.body.searchText] }, $options: "i"}},
+				{ "roles": { $in: [req.body.searchText] } },
+				{ "profile.status": { "$regex": req.body.searchText, $options: "i" } },
+			]
+		},
+
+	)
+		.exec()
+		.then(data => {
+			return res.status(200).json({ "dataCount": data.length });
+		})
+		.catch(err => {
+			console.log(err);
+			res.status(500).json({
+				error: err
+			});
+		});
+};
 exports.search_user_office = (req, res, next) => {
 	// console.log("req.body.searchText",req.body.searchText);
 
@@ -1721,11 +1749,55 @@ exports.filterUser = (req, res, next) => {
 						officeLocation: data.officeLocation,
 					});
 				})
-				
-			res.status(200).json(userdataarr);
+			res.status(200).json(userdataarr.slice(req.body.startRange, req.body.limitRange));		
+			//res.status(200).json(userdataarr);
 		})
 		.catch(err => {
 			console.log(err);
+			res.status(500).json({
+				error: err
+			});
+		});
+
+};
+
+exports.filterUserCount = (req, res, next) => {
+
+	var selector = {};
+	if(req.body.role && req.body.status){
+		if (req.body.role == 'all' && req.body.status == 'all' ) {
+			selector = { roles: { $ne: "admin" } };
+		}else if(req.body.role != 'all' && req.body.status != 'all'){
+			selector = { roles: { $eq: req.body.role }, "profile.status" : {$eq: req.body.status} }
+		}
+		else if(req.body.role != 'all' && req.body.status == 'all'){
+			selector = { roles: { $eq: req.body.role } }
+		}
+		else if(req.body.role == 'all' && req.body.status != 'all'){
+			selector = { roles: { $ne: "admin" }, "profile.status" : {$eq: req.body.status}  }
+		}
+	}
+	else if (req.body.role) {
+		if (req.body.role == 'all') {
+			selector = { roles: { $ne: "admin" } };
+		}else{
+			selector = { roles: { $eq: req.body.role } }
+		}
+	}
+	else if (req.body.status) {
+		if (req.body.status == 'all') {
+			selector = { roles: { $ne: "admin" } };
+		}else{
+			selector = { roles: { $ne: "admin" }, "profile.status" : {$eq: req.body.status} };
+		}
+	}
+	//console.log("selector", selector);
+	User.find(selector)
+		.exec()
+		.then(data => {
+			return res.status(200).json({ "dataCount": data.length });
+		})
+		.catch(err => {
 			res.status(500).json({
 				error: err
 			});
