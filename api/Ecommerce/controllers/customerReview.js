@@ -33,7 +33,7 @@ exports.insertCustomerReview = (req,res,next)=>{
 };
 
 exports.listCustomerReview = (req,res,next)=>{
-    CustomerReview.find({productID : req.params.productID})
+    CustomerReview.find({"productID" : req.params.productID, "status": "Publish"})
     .exec()
     .then(data=>{
         res.status(200).json(data);
