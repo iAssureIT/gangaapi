@@ -116,10 +116,10 @@ exports.user_signupadmin = (req, res, next) => {
 														content = content.split("[").join(" ");
 														content = content.split("]").join(" ");
 														
-														body += header + "<table><tr><td>"+content+"</td></tr></table>";
+														body += "<table><tr><td>"+content+"</td></tr></table>";
 
 												}else{
-													body += header + "<table><tr><td><p>Dear "+newUser.profile.fullName+", </p>\n";
+													body += "<table><tr><td><p>Dear "+newUser.profile.fullName+", </p>\n";
 													body += "<p>Thank you for registration with GangaExpress.</p>";
 													body += "<p>As part of our registration process, we screen every new profile to ensure its credibility by validating email provided by user on GangaExpress.";
 													body += "While screening the profile, we verify that details put in by user are correct and genuine.</p></td></tr>";
@@ -130,14 +130,14 @@ exports.user_signupadmin = (req, res, next) => {
 											}else{
 												otpMailSubject = "Verify your GangaExpress account";
 												
-												body += header + "<table><tr><td><p>Dear "+newUser.profile.fullName+", </p>\n";
+												body += "<table><tr><td><p>Dear "+newUser.profile.fullName+", </p>\n";
 												body += "<p>Thank you for registration with GangaExpress.</p>";
 												body += "<p>As part of our registration process, we screen every new profile to ensure its credibility by validating email provided by user on GangaExpress.";
 												body += "While screening the profile, we verify that details put in by user are correct and genuine.</p></td></tr>";
 												body += "<tr><p>Your account verification code is <b>"+MailOTP+"</b> </p></tr>"
 												body += "</tbody></table>";
 											}
-											body += footer;
+											//body += footer;
 											request({
 												"method": "POST",
 												"url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
@@ -548,10 +548,10 @@ exports.resendotp = (req, res, next) => {
 								content = content.split("[").join(" ");
 								content = content.split("]").join(" ");
 								
-								body += header + "<table><tr><td>"+content+"</td></tr></table>";
+								body += "<table><tr><td>"+content+"</td></tr></table>";
 
 						}else{
-							body += header + "<table><tr><td><p>Dear "+user.profile.fullName+", </p>\n";
+							body += "<table><tr><td><p>Dear "+user.profile.fullName+", </p>\n";
 							body += "<p>Thank you for registration with GangaExpress.</p>";
 							body += "<p>As part of our registration process, we screen every new profile to ensure its credibility by validating email provided by user on GangaExpress.";
 							body += "While screening the profile, we verify that details put in by user are correct and genuine.</p></td></tr>";
@@ -562,14 +562,14 @@ exports.resendotp = (req, res, next) => {
 					}else{
 						otpMailSubject = "Verify your GangaExpress account";
 						
-						body += header + "<table><tr><td><p>Dear "+user.profile.fullName+", </p>\n";
+						body += "<table><tr><td><p>Dear "+user.profile.fullName+", </p>\n";
 						body += "<p>Thank you for registration with GangaExpress.</p>";
 						body += "<p>As part of our registration process, we screen every new profile to ensure its credibility by validating email provided by user on GangaExpress.";
 						body += "While screening the profile, we verify that details put in by user are correct and genuine.</p></td></tr>";
 						body += "<tr><p>Your account verification code is <b>"+MailOTP+"</b> </p></tr>"
 						body += "</tbody></table>";
 					}
-					body += footer;
+					//body += footer;
 
 					request({
 					"method": "POST",

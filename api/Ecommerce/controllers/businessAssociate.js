@@ -1,11 +1,14 @@
 const mongoose	= require("mongoose");
 
 const BusinessAssociate = require('../models/businessAssociate');
+var request = require('request-promise');
+const gloabalVariable = require('./../../../nodemon');
+const Masternotifications = require('../../coreAdmin/models/masternotifications');
 
 exports.insert_ba = (req,res,next)=>{
     console.log(req.body.locationDetails);
     var locationArray = [];
-
+ 
 	const BA = new BusinessAssociate({
         _id                       : new mongoose.Types.ObjectId(),
         companyName               : req.body.companyName,
@@ -24,10 +27,97 @@ exports.insert_ba = (req,res,next)=>{
     });
     BA.save()
     .then(data=>{
-        res.status(200).json({
+        var header = "<table><tbody><tr><td align='center' width='100%'><a><img src='http://qagangaexpress.iassureit.com/images/GangaExpress.png' style='width:25%'></a></td></tr></table>";
+        var body = "";
+        var footer = "<table width='100%' bgcolor='#232f3e' height='50'><tbody><tr><td>"
+        footer += "<span style='color:#fff'>GangaExpress Copyright <i class='fa fa-copyright'></i> 2019 - 2020. All Rights Reserved.</span>";
+        footer += "<span style='float:right;color:#fff'>gangaexpress@gmail.com</span></td></tr></tbody></table>"
+        
+        var otpMailSubject, otpSmsText;
+        Masternotifications.findOne({ "templateType": "Email", "templateName": "BA New Registration" })
+            .exec()
+            .then((maildata) => {
+                if (maildata) {
+                    otpMailSubject = maildata.subject != '' ? maildata.subject : "GangaExpress business associate account registration" ;                    
+                    if (maildata.content != '') {
+                        var variables = {
+                                            "username"      : req.body.emailID,
+                                            "password"      : "gangaexpress123",
+                                        }
+                                        
+                        var content = maildata.content;
+                        if(content.indexOf('[') > -1 ){
+                            var wordsplit = content.split('[');
+                        }
+        
+                        var tokens = [];
+                        var n = 0;
+                        for(i=0;i<wordsplit.length;i++){
+                            if(wordsplit[i].indexOf(']') > -1 ){
+                                tokensArr = wordsplit[i].split(']');
+                                tokens[n] = tokensArr[0];
+                                n++;
+                            }
+                        }
+                        var numOfVar = Object.keys(variables).length;
+        
+                        for(i=0; i<numOfVar; i++){
+                            var tokVar = tokens[i].substr(1,tokens[i].length-2);
+                            content = content.replace(tokens[i],variables[tokens[i]]);
+                        }
+                        content = content.split("[").join(" ");
+                        content = content.split("]").join(" ");
+                        
+                        body += "<table><tr><td>"+content+"</td></tr></table>";
+                    }else{
+                        body += "<table><tbody><tr><td><p>Congratulations! You have been registered successfully as a Business Associate on GangaExpress!!</p></td></tr>";
+                        body += "<tr><td><p>Your login credentials are: </p>";
+                        body += "<p><b>UserName: </b>"+req.body.emailID+" </p>";
+                        body += "<p><b>Password:</b> gangaexpress123 </p></td></tr>"
+                        body += "</tbody></table>";   
+                    }
+                }else{
+                    otpMailSubject = "GangaExpress business associate account registration";
+
+                    //body += "<table><tr><td><p>Dear "+req.body.companyName+", </p>\n";
+                    body += "<table><tbody><tr><td><p>Congratulations! You have been registered successfully as a Business Associate on GangaExpress !!</p></td></tr>";
+                    body += "<tr><td><p>Your login credentials are: </p>";
+                    body += "<p><b>UserName: </b>"+req.body.emailID+" </p>";
+                    body += "<p><b>Password:</b> gangaexpress123 </p></td></tr>"
+                    body += "</tbody></table>";
+                }
+            })
+            .catch()
+        
+        request({
+            "method": "POST",
+            "url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
+            "body": {
+                "email": req.body.emailID,
+                "subject": otpMailSubject,
+                "text": otpMailSubject,
+                "mail" : body
+            },
+            "json": true,
+            "headers": {
+                "User-Agent": "Test App"
+            }
+        })
+        .then((sentemail) => {
+
+            res.header("Access-Control-Allow-Origin", "*");
+
+            res.status(200).json({
             "id"     : data._id,
             "message": "Business Associate Submitted Successfully."
+            });
+        })
+        .catch((err) => {
+            res.status(500).json({
+                error: err
+            });
         });
+        
     })
     .catch(err =>{
         console.log(err);

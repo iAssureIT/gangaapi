@@ -168,7 +168,7 @@ exports.insert_order = (req,res,next)=>{
                                   content = content.split("[").join(" ");
                                   content = content.split("]").join(" ");
 
-                                  body += header + "<table><tr><td>"+content+"</td></tr></table>";
+                                  body += "<table><tr><td>"+content+"</td></tr></table>";
                                   body += "<tr><b><p>Your order will be sent to:</p></b>";
                                   
                                   body += "<p style='margin:0'>"+orderdata.deliveryAddress.name+"</p>";
@@ -190,7 +190,7 @@ exports.insert_order = (req,res,next)=>{
 
                               }else{
                                 mailSubject = "Your order is placed successfully.";
-                                body += header + "<table><tr><td><h3>Dear "+data.profile.fullName+", </h3>\n";
+                                body += "<table><tr><td><h3>Dear "+data.profile.fullName+", </h3>\n";
                                 body += "<p>Thank you for your order. We’ll send a confirmation when your order ships.</p></tr>";
                                 
                                 body += "<tr><b><p>Your order will be sent to:</p></b>";
@@ -213,7 +213,7 @@ exports.insert_order = (req,res,next)=>{
                                 body += "</tbody></table><br>";
                                
                               }
-                              body += footer;
+                              //body += footer;
                               request({
                                  "method"    : "POST",
                                  "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
@@ -658,7 +658,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                                         content = content.split("[").join(" ");
                                         content = content.split("]").join(" ");
 
-                                        body += header + "<table><tr><td>"+content+"</td></tr></table>";
+                                        body += "<table><tr><td>"+content+"</td></tr></table>";
                                         body += "<tr><b><p>Your order is delivered to:</p></b>";
                                         
                                         body += "<p style='margin:0'>"+orderData.deliveryAddress.name+"</p>";
@@ -680,7 +680,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
 
                                     }else{
                                       mailSubject = "Your order is delivered successfully.";
-                                      body += header + "<table><tr><td><h3>Dear "+customerData.profile.fullName+", </h3>\n";
+                                      body += "<table><tr><td><h3>Dear "+customerData.profile.fullName+", </h3>\n";
                                       body += "<p>Thank you for your order. Your order is delivered successfully.</p></tr>";
                                       
                                       body += "<tr><b><p>Your order is delivered to:</p></b>";
@@ -703,7 +703,7 @@ exports.updateDeliveryStatus = (req,res,next)=>{
                                       body += "</tbody></table><br>";
                                      
                                     }
-                                    body += footer;
+                                    //body += footer;
                                       request({
                                        "method"    : "POST",
                                        "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
@@ -949,7 +949,7 @@ exports.dispatchOrder = (req,res,next)=>{
                                   content = content.split("[").join(" ");
                                   content = content.split("]").join(" ");
 
-                                  body += header + "<table><tr><td>"+content+"</td></tr></table>";
+                                  body += "<table><tr><td>"+content+"</td></tr></table>";
                                   body += "<tr><b><p>Your order will be sent to:</p></b>";
                                   
                                   body += "<p style='margin:0'>"+orderData.deliveryAddress.name+"</p>";
@@ -971,7 +971,7 @@ exports.dispatchOrder = (req,res,next)=>{
 
                               }else{
                                 mailSubject = "Your order is dispatched successfully.";
-                                body += header + "<table><tr><td><h3>Dear "+customerData.profile.fullName+", </h3>\n";
+                                body += "<table><tr><td><h3>Dear "+customerData.profile.fullName+", </h3>\n";
                                 body += "<p>Thank you for your order. Your order will be delivered soon.</p></tr>";
                                 
                                 body += "<tr><b><p>Your order will be sent to:</p></b>";
@@ -994,7 +994,7 @@ exports.dispatchOrder = (req,res,next)=>{
                                 body += "</tbody></table><br>";
                                
                               }
-                              body += footer;
+                              //body += footer;
                               request({
                                  "method"    : "POST",
                                  "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
