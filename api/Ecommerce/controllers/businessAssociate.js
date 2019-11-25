@@ -80,44 +80,43 @@ exports.insert_ba = (req,res,next)=>{
                     otpMailSubject = "GangaExpress business associate account registration";
 
                     //body += "<table><tr><td><p>Dear "+req.body.companyName+", </p>\n";
-                    body += "<table><tbody><tr><td><p>Congratulations! You have been registered successfully as a Business Associate on GangaExpress !!</p></td></tr>";
+                    body += "<table><tbody><tr><td><p>Congratulations! You have been registered successfully as a Business Associate on GangaExpress!!</p></td></tr>";
                     body += "<tr><td><p>Your login credentials are: </p>";
                     body += "<p><b>UserName: </b>"+req.body.emailID+" </p>";
                     body += "<p><b>Password:</b> gangaexpress123 </p></td></tr>"
                     body += "</tbody></table>";
                 }
+            
+                request({
+                    "method": "POST",
+                    "url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
+                    "body": {
+                        "email": req.body.emailID,
+                        "subject": otpMailSubject,
+                        "text": otpMailSubject,
+                        "mail" : body
+                    },
+                    "json": true,
+                    "headers": {
+                        "User-Agent": "Test App"
+                    }
+                })
+                .then((sentemail) => {
+
+                    res.header("Access-Control-Allow-Origin", "*");
+
+                    res.status(200).json({
+                    "id"     : data._id,
+                    "message": "Business Associate Submitted Successfully."
+                    });
+                })
+                .catch((err) => {
+                    res.status(500).json({
+                        error: err
+                    });
+                });
             })
             .catch()
-        
-        request({
-            "method": "POST",
-            "url": "http://localhost:" + gloabalVariable.PORT + "/send-email",
-            "body": {
-                "email": req.body.emailID,
-                "subject": otpMailSubject,
-                "text": otpMailSubject,
-                "mail" : body
-            },
-            "json": true,
-            "headers": {
-                "User-Agent": "Test App"
-            }
-        })
-        .then((sentemail) => {
-
-            res.header("Access-Control-Allow-Origin", "*");
-
-            res.status(200).json({
-            "id"     : data._id,
-            "message": "Business Associate Submitted Successfully."
-            });
-        })
-        .catch((err) => {
-            res.status(500).json({
-                error: err
-            });
-        });
-        
     })
     .catch(err =>{
         console.log(err);
