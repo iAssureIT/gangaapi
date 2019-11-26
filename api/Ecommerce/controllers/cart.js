@@ -2,6 +2,7 @@ const mongoose	= require("mongoose");
 
 const Carts = require('../models/cart');
 const _ = require('underscore');    
+
 exports.insert_cart = (req,res,next)=>{
     var formValues = req.body;
     // console.log('formValues', formValues);
@@ -374,6 +375,12 @@ exports.remove_cart_item = (req, res, next)=>{
                                 "productName"       : cartData.cartItems[i].productName,
                                 "productImage"      : cartData.cartItems[i].productImage,
                                 "quantity"          : cartData.cartItems[i].quantity,
+                                "currency"          : cartData.cartItems[i].currency,
+                                "section_ID"        : cartData.cartItems[i].section_ID,
+                                "section"           : cartData.cartItems[i].section,
+                                "category_ID"       : cartData.cartItems[i].category_ID,
+                                "category"          : cartData.cartItems[i].category,
+                                "subCategory_ID"    : cartData.cartItems[i].subCategory_ID,
                                 "discountedPrice"   : cartData.cartItems[i].discountedPrice,
                                 "originalPrice"     : cartData.cartItems[i].originalPrice,
                                 "discountPercent"   : cartData.cartItems[i].discountPercent,
