@@ -19,6 +19,10 @@ router.get('/get/one/:categoryID', categoryController.fetch_category);
 
 router.get('/get/:sectionID', categoryController.fetch_categories_by_section);
 
+router.post('/searchCategory', categoryController.searchCategory);
+
+router.post('/searchCategoryCount', categoryController.searchCategoryCount);
+
 //router.get('/get/one/:sectionID/:categoryID', categoryController.fetch_category);
 
 router.delete('/delete/:categoryID',categoryController.delete_category);

@@ -135,6 +135,66 @@ exports.list_category_with_limits = (req,res,next)=>{
         });
     });
 };
+
+exports.searchCategory = (req,res,next)=>{
+    // console.log(req.body.startRange, req.body.limitRange);
+    Category.find({
+        $or: [
+                { "section": { "$regex": req.body.searchText, $options: "i" } },
+                { "category": { "$regex": req.body.searchText, $options: "i" } },
+                { "categoryDescription": { "$regex": req.body.searchText, $options: "i" } },
+            ]
+    })
+    .skip(parseInt(req.body.startRange))
+    .limit(parseInt(req.body.limitRange))
+    .exec()
+    .then(data=>{
+        console.log('data', data);
+
+        var allData = data.map((x, i)=>{
+            return {
+                "_id"                   : x._id,
+                "section"               : x.section,
+                "category"              : x.category,
+                "subCategory"           : ((x.subCategory.map((a, i)=>{return '<p>'+a.subCategoryTitle+'</p>'})).toString()).replace(/,/g, " "),
+                "categoryDescription"   : x.categoryDescription,
+                "categoryImage"         : x.categoryImage,
+                "categoryIcon"          : x.categoryIcon,
+            }
+        })
+
+        res.status(200).json(allData);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+exports.searchCategoryCount = (req,res,next)=>{
+    // console.log(req.body.startRange, req.body.limitRange);
+    Category.find({
+        $or: [
+                { "section": { "$regex": req.body.searchText, $options: "i" } },
+                { "category": { "$regex": req.body.searchText, $options: "i" } },
+                { "categoryDescription": { "$regex": req.body.searchText, $options: "i" } },
+            ]
+    })
+    
+    .exec()
+    .then(data=>{
+        res.status(200).json({"dataCount":data.length});
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
 exports.count_category = (req,res,next)=>{
     Category.find({})
     .exec()

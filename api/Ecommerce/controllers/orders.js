@@ -38,7 +38,7 @@ exports.insert_order = (req,res,next)=>{
         Carts.findOne({"user_ID" : req.body.user_ID})
         .exec()
         .then(payModeObj=>{
-          console.log('payModeObj',payModeObj);
+          //console.log('payModeObj',payModeObj);
             if(payModeObj){
                 var now = new Date();
                 var day = now.getDay();
