@@ -38,7 +38,7 @@ exports.insert_order = (req,res,next)=>{
         Carts.findOne({"user_ID" : req.body.user_ID})
         .exec()
         .then(payModeObj=>{
-            // console.log('payModeObj',payModeObj);
+          console.log('payModeObj',payModeObj);
             if(payModeObj){
                 var now = new Date();
                 var day = now.getDay();
@@ -127,7 +127,7 @@ exports.insert_order = (req,res,next)=>{
                     });
                     order.save()
                     .then(orderdata=>{
-                      
+                        
                         var header = "<table><tbody><tr><td align='center' width='100%'><a><img src='http://qagangaexpress.iassureit.com/images/GangaExpress.png' style='width:25%'></a></td></tr></table>";
                         var body = "";
                         var footer = "<table width='100%' bgcolor='#232f3e' height='50'><tbody><tr><td>"
@@ -173,8 +173,10 @@ exports.insert_order = (req,res,next)=>{
                                   
                                   body += "<p style='margin:0'>"+orderdata.deliveryAddress.name+"</p>";
                                   body += "<p style='margin:0'>"+orderdata.deliveryAddress.addressLine1+"</p>";
-                                  body += "<p style='margin:0'>"+orderdata.deliveryAddress.addressLine2+"</p>";
-                                  body += "<p style='margin:0'>"+orderdata.deliveryAddress.city+" "+orderdata.deliveryAddress.state+" "+orderdata.deliveryAddress.pincode+"</p>";
+                                  if (orderdata.deliveryAddress.addressLine2) {
+                                     body += "<p style='margin:0'>"+orderdata.deliveryAddress.addressLine2+"</p>";
+                                  }
+                                  body += "<p style='margin:0'>"+orderdata.deliveryAddress.city+" "+orderdata.deliveryAddress.district +" "+orderdata.deliveryAddress.state+" "+orderdata.deliveryAddress.pincode+"</p>";
                                   body += "<p style='margin:0'>"+orderdata.deliveryAddress.country+"</p></tr>";
                                   body += "</tbody></table>";
 
@@ -196,8 +198,10 @@ exports.insert_order = (req,res,next)=>{
                                 body += "<tr><b><p>Your order will be sent to:</p></b>";
                                 body += "<p style='margin:0'>"+orderdata.deliveryAddress.name+"</p>";
                                 body += "<p style='margin:0'>"+orderdata.deliveryAddress.addressLine1+"</p>";
-                                body += "<p style='margin:0'>"+orderdata.deliveryAddress.addressLine2+"</p>";
-                                body += "<p style='margin:0'>"+orderdata.deliveryAddress.city+" "+orderdata.deliveryAddress.state+" "+orderdata.deliveryAddress.pincode+"</p>";
+                                if (orderdata.deliveryAddress.addressLine2) {
+                                  body += "<p style='margin:0'>"+orderdata.deliveryAddress.addressLine2+"</p>";
+                                }
+                                body += "<p style='margin:0'>"+orderdata.deliveryAddress.city+" "+orderdata.deliveryAddress.district +" "+orderdata.deliveryAddress.state+" "+orderdata.deliveryAddress.pincode+"</p>";
                                 body += "<p style='margin:0'>"+orderdata.deliveryAddress.country+"</p></tr>";
                                 body += "</tbody></table>";
 
@@ -214,6 +218,7 @@ exports.insert_order = (req,res,next)=>{
                                
                               }
                               //body += footer;
+                              console.log('body',body)
                               request({
                                  "method"    : "POST",
                                  "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
