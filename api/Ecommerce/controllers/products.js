@@ -84,6 +84,7 @@ exports.bulkUploadProduct = (req,res,next)=>{
     async function getData(){
         var productData = req.body;
         var Count  = 0;
+        var DuplicateCount  = 0;
         for(k = 0 ; k < productData.length ; k++){
             if(productData[k].section != undefined){
                 if (productData[k].section.trim() != '') {
@@ -92,19 +93,53 @@ exports.bulkUploadProduct = (req,res,next)=>{
                     var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,productData[k].section,sectionObject.section_ID);
                     //console.log('categoryObject',categoryObject)
                     var insertProductObject = await insertProduct(sectionObject.section_ID, sectionObject.section, categoryObject,productData[k]);
-                    
+                    console.log('insertProductObjectcc',insertProductObject)
                     if (insertProductObject != 0) {
                         Count++;
                     }else{
-
+                        DuplicateCount++;
                     }
                 }  
             }        
         }
+        var msgstr = "";
+        if (DuplicateCount > 0 && Count > 0) {
+            if (DuplicateCount > 1 && Count > 1) {
+               msgstr =  " " + Count+" products are added successfully and "+"\n"+DuplicateCount+" products are duplicate";
+            }
+            else if(DuplicateCount ==1 && Count == 1 ){
+                msgstr =  " " + Count+" product is added successfully and "+"\n"+DuplicateCount+" product is duplicate";
+            }
+            else if(DuplicateCount > 1 && Count == 1)
+            {
+                msgstr =  " " + Count+" product is added successfully and "+"\n"+DuplicateCount+" products are duplicate";
+            }else if(DuplicateCount == 1 && Count > 1){
+                msgstr =  " " + Count+" products are added successfully and "+"\n"+DuplicateCount+" product is duplicate";
+            }
+            
+        }
+        else if(DuplicateCount > 0 && Count == 0)
+        {
+            if (DuplicateCount > 1) {
+                msgstr = "Failed to add products as "+DuplicateCount+" products are duplicate";
+            }else{
+                msgstr = "Failed to add products as "+DuplicateCount+" product is duplicate";
+            }
+            
+        }
+        else if(DuplicateCount == 0 && Count > 0)
+        { 
+            if (Count > 1) {
+                msgstr = " " + Count+" products are added successfully";
+            }else{
+                msgstr = " " + Count+" product is added successfully";
+            }            
+        }else{
+            msgstr = "Failed to add products";
+        }
         res.status(200).json({
-            "message": "Product Submitted Successfully.",
-            "productsAdded" : Count
-        });    
+            "message": msgstr
+        });
     }
 };
 
@@ -264,6 +299,7 @@ var insertProduct = async (section_ID, section, categoryObject, data) => {
             if (productPresent==0) {
                     const productObj = new Products({
                         _id                       : new mongoose.Types.ObjectId(),  
+                        vendor_ID                 : data.vendor_ID,  
                         section_ID                : section_ID,           
                         section                   : section,      
                         category                  : categoryObject.category,
