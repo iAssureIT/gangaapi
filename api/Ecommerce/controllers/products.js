@@ -91,9 +91,9 @@ exports.bulkUploadProduct = (req,res,next)=>{
                     var sectionObject = await sectionInsert(productData[k].section)
                     //console.log('sectionObject',sectionObject)
                     var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,productData[k].section,sectionObject.section_ID);
-                    //console.log('categoryObject',categoryObject)
+                    
                     var insertProductObject = await insertProduct(sectionObject.section_ID, sectionObject.section, categoryObject,productData[k]);
-                    console.log('insertProductObjectcc',insertProductObject)
+                    //console.log('insertProductObjectcc',insertProductObject)
                     if (insertProductObject != 0) {
                         Count++;
                     }else{
@@ -210,8 +210,8 @@ function categoryInsert(catgName,subcatgName,sectionname,section) {
                     categoryObj
                     .save()
                     .then(data=>{
-                        //console.log('insertCategory',data.subCategory[0]._id);
-                        resolve({category_ID : data._id, category : catgName, subCategory_ID : (data.subCategory.length>0 ? data.subCategory[0]._id : []) });
+                        console.log('insertCategory',data.subCategory);
+                        resolve({category_ID : data._id, category : catgName, subCategory_ID : (data.subCategory.length>0 ? data.subCategory[0]._id : null) });
                     })
                     .catch(err =>{
                         console.log(err);
@@ -291,6 +291,7 @@ function findCat(catgName) {
 }
 
 var insertProduct = async (section_ID, section, categoryObject, data) => {
+    //console.log('categoryObject',categoryObject.subCategory_ID)
     return new Promise(function(resolve,reject){ 
         productDuplicateControl();
         async function productDuplicateControl(){
@@ -305,7 +306,7 @@ var insertProduct = async (section_ID, section, categoryObject, data) => {
                         category                  : categoryObject.category,
                         category_ID               : categoryObject.category_ID,
                         subCategory               : data.subCategory,
-                        subCategory_ID            : categoryObject.subCategory_ID && categoryObject.subCategory_ID.length > 0 ? categoryObject.subCategory_ID : null,
+                        subCategory_ID            : categoryObject.subCategory_ID ? categoryObject.subCategory_ID : null,
                         brand                     : data.brand ? data.brand : "",
                         productCode               : data.productCode ? data.productCode : "",
                         itemCode                  : data.itemCode ? data.itemCode : "",
