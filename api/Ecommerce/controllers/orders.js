@@ -60,6 +60,7 @@ exports.insert_order = (req,res,next)=>{
                         "product_ID"        : payModeObj.cartItems[k].product_ID,
                         "productName"       : payModeObj.cartItems[k].productName,
                         "discountedPrice"   : payModeObj.cartItems[k].discountedPrice,
+                        "discountPercent"   : payModeObj.cartItems[k].discountPercent,
                         "originalPrice"     : payModeObj.cartItems[k].originalPrice,
                         "actualPrice"       : payModeObj.cartItems[k].actualPrice,
                         "offeredPrice"      : payModeObj.cartItems[k].offeredPrice,
@@ -221,7 +222,7 @@ exports.insert_order = (req,res,next)=>{
                               console.log('body',body)
                               request({
                                  "method"    : "POST",
-                                 "url"       : "http://localhost:"+gloabalVariable.PORT+"/send-email",
+                                 "url"       : "http://localhost:" + gloabalVariable.PORT + "/send-email",
                                  "body"      :   {
                                                      "email"     : data.profile.emailId,
                                                      "subject"   : mailSubject,
@@ -1195,6 +1196,7 @@ exports.returnOrder = (req,res,next)=>{
                             reasonForReturn           : req.body.reasonForReturn, 
                             originalPrice             : orders.originalPrice,
                             discountedPrice           : orders.discountedPrice,
+                            discountPercent           : orders.discountPercent,
                             dateofPurchase            : orders.createdAt,
                             modeofPayment             : orders.paymentMethod,
                             dateofReturn              : new Date(),

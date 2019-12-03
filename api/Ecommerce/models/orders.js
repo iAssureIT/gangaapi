@@ -19,6 +19,7 @@ const orderSchema = mongoose.Schema({
         {
             "product_ID"        : { type: mongoose.Schema.Types.ObjectId, ref: 'products' },
             "productName"       : String,
+            "discountPercent"   : Number,
             "discountedPrice"   : Number,
             "originalPrice"     : Number,
             "currency"          : String,

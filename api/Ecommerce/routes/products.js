@@ -11,6 +11,8 @@ router.post('/get/wishlist/product', productController.wishlist_product);
 
 router.patch('/patch', productController.update_product);
 
+router.patch('/patch/availablequantity', productController.update_availablequantity);
+
 router.get('/get/list',productController.list_product);
 
 //router.get('/get/brandlist',productController.list_brand);

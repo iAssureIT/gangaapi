@@ -1201,7 +1201,16 @@ exports.get_minmaxprice = (req,res,next)=>{
         });
     });
 };
-
+exports.update_availablequantity = (req,res,next)=>{
+    Products.updateOne(
+        {"_id": req.body.product_ID},
+        { $inc: {
+            "availableQuantity" : -(req.body.quantity),
+        }
+    })
+    .then()
+    .catch();
+}
 exports.outofstockproducts = (req,res,next)=>{
     Products.find({ "availableQuantity" : 0 }).count()
     .exec()
