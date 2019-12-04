@@ -46,9 +46,11 @@ const productsSchema = mongoose.Schema({
             attributeValue   : String
         }
     ],
-    fileName                  : String,
-    createdBy                 : String,
-    createdAt                 : Date
+    taxInclude               : Boolean,
+    taxRate                  : Number,
+    fileName                 : String,
+    createdBy                : String,
+    createdAt                : Date
 });
 
 module.exports = mongoose.model('products',productsSchema);

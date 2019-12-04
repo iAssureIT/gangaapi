@@ -38,7 +38,7 @@ router.get('/get/count',productController.count_product);
 router.post('/get/files',productController.fetch_file);
 
 router.get('/get/files/count',productController.fetch_file_count);
-
+ 
 router.post('/get/list',productController.list_product_with_limits);
 
 router.patch('/patch/gallery', productController.upload_photo);
