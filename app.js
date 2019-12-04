@@ -64,6 +64,7 @@
 	const cartsRoutes				= require("./api/Ecommerce/routes/cart"); 
 	const wishlistRoutes			= require("./api/Ecommerce/routes/wishlist"); 
 	const projectSettingsurl 		= require("./api/coreAdmin/routes/projectSettings");
+	const preferenceurl 			= require("./api/coreAdmin/routes/preference");
 	const BARoutes					= require("./api/Ecommerce/routes/businessAssociate"); 
 	const customerQueryRoutes		= require("./api/Ecommerce/routes/customerQuery"); 
 	const customerReviewRoutes		= require("./api/Ecommerce/routes/customerReview"); 
@@ -76,7 +77,7 @@
 	// app.use("/api/notifications",notificationRoutes);
 	app.use("/api/companysettings",companySettingRoutes);
 	app.use("/api/masternotifications",notificationRoutes);
-
+	app.use("/api/preference",preferenceurl);
 	app.use("/api/products", productsRoutes);
 	app.use("/api/category", categoryRoutes);
 	app.use("/api/orders", ordersRoutes);

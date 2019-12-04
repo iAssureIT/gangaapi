@@ -46,6 +46,7 @@ exports.insert_product = (req,res,next)=>{
                 unit                      : req.body.unit,
                 size                      : req.body.size,
                 color                     : req.body.color,
+                attributes                : req.body.attributes,
                 type                      : req.body.type,
                 fileName                  : req.body.fileName,
                 createdAt                 : new Date()
@@ -315,6 +316,7 @@ var insertProduct = async (section_ID, section, categoryObject, data) => {
                         productDetails            : data.productDetails ? data.productDetails : "",
                         shortDescription          : data.shortDescription ? data.shortDescription : "",
                         featureList               : data.featureList ? data.featureList : [],
+                        attributes                : data.attributes ? data.attributes : [],
                         currency                  : data.currency ? data.currency : "INR",
                         originalPrice             : data.originalPrice ? data.originalPrice : 0,
                         discountPercent           : data.discountPercent ? data.discountPercent : 0,  
@@ -394,6 +396,7 @@ exports.update_product = (req,res,next)=>{
                 productDetails            : req.body.productDetails,
                 shortDescription          : req.body.shortDescription,
                 featureList               : req.body.featureList,
+                attributes                : req.body.attributes,
                 currency                  : req.body.currency,
                 availableQuantity         : req.body.availableQuantity,
                 discountPercent           : req.body.discountPercent,
@@ -970,7 +973,9 @@ exports.search_product = (req,res,next)=>{
                     {"subCategory"    : {'$regex' : req.params.searchstr , $options: "i"} },
                     {"productDetails" : {'$regex' : req.params.searchstr , $options: "i"} }, 
                     {"shortDescription" : {'$regex' : req.params.searchstr , $options: "i"} }, 
-                    {"featureList.feature" : {'$regex' : req.params.searchstr , $options: "i"} } 
+                    {"featureList.feature" : {'$regex' : req.params.searchstr , $options: "i"} }, 
+                    {"attributes.attributeName" : {'$regex' : req.params.searchstr , $options: "i"} },
+                    {"attributes.attributeValue" : {'$regex' : req.params.searchstr , $options: "i"} } 
                     ] 
                 },
                 { "$or": [{"status":"Publish"}] }
@@ -1012,7 +1017,9 @@ exports.searchINCategory = (req,res,next)=>{
                 {"subCategory"    : {'$regex' : req.body.searchstr , $options: "i"} },
                 {"productDetails" : {'$regex' : req.body.searchstr , $options: "i"} }, 
                 {"shortDescription" : {'$regex' : req.body.searchstr , $options: "i"} }, 
-                {"featureList.feature" : {'$regex' : req.body.searchstr , $options: "i"} } 
+                {"featureList.feature" : {'$regex' : req.body.searchstr , $options: "i"} },
+                {"attributes.attributeName" : {'$regex' : req.params.searchstr , $options: "i"} },
+                    {"attributes.attributeValue" : {'$regex' : req.params.searchstr , $options: "i"} }  
             ]
         }, 
         { "$or": [{"status":"Publish"}] }

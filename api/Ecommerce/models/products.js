@@ -17,12 +17,7 @@ const productsSchema = mongoose.Schema({
     productUrl                : String,
     productDetails            : String,
     shortDescription          : String,
-    featureList               : [ 
-        {
-            feature : String,
-            index   : Number
-        }
-    ],
+    featureList               : String,
     currency                  : String,
     size                      : String,
     color                     : String,
@@ -45,6 +40,12 @@ const productsSchema = mongoose.Schema({
     bestSeller                : Boolean,
     type                      : String,
     unit                      : String,
+    attributes                : [ 
+        {
+            attributeName    : String,
+            attributeValue   : String
+        }
+    ],
     fileName                  : String,
     createdBy                 : String,
     createdAt                 : Date
