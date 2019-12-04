@@ -3,12 +3,12 @@ const Preference   = require('../models/preference');
 
 
 exports.create_preference = (req, res, next) => {
-	Preference.findOne({taxName     : req.body.taxName})
+	Preference.findOne()
 		.exec()
 		.then(data =>{
 			if(data){
 				return res.status(200).json({
-					message: 'Tax Name is already exists'
+					message: 'You can submit only one tax name.'
 				});
 			}else{
             const preference = new Preference({
@@ -54,6 +54,19 @@ exports.list_preference = (req, res, next)=>{
         });
     });         
 }
+exports.get_preference = (req, res, next)=>{
+    Preference.find()
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });         
+}
 exports.count_preference = (req, res, next)=>{
     Preference.find().count()
     .exec()
@@ -80,25 +93,35 @@ exports.one_preference = (req, res, next)=>{
         });
     });         
 };
-exports.update_vendor_category = (req,res,next)=>{
-    Preference.updateOne(
-            { _id:req.body.preferenceID},  
-            {
-                $set:{
-                    taxName         : req.body.taxName,
-                    createdAt       : new Date()
-                }
-            }
-        )
-        .exec()
-        .then(data=>{
-            if(data.nModified == 1){
-                res.status(200).json({
-                    "message": "Tax Name Updated Successfully."
-                });
-            }else{
-                res.status(401).json({
-                    "message": "Tax Name Not Found"
+exports.update_preference = (req,res,next)=>{
+    Preference.findOne({taxName     : req.body.taxName,  _id: { $ne: req.body.preferenceID } })
+		.exec()
+		.then(data =>{
+			if(data){
+				return res.status(200).json({
+					message: 'Tax Name is already exists'
+				});
+			}else{
+                Preference.updateOne(
+                    { _id:req.body.preferenceID},  
+                    {
+                        $set:{
+                            taxName         : req.body.taxName,
+                            createdAt       : new Date()
+                        }
+                    }
+                )
+                .exec()
+                .then(data=>{
+                    res.status(200).json({
+                        "message": "Tax Name Updated Successfully."
+                    });
+                })
+                .catch(err =>{
+                    console.log(err);
+                    res.status(500).json({
+                        error: err
+                    });
                 });
             }
         })
@@ -108,4 +131,81 @@ exports.update_vendor_category = (req,res,next)=>{
                 error: err
             });
         });
+};
+exports.submit_rate_preference = (req,res,next)=>{
+    Preference.findOne({taxName     : req.body.taxName,  _id: { $ne: req.body.preferenceID } })
+		.exec()
+		.then(data =>{
+			if(data){
+				return res.status(200).json({
+					message: 'Tax is already exists'
+				});
+			}else{
+                Preference.updateOne(
+                    { _id:req.body.preferenceID},  
+                    {
+                        $push:{
+                            taxDetails : req.body.taxDetails
+                        }
+                    }
+                )
+                .exec()
+                .then(data=>{
+                    res.status(200).json({
+                        "message": "Tax Submitted Successfully."
+                    });
+                })
+                .catch(err =>{
+                    console.log(err);
+                    res.status(500).json({
+                        error: err
+                    });
+                });
+            }
+        })
+        .catch(err =>{
+            console.log(err);
+            res.status(500).json({
+                error: err
+            });
+        });
+};
+exports.update_rate_preference = (req,res,next)=>{
+    Preference.updateOne(
+        { "_id":req.body.preferenceID, "taxDetails._id" : req.body.taxRateID},  
+        {
+            $set:{
+                "taxDetails.$.taxRate"          : req.body.taxRate,
+                "taxDetails.$.effectiveFrom"    : req.body.effectiveFrom,
+                "taxDetails.$.effectiveTo"      : req.body.effectiveTo,
+            }
+        }
+    )
+    .exec()
+    .then(data=>{
+        res.status(200).json({
+            "message": "Tax Submitted Successfully."
+        });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });     
+};
+exports.delete_preference = (req,res,next)=>{
+    Preference.deleteOne({_id:req.params.preferenceID})
+    .exec()
+    .then(data=>{
+        res.status(200).json({
+            "message": "Preference Deleted Successfully."
+        });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
 };
