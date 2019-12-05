@@ -24,7 +24,7 @@ exports.create_preference = (req, res, next) => {
                         });          
                     }else{
                         res.status(200).json({ 
-                            message: 'New preference created!',
+                            message: 'Tax name submitted successfully.',
                             data: preference
                         });
                     }
@@ -114,7 +114,7 @@ exports.update_preference = (req,res,next)=>{
                 .exec()
                 .then(data=>{
                     res.status(200).json({
-                        "message": "Tax Name Updated Successfully."
+                        "message": "Tax name updated successfully."
                     });
                 })
                 .catch(err =>{
@@ -152,7 +152,7 @@ exports.submit_rate_preference = (req,res,next)=>{
                 .exec()
                 .then(data=>{
                     res.status(200).json({
-                        "message": "Tax Submitted Successfully."
+                        "message": "Tax rate submitted successfully."
                     });
                 })
                 .catch(err =>{
@@ -184,7 +184,7 @@ exports.update_rate_preference = (req,res,next)=>{
     .exec()
     .then(data=>{
         res.status(200).json({
-            "message": "Tax Submitted Successfully."
+            "message": "Tax rate updated successfully."
         });
     })
     .catch(err =>{
@@ -199,7 +199,7 @@ exports.delete_preference = (req,res,next)=>{
     .exec()
     .then(data=>{
         res.status(200).json({
-            "message": "Preference Deleted Successfully."
+            "message": "Tax name  deleted successfully."
         });
     })
     .catch(err =>{
@@ -208,4 +208,24 @@ exports.delete_preference = (req,res,next)=>{
             error: err
         });
     });
+};
+exports.delete_rate_preference = (req,res,next)=>{
+    Preference.updateOne(
+        { "_id":req.params.preferenceID},  
+		{
+			$pull: { "taxDetails": { "_id": req.params.taxRateID } }
+		}
+    )
+    .exec()
+    .then(data=>{
+        res.status(200).json({
+            "message": "Tax rate updated successfully."
+        });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });     
 };

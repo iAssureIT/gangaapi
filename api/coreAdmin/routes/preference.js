@@ -19,6 +19,9 @@ router.patch('/patchrate', preferenceController.update_rate_preference);
 
 router.get('/get/count', preferenceController.count_preference);
 
+router.delete('/deleterate/delete/:preferenceID/:taxRateID', preferenceController.delete_rate_preference);
+
 router.delete('/delete/:preferenceID', preferenceController.delete_preference);
+
 
 module.exports = router;
