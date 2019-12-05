@@ -3,33 +3,40 @@ const mongoose = require("mongoose");
 const Vendors = require('../models/vendors');
 
 exports.insert_vendor = (req, res, next) => {
-    Vendors.find()
+    Vendors.find({website: req.body.website, emailId : req.body.emailId})
         .exec()
         .then(data => {
-            const vendors = new Vendors({
-                _id: new mongoose.Types.ObjectId(),
-                typeOptions: req.body.typeOptions,
-                companyName: req.body.companyName,
-                pan: req.body.pan,
-                tin: req.body.tin,
-                website: req.body.website,
-                gstno: req.body.gstno,
-                category: req.body.category,
-                coino: req.body.coino,
-                mfg: req.body.mfg,
-                score: req.body.score,
-                evaluation: req.body.evaluation,
-                logo: req.body.logo,
-                attachedDocuments: req.body.attachedDocuments,
-                locationDetails: req.body.locationDetails,
-                contactDetails: req.body.contactDetails,
-                productsServices: req.body.productsServices,
-                vendorID: req.body.vendorID,
-                owner_ID: req.body.owner_ID,
-                vendor_ID : req.body.vendor_ID,
-                createdAt: new Date()
-            });
-            vendors.save()
+            if(data.length>0){
+                res.status(200).json({
+                    "message": "Vendor's website already exists.",
+                    "vendor_ID": ""
+                });
+            }else{
+                const vendors = new Vendors({
+                    _id: new mongoose.Types.ObjectId(),
+                    typeOptions                 : req.body.typeOptions,
+                    companyName                 : req.body.companyName,
+                    emailId                     : req.body.emailId,
+                    pan                         : req.body.pan,
+                    tin                         : req.body.tin,
+                    website                     : req.body.website,
+                    gstno                       : req.body.gstno,
+                    category                    : req.body.category,
+                    coino                       : req.body.coino,
+                    mfg                         : req.body.mfg,
+                    score                       : req.body.score,
+                    evaluation                  : req.body.evaluation,
+                    logo                        : req.body.logo,
+                    attachedDocuments           : req.body.attachedDocuments,
+                    locationDetails             : req.body.locationDetails,
+                    contactDetails              : req.body.contactDetails,
+                    productsServices            : req.body.productsServices,
+                    vendorID                    : req.body.vendorID,
+                    owner_ID                    : req.body.owner_ID,
+                    vendor_ID                   : req.body.vendor_ID,
+                    createdAt                   : new Date()
+                });
+                vendors.save()
                 .then(data => {
                     res.status(200).json({
                         "message": "Vendor Submitted Successfully.",
@@ -42,7 +49,7 @@ exports.insert_vendor = (req, res, next) => {
                         error: err
                     });
                 });
-
+            }
         })
         .catch(err => {
             console.log(err);
@@ -56,26 +63,27 @@ exports.update_vendor = (req, res, next) => {
         { _id: req.body.vendor_ID },
         {
             $set: {
-                typeOptions: req.body.typeOptions,
-                companyName: req.body.companyName,
-                pan: req.body.pan,
-                tin: req.body.tin,
-                website: req.body.website,
-                gstno: req.body.gstno,
-                category: req.body.category,
-                coino: req.body.coino,
-                mfg: req.body.mfg,
-                score: req.body.score,
-                Evaluation: req.body.Evaluation,
-                logo: req.body.logo,
-                attachedDocuments: req.body.attachedDocuments,
-                locationDetails: req.body.locationDetails,
-                contactDetails: req.body.contactDetails,
-                productsServices: req.body.productsServices,
-                vendorID: req.body.vendorID,
-                owner_ID: req.body.owner_ID,
-                vendor_ID: req.body.vendor_ID,
-                createdAt: new Date()
+                typeOptions                 : req.body.typeOptions,
+                companyName                 : req.body.companyName,
+                emailId                     : req.body.emailId,
+                pan                         : req.body.pan,
+                tin                         : req.body.tin,
+                website                     : req.body.website,
+                gstno                       : req.body.gstno,
+                category                    : req.body.category,
+                coino                       : req.body.coino,
+                mfg                         : req.body.mfg,
+                score                       : req.body.score,
+                Evaluation                  : req.body.Evaluation,
+                logo                        : req.body.logo,
+                attachedDocuments           : req.body.attachedDocuments,
+                locationDetails             : req.body.locationDetails,
+                contactDetails              : req.body.contactDetails,
+                productsServices            : req.body.productsServices,
+                vendorID                    : req.body.vendorID,
+                owner_ID                    : req.body.owner_ID,
+                vendor_ID                   : req.body.vendor_ID,
+                createdAt                   : new Date()
             }
         }
     )

@@ -7,12 +7,12 @@ const Orders = require('../models/orders');
 var ObjectId = require('mongodb').ObjectID;
 
 exports.insert_product = (req,res,next)=>{
-    Products.find({"itemCode" : req.body.itemCode})
+    Products.find({"itemCode" : req.body.itemCode, "productCode" : req.body.productCode})
         .exec()
         .then(data =>{
         if(data && data.length > 0){
             res.status(200).json({
-                "message": "Item code already exists.",
+                "message": "Item code for this product code already exists.",
             });
         }else{
             const products = new Products({

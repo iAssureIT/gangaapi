@@ -4,6 +4,7 @@ const vendorsSchema = mongoose.Schema({
 	_id			              : mongoose.Schema.Types.ObjectId,
     typeOptions               : String,
     companyName               : String,
+    emailId                   : String,
     pan                       : String,
     tin                       : String,
     website                   : String,
