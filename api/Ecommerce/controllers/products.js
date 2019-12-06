@@ -47,6 +47,8 @@ exports.insert_product = (req,res,next)=>{
                 size                      : req.body.size,
                 color                     : req.body.color,
                 attributes                : req.body.attributes,
+                taxInclude                : req.body.taxInclude,
+                taxRate                   : req.body.taxRate, 
                 type                      : req.body.type,
                 fileName                  : req.body.fileName,
                 createdAt                 : new Date()
@@ -414,6 +416,8 @@ exports.update_product = (req,res,next)=>{
                 originalPrice             : req.body.originalPrice,
                 offeredPrice              : req.body.offeredPrice,
                 actualPrice               : req.body.actualPrice,
+                taxInclude                : req.body.taxInclude,
+                taxRate                   : req.body.taxRate, 
                 status                    : req.body.status,
                 tags                      : req.body.tags,
                 offered                   : req.body.offered,
