@@ -7,7 +7,7 @@ const Orders = require('../models/orders');
 var ObjectId = require('mongodb').ObjectID;
 
 exports.insert_product = (req,res,next)=>{
-    Products.find({"itemCode" : req.body.itemCode, "productCode" : req.body.productCode})
+    Products.find({"itemCode" : req.body.itemCode})
         .exec()
         .then(data =>{
         if(data && data.length > 0){
@@ -378,7 +378,15 @@ function findProduct(itemCode, productName) {
     })           
 }
 exports.update_product = (req,res,next)=>{
-    Products.updateOne(
+    Products.find({"itemCode" : req.body.itemCode, _id: { $ne: req.body.product_ID }})
+    .exec()
+    .then(data =>{
+    if(data && data.length > 0){
+        res.status(200).json({
+            "message": "Item code for this product code already exists.",
+        });
+    }else{
+        Products.updateOne(
             { _id:req.body.product_ID},  
             {
                 $set:{
@@ -435,6 +443,14 @@ exports.update_product = (req,res,next)=>{
                 error: err
             });
         });
+    }
+    })
+    .catch(err =>{
+        console.log("err1",err);
+        res.status(500).json({
+            error: err
+        });
+    });
 };
 exports.update_product_attribute = (req,res,next)=>{
     console.log('params', req.params.attribute);

@@ -219,7 +219,7 @@ exports.delete_rate_preference = (req,res,next)=>{
     .exec()
     .then(data=>{
         res.status(200).json({
-            "message": "Tax rate updated successfully."
+            "message": "Tax rate deleted successfully."
         });
     })
     .catch(err =>{

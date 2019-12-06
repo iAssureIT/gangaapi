@@ -42,6 +42,7 @@ const productsSchema = mongoose.Schema({
     unit                      : String,
     attributes                : [ 
         {
+            index            : String,
             attributeName    : String,
             attributeValue   : String
         }
