@@ -3,9 +3,11 @@ const router 	= express.Router();
 
 const cartController = require('../controllers/cart');
 
-router.post('/post', cartController.insert_cart);
+router.post('/post', cartController.insert_cartid);
 
 router.get('/get/list/:user_ID', cartController.list_cart);
+
+router.get('/get/cartproductlist/:user_ID', cartController.list_cart_product);
 
 router.get('/get/list', cartController.all_list_cart);
 
@@ -13,7 +15,7 @@ router.get('/get/one/:user_ID', cartController.user_cart);
 
 router.get('/get/count/:user_ID', cartController.count_cart);
 
-router.patch('/remove', cartController.remove_cart_item);
+router.patch('/remove', cartController.remove_cart_items);
 
 router.patch('/quantity', cartController.change_cart_item_quantity);
 

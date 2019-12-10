@@ -3,7 +3,7 @@ const router 	= express.Router();
 
 const orderController = require('../controllers/orders');
 
-router.post('/post', orderController.insert_order);
+router.post('/post', orderController.insert_orders);
 
 router.patch('/', orderController.update_order);
 
