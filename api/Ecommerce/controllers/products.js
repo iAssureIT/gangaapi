@@ -3,6 +3,7 @@ const _         = require("underscore");
 const Products = require('../models/products');
 const Category = require('../models/categories');
 const Sections = require('../models/sections');
+const FailedRecords = require('../models/failedRecords');
 const Orders = require('../models/orders');
 var ObjectId = require('mongodb').ObjectID;
 
@@ -82,29 +83,84 @@ exports.bulkUploadProduct = (req,res,next)=>{
     var found = 0;
     var catid;
     var subcatid;
+    var failedRecords = [];
     getData();
 
     async function getData(){
         var productData = req.body;
         var Count  = 0;
         var DuplicateCount  = 0;
+        var invalidData = [];
+        var invalidObjects = [];
+        var remark = ''; 
+
         for(k = 0 ; k < productData.length ; k++){
             if(productData[k].section != undefined){
                 if (productData[k].section.trim() != '') {
                     var sectionObject = await sectionInsert(productData[k].section)
                     //console.log('sectionObject',sectionObject)
-                    var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,productData[k].section,sectionObject.section_ID);
-                    
-                    var insertProductObject = await insertProduct(sectionObject.section_ID, sectionObject.section, categoryObject,productData[k]);
-                    //console.log('insertProductObjectcc',insertProductObject)
-                    if (insertProductObject != 0) {
-                        Count++;
-                    }else{
-                        DuplicateCount++;
+                    if (productData[k].category != undefined) {
+                        var categoryObject = await categoryInsert(productData[k].category,productData[k].subCategory,productData[k].section,sectionObject.section_ID);
+                        
+                        if (productData[k].itemCode != undefined) {
+                            var insertProductObject = await insertProduct(sectionObject.section_ID, sectionObject.section, categoryObject,productData[k]);
+                            if (insertProductObject != 0) {
+
+                                Count++;
+                            }else{
+                                DuplicateCount++;
+                                remark += "Item code should not be duplicate, ";
+                            }
+                        }  
                     }
-                }  
-            }        
+                }
+            }
+            
+                
+
+            if(productData[k].section == undefined){
+                 remark += "section not found";
+            }
+            if (productData[k].category == undefined) {
+                remark += ", category not found, ";
+            }
+            if (productData[k].itemCode == undefined) {
+                remark += "Item code not found, ";
+            }
+            if (productData[k].itemCode == undefined) {
+                remark += "Item code not found, ";
+            }
+            if (productData[k].productCode == undefined) {
+                remark += "Product code not found, ";
+            }
+            if (productData[k].productName == undefined) {
+                remark += "Product name not found, ";
+            }
+            if (productData[k].brand == undefined) {
+                remark += "brand not found, ";
+            }
+            if (productData[k].availableQuantity == undefined) {
+                remark += "product quantity not found, ";
+            }
+            if (productData[k].originalPrice == undefined) {
+                remark += "product price not found, ";
+            }
+            
+
+            if (remark != '') {
+                invalidObjects = productData[k];
+                invalidObjects.remark = remark;
+                invalidData.push(invalidObjects);
+            } 
+            remark = '';
         }
+
+        failedRecords.FailedRecords = invalidData
+        failedRecords.fileName = productData[0].filename;
+        failedRecords.totalRecords = productData.length;
+
+        await insertFailedRecords(failedRecords); 
+
         var msgstr = "";
         if (DuplicateCount > 0 && Count > 0) {
             if (DuplicateCount > 1 && Count > 1) {
@@ -145,6 +201,62 @@ exports.bulkUploadProduct = (req,res,next)=>{
         });
     }
 };
+
+var insertFailedRecords = async (invalidData) => {
+     //console.log('invalidData',invalidData);
+    return new Promise(function(resolve,reject){ 
+    FailedRecords.find({fileName:invalidData.fileName})  
+            .exec()
+            .then(data=>{
+                if(data.length>0){
+                //console.log('data',data)   
+                FailedRecords.updateOne({ fileName:invalidData.fileName},  
+                    {   $set:   { 'failedRecords': [] } })
+                    .then(data=>{
+                    if(data.nModified == 1){
+                        FailedRecords.updateOne({ fileName:invalidData.fileName},  
+                            {   $set:   {'totalRecords': invalidData.totalRecords},
+                                $push:  { 'failedRecords' : invalidData.FailedRecords } 
+                            })
+                        .then(data=>{
+                            if(data.nModified == 1){
+                                resolve(data);
+                            }else{
+                                resolve(data);
+                            }
+                        })
+                        .catch(err =>{
+                            reject(err);
+                        });
+                         
+
+                    }else{
+                        
+                    }
+                    })
+                }else{
+                    const failedRecords = new FailedRecords({
+                    _id                     : new mongoose.Types.ObjectId(),                    
+                    failedRecords           : invalidData.FailedRecords,
+                    fileName                : invalidData.fileName,
+                    totalRecords            : invalidData.totalRecords,
+                    createdAt               : new Date()
+                    });
+                    
+                    failedRecords
+                    .save()
+                    .then(data=>{
+                        resolve(data._id);
+                    })
+                    .catch(err =>{
+                        console.log(err);
+                        reject(err);
+                    });
+                }
+            })  
+    
+    })            
+}
 
 function sectionInsert(sectionName) {
     return new Promise(function(resolve,reject){    
@@ -379,6 +491,31 @@ function findProduct(itemCode, productName) {
                 })
     })           
 }
+exports.filedetails = (req,res,next)=>{
+    var finaldata = {};
+    //console.log(req.params.fileName)
+    Products.find({fileName:req.params.fileName})
+    .exec()
+    .then(data=>{
+        //finaldata.push({goodrecords: data})
+        finaldata.goodrecords = data;
+        FailedRecords.find({fileName:req.params.fileName})  
+            .exec()
+            .then(badData=>{
+                finaldata.failedRecords = badData[0].failedRecords
+                finaldata.totalRecords = badData[0].totalRecords
+                res.status(200).json(finaldata);
+            })
+        
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
 exports.update_product = (req,res,next)=>{
     Products.find({"itemCode" : req.body.itemCode, _id: { $ne: req.body.product_ID }})
     .exec()
