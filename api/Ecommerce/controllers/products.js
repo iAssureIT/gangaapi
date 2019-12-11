@@ -813,6 +813,7 @@ exports.list_product_with_limits = (req,res,next)=>{
                 "productCode"           : x.productCode,
                 "itemCode"              : x.itemCode,
                 "productName"           : x.productName,
+                "availableQuantity"     : x.availableQuantity,
                 "featured"              : x.featured,
                 "exclusive"             : x.exclusive,
                 "newProduct"            : x.newProduct,
