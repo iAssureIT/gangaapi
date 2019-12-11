@@ -510,7 +510,7 @@ exports.insert_orders = (req,res,next)=>{
                   
                   req.body.cartItems.map((productdata,index)=>{
 
-                    body += "<tr><td>"+productdata.productName+"</td><td>"+productdata.discountedPrice+"</td><td>"+productdata.quantity+"</td><td>"+productdata.total+"</td></tr>";
+                    body += "<tr><td>"+productdata.productName+"</td><td>"+productdata.discountedPrice+"</td><td>"+productdata.quantity+"</td><td>"+productdata.subTotal+"</td></tr>";
                   })
                   
                   
