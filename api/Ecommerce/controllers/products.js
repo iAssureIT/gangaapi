@@ -127,9 +127,7 @@ exports.bulkUploadProduct = (req,res,next)=>{
             if (productData[k].itemCode == undefined) {
                 remark += "Item code not found, ";
             }
-            if (productData[k].itemCode == undefined) {
-                remark += "Item code not found, ";
-            }
+            
             if (productData[k].productCode == undefined) {
                 remark += "Product code not found, ";
             }
@@ -431,7 +429,7 @@ var insertProduct = async (section_ID, section, categoryObject, data) => {
                         shortDescription          : data.shortDescription ? data.shortDescription : "",
                         featureList               : data.featureList ? data.featureList : "",
                         attributes                : data.attributes ? data.attributes : [],
-                        currency                  : data.currency ? data.currency : "INR",
+                        currency                  : data.currency ? data.currency.toLowerCase() : "inr",
                         originalPrice             : data.originalPrice ? data.originalPrice : 0,
                         discountPercent           : data.discountPercent ? data.discountPercent : 0,  
                         discountedPrice           : data.discountPercent == 0 ? (data.originalPrice ? data.originalPrice : 0) : data.discountedPrice,

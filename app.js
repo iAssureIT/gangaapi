@@ -70,6 +70,7 @@
 	const customerReviewRoutes		= require("./api/Ecommerce/routes/customerReview"); 
 	const SectionRoutes				= require("./api/Ecommerce/routes/sections"); 
 	const ReturnedProductsRoutes	= require("./api/Ecommerce/routes/returnedProducts"); 
+	const BulkUploadTemplate		= require("./api/Ecommerce/routes/bulkUploadTemplate"); 
 
 	app.use("/api/users",usersRoutes);
 	app.use("/api/roles",rolesRoutes);
@@ -91,7 +92,7 @@
 	app.use("/api/customerReview", customerReviewRoutes);
 	app.use("/api/sections", SectionRoutes);
 	app.use("/api/returnedProducts", ReturnedProductsRoutes);
-	
+	app.use("/api/bulkUploadTemplate", BulkUploadTemplate);
 
 	app.post('/send-email', (req, res)=> {
         console.log('send mail');
