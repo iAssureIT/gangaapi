@@ -190,8 +190,9 @@ exports.count_cart = (req,res,next)=>{
 };
 
 exports.remove_cart_items = (req, res, next)=>{
+    console.log('r', req.body);
     Carts.updateOne(
-        {"user_ID": req.body.user_ID, },
+        {"user_ID": req.body.user_ID},
         {
 			$pull: { "cartItems": { "_id": req.body.cartItem_ID } }
 		}
