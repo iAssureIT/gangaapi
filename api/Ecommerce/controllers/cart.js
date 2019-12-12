@@ -77,8 +77,8 @@ exports.insert_cartid = (req,res,next)=>{
                 });
             }else{
                 var cartItems = [{
-                    "product_ID"        : formValues.product_ID,
-                    "quantity"          : formValues.quantity,
+                    "product_ID"        : req.body.product_ID,
+                    "quantity"          : req.body.quantity,
                 }];
                 const cartDetails = new Carts({
                     _id                       : new mongoose.Types.ObjectId(),  
