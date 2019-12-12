@@ -24,7 +24,6 @@ exports.insert_cartid = (req,res,next)=>{
                             if(data.nModified == 1){
                                 res.status(200).json({
                                     "message": "Product added to cart successfully.",
-                                    "cartCount" : cartData.cartItems.length
                                 });
                             }else{
                                 res.status(401).json({
@@ -33,6 +32,7 @@ exports.insert_cartid = (req,res,next)=>{
                             }
                         })
                         .catch(err =>{
+                            // console.log('1',err);
                             res.status(500).json({
                                 error: err
                             });
@@ -55,7 +55,6 @@ exports.insert_cartid = (req,res,next)=>{
                             if(data.nModified == 1){
                                 res.status(200).json({
                                     "message": "Product added to cart successfully.",
-                                    "cartCount" : cartData.cartItems.length
                                 });
                             }else{
                                 res.status(401).json({
@@ -64,6 +63,7 @@ exports.insert_cartid = (req,res,next)=>{
                             }
                         })
                         .catch(err =>{
+                            // console.log('2',err);
                             res.status(500).json({
                                 error: err
                             });
@@ -71,18 +71,19 @@ exports.insert_cartid = (req,res,next)=>{
                     }
                 })
                 .catch(err =>{
+                    // console.log('3',err);
                     res.status(500).json({
                         error: err
                     });
                 });
             }else{
                 var cartItems = [{
-                    "product_ID"        : formValues.product_ID,
-                    "quantity"          : formValues.quantity,
+                    "product_ID"        : req.body.product_ID,
+                    "quantity"          : req.body.quantity,
                 }];
                 const cartDetails = new Carts({
                     _id                       : new mongoose.Types.ObjectId(),  
-                    "user_ID"       :   user_ID,
+                    "user_ID"       :   req.body.user_ID,
                     "cartItems"     :   cartItems,
                 });
                 cartDetails.save()
@@ -93,16 +94,17 @@ exports.insert_cartid = (req,res,next)=>{
                     });
                 })
                 .catch(err =>{
+                    // console.log('4',err);
                     res.status(500).json({
                         error: err
                     });
                 });
                 return true;
-                
             }
 		
 	})
 	.catch(err =>{
+        // console.log('5',err);
 		res.status(500).json({
 			error: err
 		});
@@ -188,8 +190,9 @@ exports.count_cart = (req,res,next)=>{
 };
 
 exports.remove_cart_items = (req, res, next)=>{
+    console.log('r', req.body);
     Carts.updateOne(
-        {"user_ID": req.body.user_ID, },
+        {"user_ID": req.body.user_ID},
         {
 			$pull: { "cartItems": { "_id": req.body.cartItem_ID } }
 		}
