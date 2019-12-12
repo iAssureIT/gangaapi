@@ -104,6 +104,7 @@ exports.insert_cartid = (req,res,next)=>{
 		
 	})
 	.catch(err =>{
+        console.log('5',err);
 		res.status(500).json({
 			error: err
 		});
