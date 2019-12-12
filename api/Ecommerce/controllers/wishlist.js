@@ -3,7 +3,7 @@ var ObjectID = require('mongodb').ObjectID;
 const Wishlists = require('../models/wishlist');
 
 exports.insert_wishlist = (req,res,next)=>{
-	Wishlists.find({user_ID:req.body.user_ID,product_ID:req.body.product_ID})
+	Wishlists.find({user_ID:req.body.user_ID, product_ID:req.body.product_ID})
 		.exec()
 		.then(data =>{
             console.log('data.length', data, data.length);

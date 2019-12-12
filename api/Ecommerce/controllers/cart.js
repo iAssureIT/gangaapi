@@ -126,6 +126,7 @@ exports.list_cart = (req,res,next)=>{
 };
 exports.list_cart_product = (req,res,next)=>{
     Carts.aggregate([
+        { "$match" : { "user_ID" : req.params.user_ID } },
         { "$unwind": "$cartItems" },
         { "$lookup": {
             "from": "products",
