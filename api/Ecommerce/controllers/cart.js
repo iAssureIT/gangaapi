@@ -32,7 +32,7 @@ exports.insert_cartid = (req,res,next)=>{
                             }
                         })
                         .catch(err =>{
-                            console.log('1',err);
+                            // console.log('1',err);
                             res.status(500).json({
                                 error: err
                             });
@@ -63,7 +63,7 @@ exports.insert_cartid = (req,res,next)=>{
                             }
                         })
                         .catch(err =>{
-                            console.log('2',err);
+                            // console.log('2',err);
                             res.status(500).json({
                                 error: err
                             });
@@ -71,7 +71,7 @@ exports.insert_cartid = (req,res,next)=>{
                     }
                 })
                 .catch(err =>{
-                    console.log('3',err);
+                    // console.log('3',err);
                     res.status(500).json({
                         error: err
                     });
@@ -83,7 +83,7 @@ exports.insert_cartid = (req,res,next)=>{
                 }];
                 const cartDetails = new Carts({
                     _id                       : new mongoose.Types.ObjectId(),  
-                    "user_ID"       :   user_ID,
+                    "user_ID"       :   req.body.user_ID,
                     "cartItems"     :   cartItems,
                 });
                 cartDetails.save()
@@ -94,7 +94,7 @@ exports.insert_cartid = (req,res,next)=>{
                     });
                 })
                 .catch(err =>{
-                    console.log('4',err);
+                    // console.log('4',err);
                     res.status(500).json({
                         error: err
                     });
@@ -104,7 +104,7 @@ exports.insert_cartid = (req,res,next)=>{
 		
 	})
 	.catch(err =>{
-        console.log('5',err);
+        // console.log('5',err);
 		res.status(500).json({
 			error: err
 		});
