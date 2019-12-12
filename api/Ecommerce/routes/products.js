@@ -83,6 +83,8 @@ router.post('/post/list/filterProducts', productController.filter_products);
 
 router.get('/get/productCountByStatus', productController.productCountByStatus);
 
+router.get('/post/productBulkAction', productController.productBulkAction);
+
 router.get('/get/outofstockproducts', productController.outofstockproducts);
 
 module.exports = router;

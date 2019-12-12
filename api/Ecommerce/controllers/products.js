@@ -1523,4 +1523,76 @@ exports.productCountByStatus = (req,res,next)=>{
     });
 };
 
+exports.productBulkAction = (req, res, next) => {
+    var field = req.body.selectedAction;
+    console.log('field', field);
+    switch (field) {
+        case 'Draft':
+            User.updateMany(
+                {"_id": { "$in": req.body.selectProducts}},
+                {$set:{"status":"Draft"}}
+                )
+            .exec()
+            .then(data => {
+                return res.status(200).json({
+                    "msg": 'Selected products are set as draft.',
+                });
+            })
+            .catch(err => {
+                res.status(500).json({
+                    error: err
+                });
+            });
+        break;
+        case 'Publish':
+            User.updateMany(
+                {"_id": { "$in": req.body.selectProducts}},
+                {$set:{"status":"Publish"}}
+            )
+            .exec()
+            .then(data => {
+                return res.status(200).json({
+                    "msg": 'Selected products are published.',
+                });
+            })
+            .catch(err => {
+                res.status(500).json({
+                    error: err
+                });
+            });
+        break ;
+        case 'Unpublish':
+            User.updateMany(
+                {"_id": { "$in": req.body.selectProducts}},
+                {$set:{"status":"Unpublish"}}
+            )
+            .exec()
+            .then(data => {
+                return res.status(200).json({
+                    "msg": 'Selected products are unpublished.',
+                });
+            })
+            .catch(err => {
+                res.status(500).json({
+                    error: err
+                });
+            });
+        break ;
+        case 'Delete':
+            User.deleteMany(
+                {"_id": { "$in": req.body.selectProducts}}
+                )
+            .exec()
+            .then(data => {
+                return res.status(200).json({
+                    "msg": 'Selected products are deleted.',
+                });
+            })
+            .catch(err => {
+                res.status(500).json({
+                    error: err
+                });
+            });
+    }
+};
  
