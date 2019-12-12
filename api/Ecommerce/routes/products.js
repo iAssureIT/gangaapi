@@ -75,7 +75,13 @@ router.get('/get/listGroceryBrand', productController.list_grocerybrand);
 
 router.get('/get/getmegamenulist', productController.get_menu_list);
 
+router.post('/post/list/adminFilterProducts', productController.admin_filter_products);
+
+router.post('/post/adminFilterProductsCount', productController.admin_filter_productsCount); 
+
 router.post('/post/list/filterProducts', productController.filter_products);
+
+router.get('/get/productCountByStatus', productController.productCountByStatus);
 
 router.get('/get/outofstockproducts', productController.outofstockproducts);
 

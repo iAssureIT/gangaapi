@@ -809,15 +809,16 @@ exports.list_product_with_limits = (req,res,next)=>{
         var allData = data.map((x, i)=>{
             return {
                 "_id"                   : x._id,
-                "vendorName"            : x.vendorName, 
-                "productCode"           : x.productCode,
-                "itemCode"              : x.itemCode,
-                "productName"           : x.productName,
+                "vendorName"            : x.vendorName,
+                "productName"           : x.productName + "<br>Product Code: "+x.productCode+ "<br>Item Code: "+x.itemCode,
+                "section"               : x.section,
+                "category"              : x.category,
+                "originalPrice"         : "<i class='fa fa-"+x.currency+"'></i>&nbsp;"+x.originalPrice,
+                "discountPercent"       : x.discountPercent+"%",
+                "discountedPrice"       : "<i class='fa fa-"+x.currency+"'></i>&nbsp;"+x.discountedPrice,
                 "availableQuantity"     : x.availableQuantity,
                 "featured"              : x.featured,
                 "exclusive"             : x.exclusive,
-                "newProduct"            : x.newProduct,
-                "bestSeller"            : x.bestSeller,
                 "status"                : x.status
             }
         })
@@ -1274,6 +1275,90 @@ exports.list_grocerybrand = (req,res,next)=>{
     });
 };
 
+
+exports.admin_filter_products = (req,res,next)=>{
+    var selector = {};
+    //console.log(req.body)
+    for (var key in req.body) {
+        if (key=='vendorIds' && req.body.vendorIds.length > 0 ) {
+            //let objectIdArray = req.body.vendorIds.map(s => mongoose.Types.ObjectId(s));
+            selector.vendor_ID =  { $in: req.body.vendorIds } 
+        }
+        if (key=='sectionIds' && req.body.sectionIds.length > 0) {
+            //let objectIdArray = req.body.vendorIds.map(s => mongoose.Types.ObjectId(s));
+            selector.section_ID =  { $in: req.body.sectionIds } 
+        }
+        if (key=='categoryIds' && req.body.categoryIds.length > 0) {
+            selector.category_ID =  { $in: req.body.categoryIds } 
+        }
+        if (key=='statusArray' && req.body.statusArray.length > 0) {
+            selector.status =  { $in: req.body.statusArray } 
+        }
+    }
+    
+    Products.find(selector)
+    .exec()
+    .then(data=>{
+        //console.log(data);
+        var allData = data.map((x, i)=>{
+            return {
+                "_id"                   : x._id,
+                "vendorName"            : x.vendorName,
+                "productName"           : x.productName + "<br>Product Code: "+x.productCode+ "<br>Item Code: "+x.itemCode,
+                "section"               : x.section,
+                "category"              : x.category,
+                "originalPrice"         : "<i class='fa fa-"+x.currency+"'></i>&nbsp;"+x.originalPrice,
+                "discountPercent"       : x.discountPercent+"%",
+                "discountedPrice"       : "<i class='fa fa-"+x.currency+"'></i>&nbsp;"+x.discountedPrice,
+                "availableQuantity"     : x.availableQuantity,
+                "featured"              : x.featured,
+                "exclusive"             : x.exclusive,
+                "status"                : x.status
+            }
+        })
+        res.status(200).json(allData.slice(req.body.startRange, req.body.limitRange));
+        //res.status(200).json(allData);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+exports.admin_filter_productsCount = (req,res,next)=>{
+    var selector = {};
+    for (var key in req.body) {
+        if (key=='vendorIds' && req.body.vendorIds.length > 0 ) {
+            //let objectIdArray = req.body.vendorIds.map(s => mongoose.Types.ObjectId(s));
+            selector.vendor_ID =  { $in: req.body.vendorIds } 
+        }
+        if (key=='sectionIds' && req.body.sectionIds.length > 0) {
+            //let objectIdArray = req.body.vendorIds.map(s => mongoose.Types.ObjectId(s));
+            selector.section_ID =  { $in: req.body.sectionIds } 
+        }
+        if (key=='categoryIds' && req.body.categoryIds.length > 0) {
+            selector.category_ID =  { $in: req.body.categoryIds } 
+        }
+        if (key=='statusArray' && req.body.statusArray.length > 0) {
+            selector.status =  { $in: req.body.statusArray } 
+        }
+    }
+    //console.log(selector)
+    Products.find(selector)
+    .exec()
+    .then(data=>{
+        //console.log(data);
+        return res.status(200).json({ "dataCount": data.length });
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
 exports.filter_products = (req,res,next)=>{
     var selector = {};
     
@@ -1391,3 +1476,51 @@ exports.outofstockproducts = (req,res,next)=>{
 };
 
 
+exports.productCountByStatus = (req,res,next)=>{
+
+    Products.aggregate([
+    { '$group': {
+        '_id': null,
+        'total':  { $sum : 1},
+        'totalDraft': { 
+            '$sum': {
+                '$cond': [
+                    { '$eq': ['$status', 'Draft']}, 
+                   1,
+                   0
+                ]
+            }
+        },
+        'totalPublish': { 
+            '$sum': {
+                '$cond': [
+                    { '$eq': ['$status', 'Publish']}, 
+                    1, 
+                    0
+                ]
+            }
+        },
+        'totalUnpublish': { 
+            '$sum': {
+                '$cond': [
+                    { '$eq': ['$status', 'Unpublish']}, 
+                   1,
+                   0
+                ]
+            }
+        },
+        }
+    }
+    ])
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+ 
