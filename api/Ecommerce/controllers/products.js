@@ -693,18 +693,30 @@ exports.update_product_multiple = (req,res,next)=>{
 
 exports.list_product = (req,res,next)=>{
     Products.find({"status": "Publish"})       
-        .exec()
-        .then(data=>{
-            res.status(200).json(data);
-        })
-        .catch(err =>{
-            console.log(err);
-            res.status(500).json({
-                error: err
-            });
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
         });
+    });
 };
-
+exports.list_product_code = (req,res,next)=>{
+    Products.find({"productCode": req.params.productCode})       
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.wishlist_product = (req,res,next)=>{
     // console.log('req.body.productIDs', req.body);
     Products.find({ "_id": { $in: req.body } })       

@@ -17,6 +17,8 @@ router.patch('/patch/availablequantity', productController.update_availablequant
 
 router.get('/get/list',productController.list_product);
 
+router.get('/get/productcode/:productCode',productController.list_product_code);
+
 //router.get('/get/brandlist',productController.list_brand);
 
 router.get('/get/listbytype/:productType',productController.list_productby_type);

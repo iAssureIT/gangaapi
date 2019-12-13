@@ -125,6 +125,7 @@ exports.list_cart = (req,res,next)=>{
     });
 };
 exports.list_cart_product = (req,res,next)=>{
+    console.log(req.params.user_ID);
     Carts.aggregate([
         { "$match" : { "user_ID" : ObjectId(req.params.user_ID) } },
         { "$unwind": "$cartItems" },
