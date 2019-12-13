@@ -57,6 +57,8 @@ router.delete('/delete/:productID',productController.delete_product);
 
 router.delete('/file/delete/:fileName',productController.delete_file);
 
+router.get('/get/adminsearch/:searchstr', productController.admin_search_product);
+
 router.get('/get/search/:searchstr', productController.search_product);
 
 router.post('/post/searchINCategory', productController.searchINCategory);
@@ -83,7 +85,7 @@ router.post('/post/list/filterProducts', productController.filter_products);
 
 router.get('/get/productCountByStatus', productController.productCountByStatus);
 
-router.get('/post/productBulkAction', productController.productBulkAction);
+router.patch('/patch/productBulkAction', productController.productBulkAction);
 
 router.get('/get/outofstockproducts', productController.outofstockproducts);
 

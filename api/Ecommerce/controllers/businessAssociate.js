@@ -146,15 +146,9 @@ exports.update_ba = (req,res,next)=>{
         .exec()
         .then(data=>{
             console.log(data)
-            if(data.nModified == 1){
-                res.status(200).json({
+            res.status(200).json({
                     "message": "Business Associate Updated Successfully."
                 });
-            }else{
-                res.status(401).json({
-                    "message": "Business Associate Not Found"
-                });
-            }
         })
         .catch(err =>{
             console.log(err);

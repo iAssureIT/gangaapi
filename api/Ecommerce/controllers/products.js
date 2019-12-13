@@ -88,6 +88,7 @@ exports.bulkUploadProduct = (req,res,next)=>{
 
     async function getData(){
         var productData = req.body;
+        var TotalCount  = 0;
         var Count  = 0;
         var DuplicateCount  = 0;
         var invalidData = [];
@@ -95,7 +96,7 @@ exports.bulkUploadProduct = (req,res,next)=>{
         var remark = ''; 
 
         for(k = 0 ; k < productData.length ; k++){
-            if(productData[k].section != undefined){
+            if(productData[k].section != undefined && productData[k].itemCode != undefined){
                 if (productData[k].section.trim() != '') {
                     var sectionObject = await sectionInsert(productData[k].section)
                     //console.log('sectionObject',sectionObject)
@@ -104,6 +105,7 @@ exports.bulkUploadProduct = (req,res,next)=>{
                         
                         if (productData[k].itemCode != undefined) {
                             var insertProductObject = await insertProduct(sectionObject.section_ID, sectionObject.section, categoryObject,productData[k]);
+                            console.log('insertProductObject',insertProductObject)
                             if (insertProductObject != 0) {
 
                                 Count++;
@@ -116,18 +118,14 @@ exports.bulkUploadProduct = (req,res,next)=>{
                 }
             }
             
-                
-
+        if (productData[k].itemCode != undefined) {
+            TotalCount++;
             if(productData[k].section == undefined){
                  remark += "section not found";
             }
             if (productData[k].category == undefined) {
                 remark += ", category not found, ";
             }
-            if (productData[k].itemCode == undefined) {
-                remark += "Item code not found, ";
-            }
-            
             if (productData[k].productCode == undefined) {
                 remark += "Product code not found, ";
             }
@@ -143,6 +141,8 @@ exports.bulkUploadProduct = (req,res,next)=>{
             if (productData[k].originalPrice == undefined) {
                 remark += "product price not found, ";
             }
+
+        }
             
 
             if (remark != '') {
@@ -152,13 +152,13 @@ exports.bulkUploadProduct = (req,res,next)=>{
             } 
             remark = '';
         }
-
+        
         failedRecords.FailedRecords = invalidData
         failedRecords.fileName = productData[0].filename;
-        failedRecords.totalRecords = productData.length;
+        failedRecords.totalRecords = TotalCount;
 
         await insertFailedRecords(failedRecords); 
-
+        
         var msgstr = "";
         if (DuplicateCount > 0 && Count > 0) {
             if (DuplicateCount > 1 && Count > 1) {
@@ -206,33 +206,46 @@ var insertFailedRecords = async (invalidData) => {
     FailedRecords.find({fileName:invalidData.fileName})  
             .exec()
             .then(data=>{
-                if(data.length>0){
-                //console.log('data',data)   
-                FailedRecords.updateOne({ fileName:invalidData.fileName},  
-                    {   $set:   { 'failedRecords': [] } })
-                    .then(data=>{
-                    if(data.nModified == 1){
-                        FailedRecords.updateOne({ fileName:invalidData.fileName},  
-                            {   $set:   {'totalRecords': invalidData.totalRecords},
-                                $push:  { 'failedRecords' : invalidData.FailedRecords } 
-                            })
+            if(data.length>0){
+                console.log('data',data)   
+                if (data[0].failedRecords.length>0) {
+                    FailedRecords.updateOne({ fileName:invalidData.fileName},  
+                        {   $set:   { 'failedRecords': [] } })
                         .then(data=>{
-                            if(data.nModified == 1){
-                                resolve(data);
-                            }else{
-                                resolve(data);
-                            }
+                        if(data.nModified == 1){
+                            FailedRecords.updateOne({ fileName:invalidData.fileName},  
+                                {   $set:   {'totalRecords': invalidData.totalRecords},
+                                    $push:  { 'failedRecords' : invalidData.FailedRecords } 
+                                })
+                            .then(data=>{
+                                if(data.nModified == 1){
+                                    resolve(data);
+                                }else{
+                                    resolve(data);
+                                }
+                            })
+                            .catch(err =>{ reject(err); });
+                        }else{
+                            resolve(0);
+                        }
                         })
-                        .catch(err =>{
-                            reject(err);
-                        });
-                         
+                        .catch(err =>{ reject(err); });
 
-                    }else{
-                        
-                    }
-                    })
                 }else{
+                    FailedRecords.updateOne({ fileName:invalidData.fileName},  
+                        {   $set:   {'totalRecords': invalidData.totalRecords},
+                            $push:  { 'failedRecords' : invalidData.FailedRecords } 
+                        })
+                    .then(data=>{
+                        if(data.nModified == 1){
+                            resolve(data);
+                        }else{
+                            resolve(data);
+                        }
+                    })
+                    .catch(err =>{ reject(err); });
+                }
+            }else{
                     const failedRecords = new FailedRecords({
                     _id                     : new mongoose.Types.ObjectId(),                    
                     failedRecords           : invalidData.FailedRecords,
@@ -250,7 +263,7 @@ var insertFailedRecords = async (invalidData) => {
                         console.log(err);
                         reject(err);
                     });
-                }
+            }
             })  
     
     })            
@@ -1128,6 +1141,7 @@ exports.search_product = (req,res,next)=>{
                     [
                     {"productName"    : {'$regex' : req.params.searchstr , $options: "i"} },
                     {"brand"          : {'$regex' : req.params.searchstr , $options: "i"} },
+                    {"section"       : {'$regex' : req.params.searchstr , $options: "i"} },
                     {"category"       : {'$regex' : req.params.searchstr , $options: "i"} },
                     {"subCategory"    : {'$regex' : req.params.searchstr , $options: "i"} },
                     {"productDetails" : {'$regex' : req.params.searchstr , $options: "i"} }, 
@@ -1140,9 +1154,6 @@ exports.search_product = (req,res,next)=>{
                 { "$or": [{"status":"Publish"}] }
                 ]
             }
-            
-            
-
         )
     .exec()
     .then(data=>{
@@ -1156,7 +1167,49 @@ exports.search_product = (req,res,next)=>{
     });
 };
 
-
+exports.admin_search_product = (req,res,next)=>{
+    Products.find(
+            {
+                "$and" : [
+                { "$or": 
+                    [
+                    {"productName"    : {'$regex' : req.params.searchstr , $options: "i"} },
+                    {"itemCode"       : {'$regex' : req.params.searchstr , $options: "i"} },
+                    {"brand"          : {'$regex' : req.params.searchstr , $options: "i"} },
+                    {"section"        : {'$regex' : req.params.searchstr , $options: "i"} },
+                    {"category"       : {'$regex' : req.params.searchstr , $options: "i"} },
+                    ] 
+                }
+                ]
+            }
+        )
+    .exec()
+    .then(data=>{
+        var allData = data.map((x, i)=>{
+            return {
+                "_id"                   : x._id,
+                "vendorName"            : x.vendorName,
+                "productName"           : x.productName + "<br>Product Code: "+x.productCode+ "<br>Item Code: "+x.itemCode,
+                "section"               : x.section,
+                "category"              : x.category,
+                "originalPrice"         : "<i class='fa fa-"+x.currency+"'></i>&nbsp;"+x.originalPrice,
+                "discountPercent"       : x.discountPercent+"%",
+                "discountedPrice"       : "<i class='fa fa-"+x.currency+"'></i>&nbsp;"+x.discountedPrice,
+                "availableQuantity"     : x.availableQuantity,
+                "featured"              : x.featured,
+                "exclusive"             : x.exclusive,
+                "status"                : x.status
+            }
+        })
+        res.status(200).json(allData);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.searchINCategory = (req,res,next)=>{
     
     var catArray = []
@@ -1528,8 +1581,8 @@ exports.productBulkAction = (req, res, next) => {
     console.log('field', field);
     switch (field) {
         case 'Draft':
-            User.updateMany(
-                {"_id": { "$in": req.body.selectProducts}},
+            Products.updateMany(
+                {"_id": { "$in": req.body.selectedProducts}},
                 {$set:{"status":"Draft"}}
                 )
             .exec()
@@ -1545,8 +1598,8 @@ exports.productBulkAction = (req, res, next) => {
             });
         break;
         case 'Publish':
-            User.updateMany(
-                {"_id": { "$in": req.body.selectProducts}},
+            Products.updateMany(
+                {"_id": { "$in": req.body.selectedProducts}},
                 {$set:{"status":"Publish"}}
             )
             .exec()
@@ -1562,8 +1615,8 @@ exports.productBulkAction = (req, res, next) => {
             });
         break ;
         case 'Unpublish':
-            User.updateMany(
-                {"_id": { "$in": req.body.selectProducts}},
+            Products.updateMany(
+                {"_id": { "$in": req.body.selectedProducts}},
                 {$set:{"status":"Unpublish"}}
             )
             .exec()
@@ -1579,8 +1632,8 @@ exports.productBulkAction = (req, res, next) => {
             });
         break ;
         case 'Delete':
-            User.deleteMany(
-                {"_id": { "$in": req.body.selectProducts}}
+            Products.deleteMany(
+                {"_id": { "$in": req.body.selectedProducts}}
                 )
             .exec()
             .then(data => {
