@@ -23,6 +23,8 @@ const orderSchema = mongoose.Schema({
             "discountPercent"   : Number,
             "discountedPrice"   : Number,
             "originalPrice"     : Number,
+            "color"             : String,
+            "size"              : String,
             "currency"          : String,
             "quantity"          : Number,
             "subTotal"          : Number,
