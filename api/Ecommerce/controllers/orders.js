@@ -1148,7 +1148,6 @@ exports.get_reports_count = (req,res,next)=>{
 };
 
 exports.get_reports = (req,res,next)=>{
-
     Orders.find({
       createdAt: {
         $gte:  moment(req.body.startDate).startOf('day').toDate(),
@@ -1157,13 +1156,15 @@ exports.get_reports = (req,res,next)=>{
     }).sort({createdAt:-1})      
         .exec()
         .then(data=>{
+          
           var allData = data.map((x, i)=>{
+            //console.log(x)
             return {
                 "_id"                   : x._id,
                 "orderID"               : (x.orderID).toString(),
                 "cratedAt"              : moment(x.createdAt).format("DD/MM/YYYY hh:mm a"),
                 "userFullName"          : x.userFullName,
-                "totalAmount"           : (x.totalAmount).toString(),
+                "totalAmount"           : (x.total).toString(),
                 "deliveryStatus"        : x.deliveryStatus[x.deliveryStatus.length-1].status
             }
           })
@@ -1270,7 +1271,7 @@ exports.get_category_reports = (req,res,next)=>{
                 "orderID"               : (x.orderID).toString(),
                 "cratedAt"              : moment(x.createdAt).format("DD/MM/YYYY hh:mm a"),
                 "userFullName"          : x.userFullName,
-                "totalAmount"           : (x.totalAmount).toString(),
+                "totalAmount"           : (x.total).toString(),
                 "deliveryStatus"        : x.deliveryStatus[x.deliveryStatus.length-1].status
             }
           })
