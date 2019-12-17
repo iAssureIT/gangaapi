@@ -1281,9 +1281,9 @@ exports.list_brand = (req,res,next)=>{
         });
     });
 };
-exports.listBrandBySections = (req,res,next)=>{
+exports.listBrandByCategories = (req,res,next)=>{
     
-    Products.distinct("brand", {"category": { $in : req.body.categories } })
+    Products.distinct("brand", {"category_ID": { $in : req.body.categories } })
     .exec()
     .then(data=>{ 
         res.status(200).json(data);
@@ -1296,6 +1296,20 @@ exports.listBrandBySections = (req,res,next)=>{
     });
 };
 
+exports.listBrandBySubcategories = (req,res,next)=>{
+    
+    Products.distinct("brand", {"subCategory_ID": { $in : req.body.subcategories } })
+    .exec()
+    .then(data=>{ 
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.list_size = (req,res,next)=>{
     
     Products.distinct("size", {"section_ID": req.params.sectionID})
@@ -1310,8 +1324,36 @@ exports.list_size = (req,res,next)=>{
         });
     });
 };
-exports.list_color = (req,res,next)=>{
+exports.listSizeByCategory = (req,res,next)=>{
     
+    Products.distinct("size", {"category_ID": req.params.categoryID})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+exports.listSizeBySubcategory = (req,res,next)=>{
+    
+    Products.distinct("size", {"subCategory_ID": req.params.subcategoryID})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+exports.list_color = (req,res,next)=>{
     Products.distinct("color", {"section_ID": req.params.sectionID})
     .exec()
     .then(data=>{
@@ -1324,6 +1366,34 @@ exports.list_color = (req,res,next)=>{
         });
     });
 };
+
+exports.listColorByCategory = (req,res,next)=>{
+    Products.distinct("color", {"category_ID": req.params.categoryID})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+exports.listColorBySubcategory = (req,res,next)=>{
+    Products.distinct("color", {"subCategory_ID": req.params.subcategoryID})
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
 exports.list_grocerybrand = (req,res,next)=>{
     
     Products.distinct("brand", {"section":"Grocery"})
