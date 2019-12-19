@@ -13,7 +13,7 @@ exports.insert_vendor = (req, res, next) => {
                 });
             }else{
                 const vendors = new Vendors({
-                    _id: new mongoose.Types.ObjectId(),
+                    _id                         : new mongoose.Types.ObjectId(),
                     typeOptions                 : req.body.typeOptions,
                     companyName                 : req.body.companyName,
                     emailId                     : req.body.emailId,
@@ -22,6 +22,7 @@ exports.insert_vendor = (req, res, next) => {
                     website                     : req.body.website,
                     gstno                       : req.body.gstno,
                     category                    : req.body.category,
+                    mobileNumber                : req.body.mobileNumber,
                     coino                       : req.body.coino,
                     mfg                         : req.body.mfg,
                     score                       : req.body.score,
@@ -33,7 +34,7 @@ exports.insert_vendor = (req, res, next) => {
                     productsServices            : req.body.productsServices,
                     vendorID                    : req.body.vendorID,
                     owner_ID                    : req.body.owner_ID,
-                    vendor_ID                   : req.body.vendor_ID,
+                    user_ID                     : req.body.user_ID,
                     createdAt                   : new Date()
                 });
                 vendors.save()
@@ -60,7 +61,7 @@ exports.insert_vendor = (req, res, next) => {
 };
 exports.update_vendor = (req, res, next) => {
     Vendors.updateOne(
-        { _id: req.body.vendor_ID },
+        { _id: req.body.edit_ID },
         {
             $set: {
                 typeOptions                 : req.body.typeOptions,
@@ -71,34 +72,25 @@ exports.update_vendor = (req, res, next) => {
                 website                     : req.body.website,
                 gstno                       : req.body.gstno,
                 category                    : req.body.category,
+                mobileNumber                : req.body.mobileNumber,
                 coino                       : req.body.coino,
                 mfg                         : req.body.mfg,
                 score                       : req.body.score,
                 Evaluation                  : req.body.Evaluation,
                 logo                        : req.body.logo,
-                attachedDocuments           : req.body.attachedDocuments,
-                locationDetails             : req.body.locationDetails,
-                contactDetails              : req.body.contactDetails,
-                productsServices            : req.body.productsServices,
                 vendorID                    : req.body.vendorID,
                 owner_ID                    : req.body.owner_ID,
-                vendor_ID                   : req.body.vendor_ID,
+                user_ID                     : req.body.user_ID,
                 createdAt                   : new Date()
             }
         }
     )
         .exec()
         .then(data => {
-            if (data.nModified == 1) {
-                res.status(200).json({
-                    "message": "Vendor Updated Successfully.",
-                    "vendor_ID": data._id
-                });
-            } else {
-                res.status(401).json({
-                    "message": "Vendor Not Found"
-                });
-            }
+            res.status(200).json({
+                "message": "Vendor Updated Successfully.",
+                "vendor_ID": req.body.edit_ID
+            });
         })
         .catch(err => {
             console.log(err);

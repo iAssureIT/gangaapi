@@ -8,6 +8,7 @@ const vendorsSchema = mongoose.Schema({
     pan                       : String,
     tin                       : String,
     website                   : String,
+    mobileNumber              : String,
     gstno                     : String,
     category                  : String,
     coino                     : String,
@@ -44,7 +45,7 @@ const vendorsSchema = mongoose.Schema({
     ],
     productsServices          : Array,
     vendorID                  : Number,
-    vendor_ID                 : { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
+    user_ID                 : { type: mongoose.Schema.Types.ObjectId, ref: 'user' },
     owner_ID                  : String,
     createdBy                 : String,
     createdAt                 : Date
