@@ -29,6 +29,8 @@ router.post('/get/list',vendorController.list_vendor_with_limits);
 
 router.get('/get/one/:vendorID', vendorController.fetch_vendor);
 
+router.get('/get/listbyuserid/:userID', vendorController.fetch_vendorid);
+
 router.delete('/delete/:vendorID',vendorController.delete_vendor);
 
 // router.delete('/',vendorController.deleteall_vendor);

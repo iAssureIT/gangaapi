@@ -39,11 +39,21 @@ router.put('/multiple', productController.update_product_multiple);
 
 router.get('/get/count',productController.count_product);
 
+router.get('/get/vendorwisecount/:vendorID',productController.count_vendor_product);
+
 router.post('/get/files',productController.fetch_file);
 
+router.post('/get/vendorfiles',productController.fetch_vendor_file);
+
 router.get('/get/files/count',productController.fetch_file_count);
+
+router.get('/get/vendorfiles/count/:vendorID',productController.fetch_vendorfile_count);
  
 router.post('/get/list',productController.list_product_with_limits);
+
+router.post('/get/vendorwiselist',productController.list_product_with_vendor);
+
+router.post('/get/vendorwiseimagelist/:vendorID',productController.list_productimage_with_vendor);
 
 router.patch('/patch/gallery', productController.upload_photo);
 

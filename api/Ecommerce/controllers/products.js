@@ -18,6 +18,7 @@ exports.insert_product = (req,res,next)=>{
         }else{
             const products = new Products({
                 _id                       : new mongoose.Types.ObjectId(), 
+                user_ID                   : req.body.user_ID,
                 vendor_ID                 : req.body.vendor_ID, 
                 vendorName                : req.body.vendorName, 
                 section                   : req.body.section, 
@@ -426,7 +427,9 @@ var insertProduct = async (section_ID, section, categoryObject, data) => {
             if (productPresent==0) {
                     const productObj = new Products({
                         _id                       : new mongoose.Types.ObjectId(),  
-                        vendor_ID                 : data.vendor_ID,  
+                        vendor_ID                 : data.vendor.split('|')[1],  
+                        user_ID                   : data.vendor.split('|')[1],  
+                        vendorName                : data.vendor.split('|')[0],  
                         section_ID                : section_ID,           
                         section                   : section,      
                         category                  : categoryObject.category,
@@ -540,6 +543,7 @@ exports.update_product = (req,res,next)=>{
             { _id:req.body.product_ID},  
             {
                 $set:{
+                user_ID                   : req.body.user_ID,
                 vendor_ID                 : req.body.vendor_ID,  
                 vendorName                : req.body.vendorName, 
                 section                   : req.body.section,
@@ -704,6 +708,19 @@ exports.list_product = (req,res,next)=>{
         });
     });
 };
+exports.list_productimage_with_vendor = (req,res,next)=>{
+    Products.find({"vendor_ID": req.params.vendorID })       
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.list_product_code = (req,res,next)=>{
     Products.find({"productCode": req.params.productCode})       
     .exec()
@@ -856,6 +873,37 @@ exports.list_product_with_limits = (req,res,next)=>{
         });
     });
 };
+exports.list_product_with_vendor = (req,res,next)=>{
+    console.log('req', req.body);
+    Products.find({"vendor_ID" : req.body.vendor_ID})
+    .sort({ "createdAt": -1 })
+    .exec()
+    .then(data=>{
+        var allData = data.map((x, i)=>{
+            return {
+                "_id"                   : x._id,
+                "vendorName"            : x.vendorName,
+                "productName"           : x.productName + "<br>Product Code: "+x.productCode+ "<br>Item Code: "+x.itemCode,
+                "section"               : x.section,
+                "category"              : x.category,
+                "originalPrice"         : "<i class='fa fa-"+x.currency+"'></i>&nbsp;"+x.originalPrice,
+                "discountPercent"       : x.discountPercent+"%",
+                "discountedPrice"       : "<i class='fa fa-"+x.currency+"'></i>&nbsp;"+x.discountedPrice,
+                "availableQuantity"     : x.availableQuantity,
+                "featured"              : x.featured,
+                "exclusive"             : x.exclusive,
+                "status"                : x.status
+            }
+        })
+        res.status(200).json(allData.slice(req.body.startRange, req.body.limitRange));
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.count_product = (req,res,next)=>{
     Products.find({})
     .exec()
@@ -874,6 +922,20 @@ exports.count_product = (req,res,next)=>{
             }
         })
         res.status(200).json({"dataCount":allData.length});
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+exports.count_vendor_product = (req,res,next)=>{
+    Products.find({"vendor_ID": req.params.vendorID}).count()
+    .exec()
+    .then(data=>{
+        console.log(data)
+        res.status(200).json({"dataCount":data});
     })
     .catch(err =>{
         console.log(err);
@@ -934,8 +996,59 @@ exports.fetch_file = (req,res,next)=>{
     });
     
 };
+exports.fetch_vendor_file = (req,res,next)=>{
+    Products.find({"vendor_ID" : req.body.vendor_ID})
+    .exec()
+    .then(data=>{
+        var x = _.unique(_.pluck(data, "fileName"));
+        var z = [];
+        for(var i=0; i<x.length; i++){
+            var y = data.filter((a)=> a.fileName == x[i]);
+            z.push({
+                "fileName": (x[i] ? x[i].replace(/\s+/, "") : "-").split('.')[0],
+                'productCount': y.length != NaN ? "<p>"+y.length+"</p>" : "a",
+                "_id" : x[i] != null ? x[i].replace(/\s+/, "")  : "-"
+            })
+            
+        }
+        res.status(200).json(z.slice(req.body.startRange, req.body.limitRange));
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+    
+};
+
 exports.fetch_file_count = (req,res,next)=>{
     Products.find()
+    .exec()
+    .then(data=>{
+        var x = _.unique(_.pluck(data, "fileName"));
+        var z = [];
+        for(var i=0; i<x.length; i++){
+            var y = data.filter((a)=> a.fileName == x[i]);
+            z.push({
+                "fileName": x[i],
+                'productCount': y.length,
+                "_id" : x[i]
+            })
+        }
+        res.status(200).json(z.length);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+    
+};
+exports.fetch_vendorfile_count = (req,res,next)=>{
+    console.log('req.params.vendorID', req.params.vendorID);
+    Products.find({"vendor_ID" : req.params.vendorID})
     .exec()
     .then(data=>{
         var x = _.unique(_.pluck(data, "fileName"));

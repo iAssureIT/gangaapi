@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 const productsSchema = mongoose.Schema({
     _id			              : mongoose.Schema.Types.ObjectId,
-    vendor_ID                 : { type: mongoose.Schema.Types.ObjectId, ref: 'vendor' },
+    vendor_ID                 : { type: mongoose.Schema.Types.ObjectId, ref: 'vendors' },
+    user_ID                   : { type: mongoose.Schema.Types.ObjectId, ref: 'users' },
     vendorName                : String,
     section                   : String,
     section_ID                : { type: mongoose.Schema.Types.ObjectId, ref: 'sections' },

@@ -373,6 +373,19 @@ exports.fetch_vendor = (req, res, next) => {
             });
         });
 };
+exports.fetch_vendorid = (req, res, next) => {
+    Vendors.find({ user_ID: req.params.userID })
+    .exec()
+    .then(data => {
+        res.status(200).json(data);
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.delete_vendor = (req, res, next) => {
     Vendors.deleteOne({ _id: req.params.vendorID })
         .exec()
