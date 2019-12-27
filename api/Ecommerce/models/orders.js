@@ -9,9 +9,9 @@ const orderSchema = mongoose.Schema({
     userFullName              : String,
     userName                  : String,
     numericOrderID            : Number,
-    discount           : Number,
-    cartTotal             : Number,
-    total             : Number,
+    discount                  : Number,
+    cartTotal                 : Number,
+    total                     : Number,
     currency                  : String,
     transactionID             : Number,
     status                    : String,
@@ -42,7 +42,7 @@ const orderSchema = mongoose.Schema({
     ],
     paymentMethod             : String,
     productLength             : Number,
-    cartQuantity             : Number,
+    cartQuantity              : Number,
     deliveryAddress           : {
                                     "name"            : String,
                                     "email"           : String,
@@ -62,7 +62,7 @@ const orderSchema = mongoose.Schema({
                                     "status"          : String,
                                     "expDeliveryDate" : Date,
                                     "Date"            : Date,
-                                    "userid"           : String
+                                    "userid"          : String
                                 }],
     businessAssociate         : String,
     createdBy                 : String,

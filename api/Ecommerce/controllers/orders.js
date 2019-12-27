@@ -316,6 +316,79 @@ exports.list_order = (req,res,next)=>{
             });
         });
 };
+exports.vendor_order_list = (req,res,next)=>{
+  Orders.aggregate([
+    { "$unwind": "$products" },
+    { "$lookup": {
+        "from": "products",
+        "as": "products.productDetail",
+        "localField": "products.product_ID",
+        "foreignField": "_id"
+    }},
+    { "$unwind": "$products.productDetail" },
+    { "$match" : { "products.vendor_ID" : ObjectId(req.params.vendorID) } },
+    { "$group": {
+        "_id": "$_id",
+        "orderID":{ "$first": "$orderID" },
+        "userFullName":{ "$first": "$userFullName" },
+        "products": { "$push": "$products" },
+        "cartQuantity":{ "$first": "$cartQuantity" },
+        "status":{ "$first": "$status" },
+      }
+    },
+  ])
+  .skip(parseInt(req.body.startRange))
+  .limit(parseInt(req.body.limitRange))   
+  .exec()
+  .then(data=>{
+      var tableData = data.map((a, i)=>{
+        return {"orderID" : a.orderID,
+        "userFullName" : a.userFullName,
+        "products" : ((a.products.map((b,j)=>{return '<div><p>Product Name: '+b.productName+'</p><p>Product Code: '+b.productDetail.productCode+'-'+b.productDetail.itemCode+'</p><p>Sell Quantity: '+b.quantity+'</p><p>Price: <span class="ororiginalPrice">'+(b.discountPercent > 0 ? b.originalPrice : '')+'</span>  <span>'+b.discountedPrice+'</span>  <span class="orPercent">'+(b.discountPercent > 0 ? b.discountPercent+'%' : '')+'</span>  </p>'+'</div><br/>'})).toString()).replace(/,/g, " "),
+        "cartQuantity":a.cartQuantity,
+        "status":a.status}
+      })
+      res.status(200).json(tableData);
+  })
+  .catch(err =>{
+      console.log(err);
+      res.status(500).json({
+          error: err
+      });
+  });
+};
+exports.vendor_order_count = (req,res,next)=>{
+  Orders.aggregate([
+    { "$unwind": "$products" },
+    { "$lookup": {
+        "from": "products",
+        "as": "products.productDetail",
+        "localField": "products.product_ID",
+        "foreignField": "_id"
+    }},
+    { "$unwind": "$products.productDetail" },
+    { "$match" : { "products.vendor_ID" : ObjectId(req.params.vendorID) } },
+    { "$group": {
+        "_id": "$_id",
+        "products": { "$push": "$products" },
+        
+       }
+    },
+    {   
+      "$count": "dataCount"
+    },
+  ])
+  .exec()
+  .then(data=>{
+      res.status(200).json(data);
+  })
+  .catch(err =>{
+      console.log(err);
+      res.status(500).json({
+          error: err
+      });
+  });
+};
 exports.list_orderby_status = (req,res,next)=>{
     Orders.aggregate([
     { "$match": { "deliveryStatus.status" :  req.params.status} },
@@ -340,7 +413,59 @@ exports.list_orderby_status = (req,res,next)=>{
             });
         });
 };
-
+exports.vendor_orderlistby_status = (req,res,next)=>{
+  Orders.aggregate([
+    { "$unwind": "$products" },
+    { "$lookup": {
+        "from": "products",
+        "as": "products.productDetail",
+        "localField": "products.product_ID",
+        "foreignField": "_id"
+    }},
+    { "$unwind": "$products.productDetail" },
+    { "$match" : { "products.vendor_ID" : ObjectId(req.params.vendorID) } },
+    { "$group": {
+        "_id": "$_id",
+        "orderID":{ "$first": "$orderID" },
+        "userFullName":{ "$first": "$userFullName" },
+        "products": { "$push": "$products" },
+        "cartQuantity":{ "$first": "$cartQuantity" },
+        "status":{ "$first": "$status" },
+        "deliveryStatus":{"$first":"$deliveryStatus"}
+      }
+    },
+    { "$match": { "deliveryStatus.status" :  req.body.status} },
+      { "$redact":
+          {
+              "$cond": {
+                  "if": { "$eq": [ { "$arrayElemAt": [ "$deliveryStatus.status", -1 ] }, req.body.status ] },
+                  "then": "$$KEEP",
+                  "else": "$$PRUNE"
+              }
+          }
+      }
+  ])
+  .sort({createdAt:-1})     
+  .skip(parseInt(req.body.startRange))
+  .limit(parseInt(req.body.limitRange))    
+  .exec()
+  .then(data=>{
+    var tableData = data.map((a, i)=>{
+      return {"orderID" : a.orderID,
+      "userFullName" : a.userFullName,
+      "products" : ((a.products.map((b,j)=>{return '<div><p>Product Name: '+b.productName+'</p><p>Product Code: '+b.productDetail.productCode+'-'+b.productDetail.itemCode+'</p><p>Sell Quantity: '+b.quantity+'</p><p>Price: <span class="ororiginalPrice">'+(b.discountPercent > 0 ? b.originalPrice : '')+'</span>  <span>'+b.discountedPrice+'</span>  <span class="orPercent">'+(b.discountPercent > 0 ? b.discountPercent+'%' : '')+'</span>  </p>'+'</div><br/>'})).toString()).replace(/,/g, " "),
+      "cartQuantity":a.cartQuantity,
+      "status":a.status}
+    })
+    res.status(200).json(tableData);
+  })
+  .catch(err =>{
+      console.log(err);
+      res.status(500).json({
+          error: err
+      });
+  });
+};
 exports.list_order_by_ba = (req,res,next)=>{
 
     Orders.find({businessAssociate : req.params.ba_ID}).sort({createdAt:-1})     
@@ -1519,4 +1644,45 @@ exports.subCategoryRevenue = (req,res,next)=>{
                 error: err
             });
         });
+};
+exports.vendorWiseOrder = (req,res,next)=>{
+  Orders.aggregate([
+    { "$unwind": "$products" },
+    { "$lookup": {
+        "from": "products",
+        "as": "products.productDetail",
+        "localField": "products.product_ID",
+        "foreignField": "_id"
+    }},   
+    { "$unwind": "$products.productDetail" },
+    { "$group": {
+        "_id": "$_id",
+        
+        "products": { "$push": "$products" },
+    }},
+    {
+    "$project": {
+      "_id": 1,
+        "products.product_ID" : 1,
+        "products.productName":1,
+        "products.discountPercent":1,
+        "products.discountedPrice":1,
+        "products.originalPrice":1,
+        "products.currency":1,
+        "products.quantity":1,
+        "products.subTotal":1,
+        "products.saving":1,
+        "products.productDetail.vendor_ID": 1,
+    }
+  }
+]).exec()
+      .then(data=>{
+        res.status(200).json(data); 
+      })
+      .catch(err =>{
+          console.log(err);
+          res.status(500).json({
+              error: err
+          });
+      });
 };

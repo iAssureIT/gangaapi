@@ -13,9 +13,15 @@ router.patch('/patch/changeToPreviousStatus', orderController.changeToPreviousSt
 
 router.get('/get/list',orderController.list_order);
 
+router.post('/get/vendorwiselist/:vendorID',orderController.vendor_order_list);
+
 router.get('/get/orderlist/:status',orderController.list_orderby_status);
 
+router.post('/get/vendororderstatuslist/:vendorID',orderController.vendor_orderlistby_status);
+
 router.get('/get/count',orderController.count_order);
+
+router.get('/get/vendorwisecount/:vendorID',orderController.vendor_order_count);
 
 router.get('/get/list/:userID',orderController.list_order_by_user);
 
@@ -58,5 +64,7 @@ router.get('/get/sectionRevenue',orderController.sectionRevenue);
 router.get('/get/categoryRevenue',orderController.categoryRevenue);
 
 router.get('/get/subCategoryRevenue',orderController.subCategoryRevenue);
+
+router.get('/get/vendorWiseOrder',orderController.subCategoryRevenue);
 
 module.exports = router; 

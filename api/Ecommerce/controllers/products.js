@@ -1,11 +1,11 @@
-const mongoose  = require("mongoose");
-const _         = require("underscore");
-const Products = require('../models/products');
-const Category = require('../models/categories');
-const Sections = require('../models/sections');
+const mongoose      = require("mongoose");
+const _             = require("underscore");
+const Products      = require('../models/products');
+const Category      = require('../models/categories');
+const Sections      = require('../models/sections');
 const FailedRecords = require('../models/failedRecords');
-const Orders = require('../models/orders');
-var ObjectId = require('mongodb').ObjectID;
+const Orders        = require('../models/orders');
+var ObjectId        = require('mongodb').ObjectID;
 
 exports.insert_product = (req,res,next)=>{
     Products.find({"itemCode" : req.body.itemCode})

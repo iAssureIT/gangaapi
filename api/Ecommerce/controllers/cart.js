@@ -151,7 +151,8 @@ exports.list_cart_product = (req,res,next)=>{
             "discount": { "$sum":{ "$divide": [{ "$multiply": [ { "$multiply": [ "$cartItems.quantity", "$cartItems.productDetail.originalPrice" ] }, "$cartItems.productDetail.discountPercent" ]}, 100] }},
             "total": { "$sum": { "$multiply": [ "$cartItems.quantity", "$cartItems.productDetail.discountedPrice" ] } },
             "cartQuantity":{ "$sum": "$cartItems.quantity" },
-            }},
+            }
+        },
             
     ])
     .exec()
