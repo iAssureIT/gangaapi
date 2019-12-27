@@ -1384,7 +1384,7 @@ exports.list_brand = (req,res,next)=>{
     
     Products.distinct("brand", { "section_ID": req.params.sectionID })
     .exec()
-    .then(data=>{ _id:{$in : req.body.publishData}
+    .then(data=>{ 
         res.status(200).json(data);
     })
     .catch(err =>{
@@ -1609,7 +1609,10 @@ exports.admin_filter_productsCount = (req,res,next)=>{
 
 exports.filter_products = (req,res,next)=>{
     var selector = {};
-    
+    var attributeSelector = [];
+    var finalselector = {};
+
+    //console.log(req.body)
     for (var key in req.body) {
         if (key != 'limit') {
             if (key == 'price') {
@@ -1620,12 +1623,34 @@ exports.filter_products = (req,res,next)=>{
                     selector.brand = { $in: req.body.brands } 
                 }
             }
-            if (key != 'price' && key != 'brands') {
+            if (key != 'price' && key != 'brands' && key != 'attributes') {
                 selector[key] = req.body[key];
+            }
+            if (key == 'attributes') {
+                req.body.attributes
+                for (var attrkey in req.body.attributes) {
+                    console.log('dsmf',req.body.attributes[attrkey])
+                    var elemMatch = {};
+                    elemMatch.attributeName = { $eq: req.body.attributes[attrkey].attributeName };
+                    elemMatch.attributeValue = { $eq: req.body.attributes[attrkey].attributeValue };
+                    //console.log('elemMatch',elemMatch);
+                    attributeSelector.push({ 
+                        attributes: { $elemMatch: elemMatch }
+                    })
+                }
             }
         }
     }
-    Products.find(selector).limit(Number(req.body.limit))
+    console.log('selector',selector)
+    console.log('attributeSelector',JSON.stringify(attributeSelector))
+    console.log('len',attributeSelector.length)
+    if (attributeSelector.length > 0) {
+        finalselector.$and = [{ "$or" : [selector] }, { "$or" : attributeSelector }] 
+    }else{
+        finalselector.$and = [{ "$or" : [selector] }] 
+    }
+    //console.log(finalselector,'finalselector')
+    Products.find(finalselector).limit(Number(req.body.limit))
     .exec()
     .then(data=>{
         //console.log(data);
@@ -1844,3 +1869,71 @@ exports.productBulkAction = (req, res, next) => {
     }
 };
  
+ 
+exports.getattributes = (req,res,next)=>{
+    Products.distinct("attributes",{ "section_ID": req.params.sectionID })
+    .exec()
+    .then(data=>{ 
+        console.log(data);
+        var Results = [];
+        Results = _.groupBy(data, 'attributeName')
+        res.status(200).json(Results);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+exports.getattributesbycategory = (req,res,next)=>{
+    Products.distinct("attributes",{ "category_ID": req.params.categoryID })
+    .exec()
+    .then(data=>{ 
+        console.log(data);
+        var Results = [];
+        Results = _.groupBy(data, 'attributeName')
+        res.status(200).json(Results);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+exports.getattributesbycategory = (req,res,next)=>{
+    Products.distinct("attributes",{ "subCategory_ID": req.params.subCategoryID })
+    .exec()
+    .then(data=>{ 
+        console.log(data);
+        var Results = [];
+        Results = _.groupBy(data, 'attributeName')
+        res.status(200).json(Results);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+
+exports.getattributesbysubcategory = (req,res,next)=>{
+    Products.distinct("attributes",{ "subCategory_ID": req.params.subCategoryID })
+    .exec()
+    .then(data=>{ 
+        console.log(data);
+        var Results = [];
+        Results = _.groupBy(data, 'attributeName')
+        res.status(200).json(Results);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};

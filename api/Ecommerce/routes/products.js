@@ -111,4 +111,10 @@ router.patch('/patch/productBulkAction', productController.productBulkAction);
 
 router.get('/get/outofstockproducts', productController.outofstockproducts);
 
+router.get('/get/attributes/:sectionID', productController.getattributes);
+
+router.get('/get/attributesbycategory/:categoryID', productController.getattributesbycategory);
+
+router.get('/get/attributesbysubcategory/:subCategoryID', productController.getattributesbysubcategory);
+
 module.exports = router;
