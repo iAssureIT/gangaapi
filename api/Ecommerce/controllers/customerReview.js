@@ -240,6 +240,80 @@ exports.list_review = (req,res,next)=>{
     });
 };
 
+exports.vendor_review_list = (req,res,next)=>{
+    CustomerReview.aggregate([
+        { $lookup:
+           {
+            from: 'products',
+            localField: 'productID',
+            foreignField: '_id',
+            as: 'productDetails'
+           }
+        },
+        { $unwind : "$productDetails" },
+        { $match : { "productDetails.vendor_ID" : ObjectId(req.body.vendorID) } },
+        {
+           $sort: {
+             "reviewlist.createdAt": -1
+           }
+        }
+    ])
+    .skip(parseInt(req.body.startRange))
+    .limit(parseInt(req.body.limitRange))
+    .exec()
+    .then(data=>{
+        var tableData = data.map((a, i)=>{
+            return{
+              "_id"           : a._id,
+              "productName"   : a.productDetails ? (a.productDetails.productName+" "+"("+a.productDetails.productCode)+")" : "-",
+              "productImages" : a.productDetails ? a.productDetails.productImage : [],
+              "customerName"  : a.customerName,
+              "customerReview": a.customerReview,                
+              "adminComment"  : a.adminComment ? a.adminComment : "-",
+              "orderID"       : a.orderID,
+              "productID"     : a.productID,
+              "rating"        : a.rating ? a.rating : 0,
+              "reviewlist"    : a.reviewlist,
+              "status"        : a.status
+            };
+          })
+        res.status(200).json(tableData);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
+exports.vendor_review_count = (req,res,next)=>{
+    CustomerReview.aggregate([
+        { $lookup:
+           {
+            from: 'products',
+            localField: 'productID',
+            foreignField: '_id',
+            as: 'productDetails'
+           }
+        },
+        { $match : { "productDetails.vendor_ID" : ObjectId(req.params.vendorID) } },
+        {   
+            "$count": "dataCount"
+        },
+    ])
+    .exec()
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+
 exports.count_review = (req,res,next)=>{
     CustomerReview.find({})
     .exec()

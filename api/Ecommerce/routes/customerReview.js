@@ -20,7 +20,11 @@ router.put('/status', customerReviewController.update_review_status);
 
 router.get('/get/count',customerReviewController.count_review);
 
+router.get('/get/vendorwisecount/:vendorID',customerReviewController.vendor_review_count);
+
 router.post('/get/list',customerReviewController.list_review);
+
+router.post('/get/vendorwiselist',customerReviewController.vendor_review_list);
 
 router.get('/get/user/list/:customerID',customerReviewController.listCustomerReviewbucustomerid);
 
