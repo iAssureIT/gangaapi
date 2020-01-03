@@ -251,7 +251,7 @@ exports.vendor_review_list = (req,res,next)=>{
            }
         },
         { $unwind : "$productDetails" },
-        { $match : { "productDetails.vendor_ID" : ObjectId(req.body.vendorID) } },
+        { $match : { "productDetails.vendor_ID" : ObjectId(req.body.vendor_ID) } },
         {
            $sort: {
              "reviewlist.createdAt": -1

@@ -1335,6 +1335,78 @@ exports.admin_search_product = (req,res,next)=>{
         });
     });
 };
+exports.vendor_search_product = (req,res,next)=>{
+    Products.find(
+        {"vendor_ID" : req.params.vendorID,
+            "$and" : [
+            { "$or": 
+                [
+                {"productName"    : {'$regex' : req.params.searchstr , $options: "i"} },
+                {"itemCode"       : {'$regex' : req.params.searchstr , $options: "i"} },
+                {"brand"          : {'$regex' : req.params.searchstr , $options: "i"} },
+                {"section"        : {'$regex' : req.params.searchstr , $options: "i"} },
+                {"category"       : {'$regex' : req.params.searchstr , $options: "i"} },
+                ] 
+            }
+            ]
+        }
+    )
+    .exec()
+    .then(data=>{
+        var allData = data.map((x, i)=>{
+            return {
+                "_id"                   : x._id,
+                "vendorName"            : x.vendorName,
+                "productName"           : x.productName + "<br>Product Code: "+x.productCode+ "<br>Item Code: "+x.itemCode,
+                "section"               : x.section,
+                "category"              : x.category,
+                "originalPrice"         : "<i class='fa fa-"+x.currency+"'></i>&nbsp;"+x.originalPrice,
+                "discountPercent"       : x.discountPercent+"%",
+                "discountedPrice"       : "<i class='fa fa-"+x.currency+"'></i>&nbsp;"+x.discountedPrice,
+                "availableQuantity"     : x.availableQuantity,
+                "featured"              : x.featured,
+                "exclusive"             : x.exclusive,
+                "status"                : x.status
+            }
+        })
+        res.status(200).json(allData);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
+exports.vendor_search_count_product = (req,res,next)=>{
+    Products.find(
+        {"vendor_ID" : req.params.vendorID,
+            "$and" : [
+            { "$or": 
+                [
+                {"productName"    : {'$regex' : req.params.searchstr , $options: "i"} },
+                {"itemCode"       : {'$regex' : req.params.searchstr , $options: "i"} },
+                {"brand"          : {'$regex' : req.params.searchstr , $options: "i"} },
+                {"section"        : {'$regex' : req.params.searchstr , $options: "i"} },
+                {"category"       : {'$regex' : req.params.searchstr , $options: "i"} },
+                ] 
+            }
+            ]
+        }
+    )
+    .count()
+    .exec()
+    .then(data=>{
+        console.log(data);
+        res.status(200).json({"dataCount" :data});
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({
+            error: err
+        });
+    });
+};
 exports.searchINCategory = (req,res,next)=>{
     
     var catArray = []
@@ -1752,6 +1824,53 @@ exports.outofstockproducts = (req,res,next)=>{
 exports.productCountByStatus = (req,res,next)=>{
 
     Products.aggregate([
+    { '$group': {
+        '_id': null,
+        'total':  { $sum : 1},
+        'totalDraft': { 
+            '$sum': {
+                '$cond': [
+                    { '$eq': ['$status', 'Draft']}, 
+                   1,
+                   0
+                ]
+            }
+        },
+        'totalPublish': { 
+            '$sum': {
+                '$cond': [
+                    { '$eq': ['$status', 'Publish']}, 
+                    1, 
+                    0
+                ]
+            }
+        },
+        'totalUnpublish': { 
+            '$sum': {
+                '$cond': [
+                    { '$eq': ['$status', 'Unpublish']}, 
+                   1,
+                   0
+                ]
+            }
+        },
+        }
+    }
+    ])
+    .then(data=>{
+        res.status(200).json(data);
+    })
+    .catch(err =>{
+        console.log(err);
+        res.status(500).json({  
+            error: err
+        });
+    });
+};
+exports.vendorProductCount = (req,res,next)=>{
+
+    Products.aggregate([
+    {"$match" : {"vendor_ID": ObjectId(req.params.vendorID)}},
     { '$group': {
         '_id': null,
         'total':  { $sum : 1},

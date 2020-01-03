@@ -71,6 +71,10 @@ router.delete('/file/delete/:fileName',productController.delete_file);
 
 router.get('/get/adminsearch/:searchstr', productController.admin_search_product);
 
+router.get('/get/search/:searchstr/:vendorID', productController.vendor_search_product);
+
+router.get('/get/searchcount/:searchstr/:vendorID', productController.vendor_search_count_product);
+
 router.get('/get/search/:searchstr', productController.search_product);
 
 router.post('/post/searchINCategory', productController.searchINCategory);
@@ -106,6 +110,8 @@ router.post('/post/adminFilterProductsCount', productController.admin_filter_pro
 router.post('/post/list/filterProducts', productController.filter_products);
 
 router.get('/get/productCountByStatus', productController.productCountByStatus);
+
+router.get('/get/vendorProductCount/:vendorID', productController.vendorProductCount);
 
 router.patch('/patch/productBulkAction', productController.productBulkAction);
 
